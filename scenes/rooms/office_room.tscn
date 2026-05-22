@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3 uid="uid://cmb4d64jnojw2"]
+
+[ext_resource type="Texture2D" uid="uid://dwen5xltt24pl" path="res://assets/art/backgrounds/office.png" id="1_17l8b"]
+
+[node name="OfficeRoom" type="Node2D"]
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(1.15, 1.15)
+texture = ExtResource("1_17l8b")
+centered = false
