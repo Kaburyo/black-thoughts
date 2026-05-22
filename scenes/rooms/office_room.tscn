@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://cmb4d64jnojw2"]
+[gd_scene load_steps=6 format=3 uid="uid://cmb4d64jnojw2"]
 
 [ext_resource type="Texture2D" uid="uid://dwen5xltt24pl" path="res://assets/art/backgrounds/office.png" id="1_17l8b"]
 [ext_resource type="Script" uid="uid://dk8ygbdwkyyky" path="res://scenes/rooms/office_room.gd" id="1_xdoaq"]
@@ -9,6 +9,8 @@ size = Vector2(140, 154)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_xdoaq"]
 size = Vector2(488, 400)
 
+[sub_resource type="CanvasTexture" id="CanvasTexture_xdoaq"]
+
 [node name="OfficeRoom" type="Node2D"]
 script = ExtResource("1_xdoaq")
 
@@ -16,30 +18,43 @@ script = ExtResource("1_xdoaq")
 scale = Vector2(1.15, 1.15)
 texture = ExtResource("1_17l8b")
 centered = false
+metadata/_edit_lock_ = true
 
 [node name="LampArea" type="Area2D" parent="."]
+metadata/_edit_lock_ = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="LampArea"]
 position = Vector2(690, 551)
 shape = SubResource("RectangleShape2D_17l8b")
+metadata/_edit_lock_ = true
 
 [node name="WindowArea" type="Area2D" parent="."]
+metadata/_edit_lock_ = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="WindowArea"]
 position = Vector2(1020, 336)
 shape = SubResource("RectangleShape2D_xdoaq")
+metadata/_edit_lock_ = true
 
 [node name="ThoughtLabel" type="Label" parent="."]
 visible = false
-modulate = Color(0.047083605, 0.2114375, 0.70733285, 1)
-self_modulate = Color(0, 1, 1, 1)
+z_index = 1
 offset_left = 496.0
 offset_top = 768.0
 offset_right = 952.0
 offset_bottom = 868.0
 scale = Vector2(2, 2)
-text = "Quel journée de merde..."
+text = "Quelle journée de merde..."
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 3
 uppercase = true
+metadata/_edit_lock_ = true
+
+[node name="TextBox" type="Sprite2D" parent="ThoughtLabel"]
+modulate = Color(0.1584723, 0.15847233, 0.15847224, 0.88235295)
+z_index = -1
+position = Vector2(227.99998, 49.999985)
+scale = Vector2(455.99997, 100.000015)
+texture = SubResource("CanvasTexture_xdoaq")
+metadata/_edit_lock_ = true
