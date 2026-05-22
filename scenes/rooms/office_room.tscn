@@ -1,10 +1,13 @@
-[gd_scene load_steps=4 format=3 uid="uid://cmb4d64jnojw2"]
+[gd_scene load_steps=5 format=3 uid="uid://cmb4d64jnojw2"]
 
 [ext_resource type="Texture2D" uid="uid://dwen5xltt24pl" path="res://assets/art/backgrounds/office.png" id="1_17l8b"]
 [ext_resource type="Script" uid="uid://dk8ygbdwkyyky" path="res://scenes/rooms/office_room.gd" id="1_xdoaq"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_17l8b"]
-size = Vector2(150, 154)
+size = Vector2(140, 154)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_xdoaq"]
+size = Vector2(488, 400)
 
 [node name="OfficeRoom" type="Node2D"]
 script = ExtResource("1_xdoaq")
@@ -17,11 +20,19 @@ centered = false
 [node name="LampArea" type="Area2D" parent="."]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="LampArea"]
-position = Vector2(695, 551)
+position = Vector2(690, 551)
 shape = SubResource("RectangleShape2D_17l8b")
+
+[node name="WindowArea" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="WindowArea"]
+position = Vector2(1020, 336)
+shape = SubResource("RectangleShape2D_xdoaq")
 
 [node name="ThoughtLabel" type="Label" parent="."]
 visible = false
+modulate = Color(0.047083605, 0.2114375, 0.70733285, 1)
+self_modulate = Color(0, 1, 1, 1)
 offset_left = 496.0
 offset_top = 768.0
 offset_right = 952.0
