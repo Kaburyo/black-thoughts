@@ -1,13 +1,20 @@
-[gd_scene load_steps=6 format=3 uid="uid://cmb4d64jnojw2"]
+[gd_scene load_steps=9 format=3 uid="uid://cmb4d64jnojw2"]
 
 [ext_resource type="Texture2D" uid="uid://dwen5xltt24pl" path="res://assets/art/backgrounds/office.png" id="1_17l8b"]
 [ext_resource type="Script" uid="uid://dk8ygbdwkyyky" path="res://scenes/rooms/office_room.gd" id="1_xdoaq"]
+[ext_resource type="AudioStream" uid="uid://dqtmghg30m0pa" path="res://assets/audio/music/BLACKTHOUGHTS - OFFICE THEME.wav" id="3_74blg"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_17l8b"]
 size = Vector2(140, 154)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_xdoaq"]
 size = Vector2(488, 400)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_74blg"]
+size = Vector2(136, 408)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_t6pyg"]
+size = Vector2(173, 816)
 
 [sub_resource type="CanvasTexture" id="CanvasTexture_xdoaq"]
 
@@ -24,6 +31,7 @@ metadata/_edit_lock_ = true
 metadata/_edit_lock_ = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="LampArea"]
+visible = false
 position = Vector2(690, 551)
 shape = SubResource("RectangleShape2D_17l8b")
 metadata/_edit_lock_ = true
@@ -32,9 +40,26 @@ metadata/_edit_lock_ = true
 metadata/_edit_lock_ = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="WindowArea"]
+visible = false
 position = Vector2(1020, 336)
 shape = SubResource("RectangleShape2D_xdoaq")
 metadata/_edit_lock_ = true
+
+[node name="JacketArea" type="Area2D" parent="."]
+metadata/_edit_lock_ = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="JacketArea"]
+visible = false
+position = Vector2(1428, 420)
+shape = SubResource("RectangleShape2D_74blg")
+
+[node name="DoorArea" type="Area2D" parent="."]
+metadata/_edit_lock_ = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DoorArea"]
+visible = false
+position = Vector2(1817.5, 496)
+shape = SubResource("RectangleShape2D_t6pyg")
 
 [node name="ThoughtLabel" type="Label" parent="."]
 visible = false
@@ -58,3 +83,18 @@ position = Vector2(227.99998, 49.999985)
 scale = Vector2(455.99997, 100.000015)
 texture = SubResource("CanvasTexture_xdoaq")
 metadata/_edit_lock_ = true
+
+[node name="MusicPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("3_74blg")
+
+[node name="FadeOverlay" type="ColorRect" parent="."]
+modulate = Color(0, 0, 0, 0)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 1920.0
+offset_bottom = 1080.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 1)
