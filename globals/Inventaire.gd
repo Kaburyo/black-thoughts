@@ -3,12 +3,11 @@
 # Un autoload est chargé une seule fois et reste accessible depuis
 # TOUTES les scènes : c'est ce qui permet à l'inventaire de SURVIVRE
 # quand on change de Room.
-
 extends Node
 
 
 # Signal émis à chaque fois que l'inventaire change.
-# Plus tard, le menu d'inventaire s'y connectera pour se rafraîchir.
+# Le menu d'inventaire s'y connecte pour se rafraîchir.
 signal inventaire_modifie
 
 
@@ -33,3 +32,11 @@ func ajouter(id_objet: String) -> void:
 # Renvoie true si le joueur possède cet objet.
 func possede(id_objet: String) -> bool:
     return id_objet in objets
+
+
+# Renvoie la liste de TOUS les objets possédés.
+# Le guichet officiel pour lire l'inventaire de l'extérieur :
+# on passe par ici plutôt que de lire la variable directement,
+# pour que le reste du jeu ne dépende pas du rangement interne.
+func tout() -> Array[String]:
+    return objets.duplicate()

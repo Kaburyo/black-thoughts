@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="ObjetInventaire" load_steps=3 format=3 uid="uid://b2yuvh4auumqi"]
+
+[ext_resource type="Texture2D" uid="uid://cenkaen8bo451" path="res://assets/art/ui/item_keys.png" id="1_86ql6"]
+[ext_resource type="Script" uid="uid://i0mq24axp1k8" path="res://resources/objet_inventaire.gd" id="1_slkbk"]
+
+[resource]
+script = ExtResource("1_slkbk")
+nom_affiche = "Clés du Bureau"
+icone = ExtResource("1_86ql6")
+metadata/_custom_type_script = "uid://i0mq24axp1k8"

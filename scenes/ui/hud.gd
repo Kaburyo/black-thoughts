@@ -7,13 +7,14 @@
 #   - le menu se ferme aussi avec Échap.
 #   - le bouton "Inventaire" ouvre/ferme la vue inventaire (bascule).
 #   - l'inventaire GLISSE depuis la gauche pour entrer/sortir.
+#   - la grille d'inventaire affiche les objets possédés (icônes).
 #
 # Niveaux d'interface (du moins profond au plus profond) :
 #   menu fermé  ->  menu ouvert  ->  inventaire ouvert
 # Échap referme toujours le niveau le plus profond d'abord.
 #
-# À venir : contenu réel de l'inventaire (C3-b), 5 sprites du portrait,
-# masquage du portrait en dialogue/cinématique (chantier D).
+# À venir : nom de l'objet au survol (C3-b-3-γ), clic sur un objet
+# -> pensée d'Al' qui le décrit (C3-b-3-δ), 5 sprites du portrait.
 
 extends CanvasLayer
 
@@ -23,12 +24,18 @@ extends CanvasLayer
 @onready var menu_panel: Panel = $MenuPanel
 @onready var inventaire_bouton: Button = $MenuPanel/InventaireBouton
 @onready var inventaire_panel: Panel = $MenuPanel/InventairePanel
+@onready var grille_objets: GridContainer = $MenuPanel/InventairePanel/MargeInventaire/GrilleObjets
 
 
 # --- Réglages du glissement de l'inventaire ---
 const INVENTAIRE_X_OUVERT: float = 20.0     # bord gauche visible (position finale)
 const INVENTAIRE_X_CACHE: float = -850.0    # bord gauche hors écran (panneau sorti)
 const DUREE_GLISSEMENT: float = 0.25        # secondes que dure le glissement
+
+# --- Réglage de la grille d'objets ---
+# Taille (en pixels) d'une icône d'objet dans la grille.
+# Trop grand ou trop petit ? Change ce seul nombre.
+const TAILLE_ICONE: float = 128.0
 
 
 # --- État de l'interface ---
@@ -55,6 +62,13 @@ func _ready() -> void:
     # Branchements des clics.
     portrait.pressed.connect(_sur_clic_portrait)
     inventaire_bouton.pressed.connect(_sur_clic_inventaire)
+
+    # On se tient au courant des changements de l'inventaire :
+    # à chaque ajout d'objet, la grille se redessine toute seule.
+    Inventaire.inventaire_modifie.connect(_rafraichir_grille)
+
+    # Premier remplissage de la grille (objets déjà présents au lancement).
+    _rafraichir_grille()
 
 
 # --- Écoute du clavier ---
@@ -99,47 +113,62 @@ func fermer_menu() -> void:
 
 # --- La vue inventaire : ouverture/fermeture avec glissement ---
 func ouvrir_inventaire() -> void:
-    # Verrou : on ignore le clic si une animation est déjà en cours.
     if _inventaire_en_animation:
         return
-    # Déjà ouvert : rien à faire.
     if _inventaire_ouvert:
         return
-
     _inventaire_ouvert = true
     _glisser_inventaire(INVENTAIRE_X_OUVERT)
 
 
 func fermer_inventaire() -> void:
-    # Verrou : on ignore le clic si une animation est déjà en cours.
     if _inventaire_en_animation:
         return
-    # Déjà fermé : rien à faire.
     if not _inventaire_ouvert:
         return
-
     _inventaire_ouvert = false
     _glisser_inventaire(INVENTAIRE_X_CACHE)
 
 
 # --- Le glissement lui-même ---
-# Fait voyager le panneau jusqu'à la position x demandée.
 func _glisser_inventaire(x_cible: float) -> void:
-    # On lève le verrou : plus aucun clic ne sera pris pendant le voyage.
     _inventaire_en_animation = true
-
-    # Le panneau doit être visible pour qu'on voie le glissement
-    # (utile surtout à l'ouverture, où il part de l'état caché).
     inventaire_panel.visible = true
 
-    # Animation : on déplace le bord gauche du panneau jusqu'à la cible.
     var tween := create_tween()
     tween.tween_property(inventaire_panel, "offset_left", x_cible, DUREE_GLISSEMENT)
     await tween.finished
 
-    # Si on vient de fermer, le panneau est hors écran : on le cache vraiment.
     if not _inventaire_ouvert:
         inventaire_panel.visible = false
 
-    # Voyage terminé : on baisse le verrou.
     _inventaire_en_animation = false
+
+
+# --- Remplissage de la grille d'objets ---
+# Appelée au lancement, et à chaque fois que l'inventaire change.
+func _rafraichir_grille() -> void:
+    # 1. On vide la grille de son contenu précédent.
+    for ancienne_icone in grille_objets.get_children():
+        ancienne_icone.queue_free()
+
+    # 2. Pour chaque objet possédé, on crée une icône.
+    for id_objet in Inventaire.tout():
+        var fiche: ObjetInventaire = CatalogueObjets.fiche_de(id_objet)
+        # Sécurité : si l'objet n'est pas au catalogue, on le saute.
+        if fiche == null:
+            continue
+        grille_objets.add_child(_creer_icone(fiche))
+
+
+# Construit une icône d'objet (un TextureButton) à partir d'une fiche.
+func _creer_icone(fiche: ObjetInventaire) -> TextureButton:
+    var icone := TextureButton.new()
+    icone.texture_normal = fiche.icone
+
+    # Taille fixe : l'image est redimensionnée pour tenir dans la case.
+    icone.ignore_texture_size = true
+    icone.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
+    icone.custom_minimum_size = Vector2(TAILLE_ICONE, TAILLE_ICONE)
+
+    return icone

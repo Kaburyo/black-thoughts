@@ -128,14 +128,15 @@ vertical_alignment = 1
 autowrap_mode = 3
 metadata/_edit_lock_ = true
 
-[node name="TextBox2" type="Sprite2D" parent="ThoughtLabel"]
+[node name="TextBoxWhite" type="Sprite2D" parent="ThoughtLabel"]
 modulate = Color(1, 1, 1, 0.73333335)
 z_index = -1
-position = Vector2(228, 49.999985)
-scale = Vector2(456.99997, 100.99997)
+position = Vector2(228.25, 49.999985)
+scale = Vector2(457.49997, 100.99997)
 texture = SubResource("CanvasTexture_xdoaq")
+metadata/_edit_lock_ = true
 
-[node name="TextBox1" type="Sprite2D" parent="ThoughtLabel"]
+[node name="TextBoxBlack" type="Sprite2D" parent="ThoughtLabel"]
 modulate = Color(0, 0, 0, 0.8980392)
 z_index = -1
 position = Vector2(227.99998, 49.999985)

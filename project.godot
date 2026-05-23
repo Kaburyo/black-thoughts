@@ -18,6 +18,7 @@ config/icon="res://icon.svg"
 
 Inventaire="*res://globals/Inventaire.gd"
 Hud="*res://scenes/ui/hud.tscn"
+CatalogueObjets="*res://globals/catalogue_objets.gd"
 
 [display]
 
