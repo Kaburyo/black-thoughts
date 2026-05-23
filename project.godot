@@ -17,6 +17,7 @@ config/icon="res://icon.svg"
 [autoload]
 
 Inventaire="*res://globals/Inventaire.gd"
+Hud="*res://scenes/ui/hud.tscn"
 
 [display]
 

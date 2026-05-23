@@ -3,13 +3,13 @@
 [ext_resource type="Texture2D" uid="uid://dwen5xltt24pl" path="res://assets/art/backgrounds/office.png" id="1_17l8b"]
 [ext_resource type="Script" uid="uid://dk8ygbdwkyyky" path="res://scenes/rooms/office_room.gd" id="1_xdoaq"]
 [ext_resource type="AudioStream" uid="uid://dqtmghg30m0pa" path="res://assets/audio/music/BLACKTHOUGHTS - OFFICE THEME.wav" id="3_74blg"]
-[ext_resource type="FontFile" uid="uid://dvd00727ltn8n" path="res://assets/fonts/Amarante-Regular.ttf" id="3_t6pyg"]
+[ext_resource type="FontFile" uid="uid://c2l8hflopw2o5" path="res://assets/fonts/Caveat-Medium.ttf" id="3_t6pyg"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_17l8b"]
 size = Vector2(140, 154)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_xdoaq"]
-size = Vector2(488, 400)
+size = Vector2(494, 370)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_74blg"]
 size = Vector2(136, 408)
@@ -56,7 +56,7 @@ metadata/_edit_lock_ = true
 metadata/_edit_lock_ = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="WindowArea"]
-position = Vector2(1020, 336)
+position = Vector2(1017, 321)
 shape = SubResource("RectangleShape2D_xdoaq")
 metadata/_edit_lock_ = true
 
@@ -107,7 +107,6 @@ position = Vector2(421.25, 555)
 shape = SubResource("RectangleShape2D_8flyr")
 
 [node name="PickupSprite" type="Sprite2D" parent="."]
-visible = false
 position = Vector2(960, 540)
 scale = Vector2(2, 2)
 metadata/_edit_lock_ = true
@@ -120,22 +119,28 @@ offset_top = 768.0
 offset_right = 952.0
 offset_bottom = 868.0
 scale = Vector2(2, 2)
-theme_override_constants/outline_size = 2
+theme_override_constants/outline_size = 4
 theme_override_fonts/font = ExtResource("3_t6pyg")
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 25
 text = "Quelle journée de merde..."
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 3
 metadata/_edit_lock_ = true
 
-[node name="TextBox" type="Sprite2D" parent="ThoughtLabel"]
-modulate = Color(0.187702, 0.15869513, 0.00047264397, 0.88235295)
+[node name="TextBox2" type="Sprite2D" parent="ThoughtLabel"]
+modulate = Color(1, 1, 1, 0.73333335)
+z_index = -1
+position = Vector2(228, 49.999985)
+scale = Vector2(456.99997, 100.99997)
+texture = SubResource("CanvasTexture_xdoaq")
+
+[node name="TextBox1" type="Sprite2D" parent="ThoughtLabel"]
+modulate = Color(0, 0, 0, 0.8980392)
 z_index = -1
 position = Vector2(227.99998, 49.999985)
 scale = Vector2(455.99997, 100.000015)
 texture = SubResource("CanvasTexture_xdoaq")
-metadata/_edit_lock_ = true
 
 [node name="MusicPlayer" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("3_74blg")

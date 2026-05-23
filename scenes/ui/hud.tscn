@@ -1,0 +1,12 @@
+[gd_scene load_steps=2 format=3 uid="uid://b76ww7edgisy6"]
+
+[ext_resource type="Texture2D" uid="uid://ben5vivf2sxtt" path="res://assets/art/characters/al/al_normal.png" id="1_0mwgc"]
+
+[node name="Hud" type="CanvasLayer"]
+
+[node name="AlPortrait" type="Sprite2D" parent="."]
+position = Vector2(1710, 765)
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("1_0mwgc")
+centered = false
+flip_h = true

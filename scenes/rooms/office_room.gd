@@ -11,7 +11,7 @@ extends RoomBase
 
 
 # --- Textes de la porte ---
-const PORTE_VERROUILLEE: String = "Je ferais mieux de prendre\n mon manteau et mes CLES\n avant de partir."
+const PORTE_VERROUILLEE: String = "Je ferais mieux de prendre\n mon MANTEAU et mes CLES\n avant de partir."
 const PORTE_OUVERTE: String = "Bon, il est temps d'y aller.\n Cette enquête n'avancera pas toute seule."
 
 
