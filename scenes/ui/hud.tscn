@@ -1,12 +1,43 @@
-[gd_scene load_steps=2 format=3 uid="uid://b76ww7edgisy6"]
+[gd_scene load_steps=4 format=3 uid="uid://b76ww7edgisy6"]
 
 [ext_resource type="Texture2D" uid="uid://ben5vivf2sxtt" path="res://assets/art/characters/al/al_normal.png" id="1_0mwgc"]
+[ext_resource type="Script" uid="uid://u2n4g0sbmrd4" path="res://scenes/ui/hud.gd" id="1_bo48s"]
+[ext_resource type="FontFile" uid="uid://b41ruyxvyshkt" path="res://assets/fonts/PirataOne-Regular.ttf" id="1_hqnrr"]
 
 [node name="Hud" type="CanvasLayer"]
+script = ExtResource("1_bo48s")
 
-[node name="AlPortrait" type="Sprite2D" parent="."]
-position = Vector2(1710, 765)
+[node name="MenuPanel" type="Panel" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MenuTitre" type="Label" parent="MenuPanel"]
+layout_mode = 0
+offset_left = 850.0
+offset_top = 8.0
+offset_right = 1123.0
+offset_bottom = 119.0
+theme_override_fonts/font = ExtResource("1_hqnrr")
+theme_override_font_sizes/font_size = 86
+text = "MENU"
+horizontal_alignment = 1
+
+[node name="AlPortrait" type="TextureButton" parent="."]
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -207.0
+offset_top = -307.0
+offset_right = 817.0
+offset_bottom = 1229.0
+grow_horizontal = 0
+grow_vertical = 0
 scale = Vector2(0.2, 0.2)
-texture = ExtResource("1_0mwgc")
-centered = false
+texture_normal = ExtResource("1_0mwgc")
+ignore_texture_size = true
 flip_h = true
