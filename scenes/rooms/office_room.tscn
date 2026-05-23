@@ -1,8 +1,9 @@
-[gd_scene load_steps=9 format=3 uid="uid://cmb4d64jnojw2"]
+[gd_scene load_steps=15 format=3 uid="uid://cmb4d64jnojw2"]
 
 [ext_resource type="Texture2D" uid="uid://dwen5xltt24pl" path="res://assets/art/backgrounds/office.png" id="1_17l8b"]
 [ext_resource type="Script" uid="uid://dk8ygbdwkyyky" path="res://scenes/rooms/office_room.gd" id="1_xdoaq"]
 [ext_resource type="AudioStream" uid="uid://dqtmghg30m0pa" path="res://assets/audio/music/BLACKTHOUGHTS - OFFICE THEME.wav" id="3_74blg"]
+[ext_resource type="FontFile" uid="uid://dvd00727ltn8n" path="res://assets/fonts/Amarante-Regular.ttf" id="3_t6pyg"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_17l8b"]
 size = Vector2(140, 154)
@@ -15,6 +16,21 @@ size = Vector2(136, 408)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_t6pyg"]
 size = Vector2(173, 816)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ce6de"]
+size = Vector2(99, 143)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_6dkxl"]
+size = Vector2(165, 276.5)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1sauu"]
+size = Vector2(65.75, 33.5)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_asqm3"]
+size = Vector2(188, 541)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_8flyr"]
+size = Vector2(253.5, 480)
 
 [sub_resource type="CanvasTexture" id="CanvasTexture_xdoaq"]
 
@@ -31,7 +47,6 @@ metadata/_edit_lock_ = true
 metadata/_edit_lock_ = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="LampArea"]
-visible = false
 position = Vector2(690, 551)
 shape = SubResource("RectangleShape2D_17l8b")
 metadata/_edit_lock_ = true
@@ -40,7 +55,6 @@ metadata/_edit_lock_ = true
 metadata/_edit_lock_ = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="WindowArea"]
-visible = false
 position = Vector2(1020, 336)
 shape = SubResource("RectangleShape2D_xdoaq")
 metadata/_edit_lock_ = true
@@ -49,7 +63,6 @@ metadata/_edit_lock_ = true
 metadata/_edit_lock_ = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="JacketArea"]
-visible = false
 position = Vector2(1428, 420)
 shape = SubResource("RectangleShape2D_74blg")
 
@@ -57,9 +70,36 @@ shape = SubResource("RectangleShape2D_74blg")
 metadata/_edit_lock_ = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="DoorArea"]
-visible = false
 position = Vector2(1817.5, 496)
 shape = SubResource("RectangleShape2D_t6pyg")
+
+[node name="AlcoolArea" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AlcoolArea"]
+position = Vector2(214.5, 549.5)
+shape = SubResource("RectangleShape2D_ce6de")
+
+[node name="PaintingArea" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PaintingArea"]
+position = Vector2(135.5, 238.25)
+shape = SubResource("RectangleShape2D_6dkxl")
+
+[node name="CigaretteArea" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CigaretteArea"]
+position = Vector2(1157, 609)
+shape = SubResource("RectangleShape2D_1sauu")
+
+[node name="FilesArea" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="FilesArea"]
+position = Vector2(1607, 550)
+shape = SubResource("RectangleShape2D_asqm3")
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="FilesArea"]
+position = Vector2(421.25, 555)
+shape = SubResource("RectangleShape2D_8flyr")
 
 [node name="ThoughtLabel" type="Label" parent="."]
 visible = false
@@ -69,15 +109,17 @@ offset_top = 768.0
 offset_right = 952.0
 offset_bottom = 868.0
 scale = Vector2(2, 2)
+theme_override_constants/outline_size = 2
+theme_override_fonts/font = ExtResource("3_t6pyg")
+theme_override_font_sizes/font_size = 18
 text = "Quelle journée de merde..."
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 3
-uppercase = true
 metadata/_edit_lock_ = true
 
 [node name="TextBox" type="Sprite2D" parent="ThoughtLabel"]
-modulate = Color(0.1584723, 0.15847233, 0.15847224, 0.88235295)
+modulate = Color(0.187702, 0.15869513, 0.00047264397, 0.88235295)
 z_index = -1
 position = Vector2(227.99998, 49.999985)
 scale = Vector2(455.99997, 100.000015)
@@ -98,3 +140,4 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 color = Color(0, 0, 0, 1)
+metadata/_edit_lock_ = true

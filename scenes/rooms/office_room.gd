@@ -25,11 +25,15 @@ var _manteau_vu: bool = false
 const PENSEES: Dictionary = {
     "LampArea": "Cette lampe a vu plus de nuits blanches que moi.",
     "WindowArea": "Temps de merde, pour une ville de merde...",
-    "JacketArea" : "Je devrais pensé à me racheter un meilleur imper'."
+    "JacketArea" : "Je devrais vraiment penser \n à me racheter un nouveau imper'.",
+    "AlcoolArea" : "Ce n'est pas raisonnable durant une enquête...",
+    "PaintingArea" : "Je me souviens même pas avoir acheter ce truc.",
+    "CigaretteArea" : "Pas maintenent, mais on sait jamais pour plus tard.",
+    "FilesArea" : "Encore tellement de PAPRASSES à règler.\n Si il y a bien quelque chose que je déteste,\n C'est ça !",
 }
 #Constante pour dévérouiller la porte
-const PORTE_VERROUILLEE: String = "Avec cette pluie, mieux vaut prendre mon manteau avant de partir."
-const PORTE_OUVERTE: String = "Bon, il est temps d'y aller. Cette enquete n'avancera pas toute seule."
+const PORTE_VERROUILLEE: String = "Je ferais mieux de prendre mon MANTEAU et mes CLES \n avant de partir."
+const PORTE_OUVERTE: String = "Bon, il est temps d'y aller.\n Cette enquete n'avancera pas toute seule."
 
 # Appelée automatiquement une fois, au lancement de la scène.
 func _ready() -> void:
