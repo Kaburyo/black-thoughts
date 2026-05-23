@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://ben5vivf2sxtt"
-path="res://.godot/imported/Al'_Normal.png-56bde9204da8f50a5bec9842b3bba87d.ctex"
+path="res://.godot/imported/al_normal.png-9423826d2b54a4f33d3cec26c7a19998.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/art/characters/Al'/Al'_Normal.png"
-dest_files=["res://.godot/imported/Al'_Normal.png-56bde9204da8f50a5bec9842b3bba87d.ctex"]
+source_file="res://assets/art/characters/al/al_normal.png"
+dest_files=["res://.godot/imported/al_normal.png-9423826d2b54a4f33d3cec26c7a19998.ctex"]
 
 [params]
 

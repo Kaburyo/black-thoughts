@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://s3ama4twucjx"
-path="res://.godot/imported/Al'_shock.png-f24a1e4a3dbaa0c34abca1b2dfb21ec3.ctex"
+uid="uid://cyov3y056h3qr"
+path="res://.godot/imported/al_test.png-2f8773e4aaef49cc636b96756b12fd43.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/art/characters/Al'/Al'_shock.png"
-dest_files=["res://.godot/imported/Al'_shock.png-f24a1e4a3dbaa0c34abca1b2dfb21ec3.ctex"]
+source_file="res://assets/art/characters/al/al_test.png"
+dest_files=["res://.godot/imported/al_test.png-2f8773e4aaef49cc636b96756b12fd43.ctex"]
 
 [params]
 

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://chch5uxsniuv4"
-path="res://.godot/imported/Al'_Smile.png-14b45dda5d4951f97eba44bd4e950cf9.ctex"
+uid="uid://cysj80r1f7fbp"
+path="res://.godot/imported/al_look_up.png-2ff1600544fcc941252078ac3d8dd1c9.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/art/characters/Al'/Al'_Smile.png"
-dest_files=["res://.godot/imported/Al'_Smile.png-14b45dda5d4951f97eba44bd4e950cf9.ctex"]
+source_file="res://assets/art/characters/al/al_look_up.png"
+dest_files=["res://.godot/imported/al_look_up.png-2ff1600544fcc941252078ac3d8dd1c9.ctex"]
 
 [params]
 

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b578ihoy2x3b8"
-path="res://.godot/imported/Al'_LifeState.png-28f3dce299d95e5911e6d40421a13caf.ctex"
+uid="uid://opu4yrcft2i6"
+path="res://.godot/imported/picture_luna_flora.png-0bb02c81464bee10659f19c5581223b8.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/art/characters/Al'/Al'_LifeState.png"
-dest_files=["res://.godot/imported/Al'_LifeState.png-28f3dce299d95e5911e6d40421a13caf.ctex"]
+source_file="res://assets/art/characters/Picture/picture_luna_flora.png"
+dest_files=["res://.godot/imported/picture_luna_flora.png-0bb02c81464bee10659f19c5581223b8.ctex"]
 
 [params]
 

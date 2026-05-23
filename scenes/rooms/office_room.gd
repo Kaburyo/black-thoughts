@@ -1,138 +1,50 @@
 # office_room.gd
 # Pièce "Bureau d'Al'".
-# Trois familles d'objets :
-#   - EXAMINABLES  : un clic = une pensée.
-#   - RAMASSABLES  : un clic = pensée + sprite affiché + objet rangé en inventaire.
-#   - LA PORTE     : objet à comportement (s'ouvre si Al' possède les clés).
+#
+# Ce script est très court : toute la MÉCANIQUE (examiner, ramasser,
+# voix intérieure, verrou, sortie de pièce) vit dans le moule room_base.gd.
+# Ici, on ne déclare que ce qui est PROPRE au bureau :
+#   - le contenu des pensées et des objets ramassables
+#   - la porte (objet à comportement spécifique à cette pièce)
 
-extends Node2D
-
-
-# --- Références aux nœuds ---
-@onready var thought_label: Label = $ThoughtLabel
-@onready var music_player: AudioStreamPlayer = $MusicPlayer
-@onready var fade_overlay: ColorRect = $FadeOverlay
-@onready var pickup_sprite: Sprite2D = $PickupSprite
-
-
-# --- Réglages de l'animation du texte ---
-const VITESSE_LETTRE: float = 0.03   # secondes entre deux lettres
-const DUREE_LECTURE: float = 4.0     # secondes d'affichage une fois écrit
-const DUREE_FONDU: float = 0.7       # secondes que dure la disparition
-
-# Échelle d'affichage du sprite d'objet ramassé (image 1024px -> ~300px).
-const ECHELLE_PICKUP: float = 0.3
-
-
-# --- Jeton de l'animation en cours ---
-# Chaque nouvel affichage crée un jeton neuf ; une animation qui voit
-# que le jeton a changé comprend qu'elle est périmée et s'arrête.
-var _animation_active: int = 0
-
-# --- Verrou des interactions ---
-# Quand true, tous les clics sont ignorés (utilisé pendant une
-# transition comme la sortie de pièce).
-var _interactions_bloquees: bool = false
-
-
-# --- Les objets EXAMINABLES ---
-# Clé = nom du nœud Area2D. Valeur = pensée affichée au clic.
-const PENSEES: Dictionary = {
-    "LampArea": "Cette lampe a vu plus de nuits blanches que moi.",
-    "WindowArea": "Temps de merde, pour une ville de merde...",
-    "AlcoolArea": "Ce n'est pas raisonnable durant une enquête...",
-    "PaintingArea": "Je me souviens même pas avoir acheté ce truc.",
-    "FilesArea": "Encore tellement de paperasse à régler.\n Si il y a bien quelque chose que je déteste,\n c'est la PAPERASSE !",
-}
-
-
-# --- Les objets RAMASSABLES ---
-# Pour chaque zone : la pensée, l'id pour l'inventaire, le sprite à montrer.
-const OBJETS_RAMASSABLES: Dictionary = {
-    "JacketArea": {
-        "pensee": "Mon manteau. Les CLES du bureau sont\n toujours dans la poche.",
-        "id": "cles",
-        "sprite": "res://assets/art/ui/item_keys.png",
-    },
-    "AshtrayArea": {
-        "pensee": "Mon paquet. Une mauvaise habitude\n de plus à traîner.",
-        "id": "cigarettes",
-        "sprite": "res://assets/art/ui/item_cigarettes.png",
-    },
-}
+extends RoomBase
 
 
 # --- Textes de la porte ---
-const PORTE_VERROUILLEE: String = "Je ferais mieux de prendre mes CLES\n avant de partir."
+const PORTE_VERROUILLEE: String = "Je ferais mieux de prendre\n mon manteau et mes CLES\n avant de partir."
 const PORTE_OUVERTE: String = "Bon, il est temps d'y aller.\n Cette enquête n'avancera pas toute seule."
 
 
-# Appelée automatiquement une fois, au lancement de la scène.
-func _ready() -> void:
-    # Branchement des objets examinables.
-    for nom_zone in PENSEES:
-        var zone := get_node(nom_zone) as Area2D
-        var texte: String = PENSEES[nom_zone]
-        zone.input_event.connect(_sur_clic.bind(texte))
+# --- Contenu propre au bureau ---
+# Appelée par le moule (room_base.gd) au tout début de _ready().
+# On remplit ici les données de la pièce et on branche la porte.
+func _definir_contenu() -> void:
+    # Les objets EXAMINABLES : clé = nom du nœud Area2D, valeur = pensée.
+    pensees = {
+        "LampArea": "Cette lampe a vu plus de nuits blanches que moi.",
+        "WindowArea": "Temps de merde, pour une ville de merde...",
+        "AlcoolArea": "Ce n'est pas raisonnable durant une enquête...",
+        "PaintingArea": "Je me souviens même pas avoir acheté ce truc.",
+        "FilesArea": "Encore tellement de paperasse à régler.\n Si il y a bien quelque chose que je déteste,\n c'est la PAPERASSE !",
+    }
 
-    # Branchement des objets ramassables.
-    for nom_zone in OBJETS_RAMASSABLES:
-        var zone := get_node(nom_zone) as Area2D
-        var donnees: Dictionary = OBJETS_RAMASSABLES[nom_zone]
-        zone.input_event.connect(_sur_clic_ramassable.bind(nom_zone, donnees))
+    # Les objets RAMASSABLES : pour chaque zone, la pensée, l'id
+    # d'inventaire et le sprite à montrer.
+    objets_ramassables = {
+        "JacketArea": {
+            "pensee": "Mon manteau. Les CLES du bureau sont\n toujours dans la poche.",
+            "id": "cles",
+            "sprite": "res://assets/art/ui/item_keys.png",
+        },
+        "AshtrayArea": {
+            "pensee": "Mon paquet. Une mauvaise habitude\n de plus à traîner.",
+            "id": "cigarettes",
+            "sprite": "res://assets/art/ui/item_cigarettes.png",
+        },
+    }
 
     # La porte a son propre branchement (objet à comportement).
     $DoorArea.input_event.connect(_sur_clic_porte)
-
-    # Lancement de la musique d'ambiance.
-    music_player.play()
-
-
-# --- EXAMINER ---
-# Appelée quand une zone de PENSEES reçoit un événement souris.
-func _sur_clic(_viewport: Node, event: InputEvent, _shape_idx: int, texte: String) -> void:
-    if _interactions_bloquees:
-        return
-    if event is InputEventMouseButton:
-        if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
-            afficher_pensee(texte)
-
-
-# --- RAMASSER ---
-# Appelée quand on clique un objet ramassable.
-func _sur_clic_ramassable(_viewport: Node, event: InputEvent, _shape_idx: int,
-        nom_zone: String, donnees: Dictionary) -> void:
-    if _interactions_bloquees:
-        return
-    if not (event is InputEventMouseButton):
-        return
-    if not (event.button_index == MOUSE_BUTTON_LEFT and event.pressed):
-        return
-
-    # Déjà ramassé ? On ne fait rien.
-    if Inventaire.possede(donnees["id"]):
-        return
-
-    ramasser(nom_zone, donnees)
-
-
-# Séquence de ramassage : pensée + sprite affiché, puis rangement.
-func ramasser(nom_zone: String, donnees: Dictionary) -> void:
-    # 1. On affiche le sprite de l'objet au centre.
-    pickup_sprite.texture = load(donnees["sprite"])
-    pickup_sprite.scale = Vector2(ECHELLE_PICKUP, ECHELLE_PICKUP)
-    pickup_sprite.visible = true
-
-    # 2. On affiche la pensée et on attend la fin complète de l'animation.
-    await afficher_pensee_finie(donnees["pensee"])
-
-    # 3. Le texte est fini : on range l'objet et on cache le sprite.
-    pickup_sprite.visible = false
-    Inventaire.ajouter(donnees["id"])
-
-    # 4. La zone a fait son travail : on la désactive pour de bon.
-    var zone := get_node(nom_zone) as Area2D
-    zone.input_pickable = false
 
 
 # --- LA PORTE ---
@@ -148,72 +60,3 @@ func _sur_clic_porte(_viewport: Node, event: InputEvent, _shape_idx: int) -> voi
                 _quitter_la_piece()
             else:
                 afficher_pensee(PORTE_VERROUILLEE)
-
-
-# --- AFFICHAGE DES PENSÉES ---
-# Écriture lettre par lettre, pause, puis fondu.
-# Un nouvel appel rend tout appel précédent "périmé" : il s'arrête de lui-même.
-func afficher_pensee(texte: String) -> void:
-    _animation_active += 1
-    var mon_jeton: int = _animation_active
-
-    # Préparation : Label vide, visible et opaque.
-    thought_label.text = texte
-    thought_label.visible_ratio = 0.0
-    thought_label.modulate.a = 1.0
-    thought_label.visible = true
-
-    # Écriture lettre par lettre.
-    var nb_lettres: int = texte.length()
-    for i in range(nb_lettres):
-        thought_label.visible_ratio = float(i + 1) / float(nb_lettres)
-        await get_tree().create_timer(VITESSE_LETTRE).timeout
-        if mon_jeton != _animation_active:
-            return
-
-    # Pause de lecture.
-    await get_tree().create_timer(DUREE_LECTURE).timeout
-    if mon_jeton != _animation_active:
-        return
-
-    # Fondu de disparition.
-    var tween := create_tween()
-    tween.tween_property(thought_label, "modulate:a", 0.0, DUREE_FONDU)
-    await tween.finished
-    if mon_jeton != _animation_active:
-        return
-
-    # Nettoyage final.
-    thought_label.visible = false
-
-
-# Variante de afficher_pensee qui ATTEND la fin complète de l'animation.
-# Utile pour enchaîner une action après le fondu (ex. ranger un objet).
-func afficher_pensee_finie(texte: String) -> void:
-    afficher_pensee(texte)
-    var duree_ecriture: float = texte.length() * VITESSE_LETTRE
-    await get_tree().create_timer(
-        duree_ecriture + DUREE_LECTURE + DUREE_FONDU).timeout
-
-
-# --- SORTIE DE PIÈCE ---
-# Fondu au noir + fondu de la musique en parallèle, puis changement de pièce.
-func _quitter_la_piece() -> void:
-    # On verrouille les interactions : plus aucun clic ne sera pris en compte.
-    _interactions_bloquees = true
-
-    # On attend : le temps qu'Al' "dise" sa phrase de départ.
-    await get_tree().create_timer(DUREE_LECTURE).timeout
-
-    # Un seul Tween en parallèle : les deux fondus jouent EN MÊME TEMPS.
-    var tween := create_tween()
-    tween.set_parallel(true)
-    tween.tween_property(fade_overlay, "modulate:a", 1.0, DUREE_FONDU)
-    tween.tween_property(music_player, "volume_db", -60.0, DUREE_FONDU)
-    await tween.finished
-
-    # La musique est inaudible : on l'arrête vraiment.
-    music_player.stop()
-
-    # Point de rendez-vous : ici viendra le vrai changement de Room.
-    print("-> Changement de Room (a venir)")

@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://isfcs0uqkjck"
-path="res://.godot/imported/Al'_Angry.png-6b57461555a6a0f886a31477acc35a3d.ctex"
+path="res://.godot/imported/al_angry.png-6c6d3d025fa64bc211602ea3f938fef7.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/art/characters/Al'/Al'_Angry.png"
-dest_files=["res://.godot/imported/Al'_Angry.png-6b57461555a6a0f886a31477acc35a3d.ctex"]
+source_file="res://assets/art/characters/al/al_angry.png"
+dest_files=["res://.godot/imported/al_angry.png-6c6d3d025fa64bc211602ea3f938fef7.ctex"]
 
 [params]
 
