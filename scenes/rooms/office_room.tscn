@@ -36,6 +36,7 @@ size = Vector2(253.5, 480)
 
 [node name="OfficeRoom" type="Node2D"]
 script = ExtResource("1_xdoaq")
+metadata/_edit_lock_ = true
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 scale = Vector2(1.15, 1.15)
@@ -74,24 +75,28 @@ position = Vector2(1817.5, 496)
 shape = SubResource("RectangleShape2D_t6pyg")
 
 [node name="AlcoolArea" type="Area2D" parent="."]
+metadata/_edit_lock_ = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="AlcoolArea"]
 position = Vector2(214.5, 549.5)
 shape = SubResource("RectangleShape2D_ce6de")
 
 [node name="PaintingArea" type="Area2D" parent="."]
+metadata/_edit_lock_ = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="PaintingArea"]
 position = Vector2(135.5, 238.25)
 shape = SubResource("RectangleShape2D_6dkxl")
 
-[node name="CigaretteArea" type="Area2D" parent="."]
+[node name="AshtrayArea" type="Area2D" parent="."]
+metadata/_edit_lock_ = true
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="CigaretteArea"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AshtrayArea"]
 position = Vector2(1157, 609)
 shape = SubResource("RectangleShape2D_1sauu")
 
 [node name="FilesArea" type="Area2D" parent="."]
+metadata/_edit_lock_ = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="FilesArea"]
 position = Vector2(1607, 550)
@@ -101,8 +106,13 @@ shape = SubResource("RectangleShape2D_asqm3")
 position = Vector2(421.25, 555)
 shape = SubResource("RectangleShape2D_8flyr")
 
-[node name="ThoughtLabel" type="Label" parent="."]
+[node name="PickupSprite" type="Sprite2D" parent="."]
 visible = false
+position = Vector2(960, 540)
+scale = Vector2(2, 2)
+metadata/_edit_lock_ = true
+
+[node name="ThoughtLabel" type="Label" parent="."]
 z_index = 1
 offset_left = 496.0
 offset_top = 768.0
