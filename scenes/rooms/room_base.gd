@@ -82,6 +82,7 @@ func _ready() -> void:
     music_player.play()
 
 
+
 # --- EXAMINER ---
 # Appelée quand une zone de "pensees" reçoit un événement souris.
 func _sur_clic(_viewport: Node, event: InputEvent, _shape_idx: int, texte: String) -> void:

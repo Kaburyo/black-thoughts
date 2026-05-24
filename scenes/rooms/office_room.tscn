@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://cmb4d64jnojw2"]
+[gd_scene load_steps=14 format=3 uid="uid://cmb4d64jnojw2"]
 
 [ext_resource type="Texture2D" uid="uid://dwen5xltt24pl" path="res://assets/art/backgrounds/office.png" id="1_17l8b"]
 [ext_resource type="Script" uid="uid://dk8ygbdwkyyky" path="res://scenes/rooms/office_room.gd" id="1_xdoaq"]
@@ -30,6 +30,9 @@ size = Vector2(188, 541)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_8flyr"]
 size = Vector2(253.5, 480)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_kkjlo"]
+size = Vector2(176, 91)
 
 [node name="OfficeRoom" type="Node2D"]
 script = ExtResource("1_xdoaq")
@@ -102,6 +105,13 @@ shape = SubResource("RectangleShape2D_asqm3")
 [node name="CollisionShape2D2" type="CollisionShape2D" parent="FilesArea"]
 position = Vector2(421.25, 555)
 shape = SubResource("RectangleShape2D_8flyr")
+
+[node name="ChairArea" type="Area2D" parent="."]
+metadata/_edit_lock_ = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ChairArea"]
+position = Vector2(899, 557.5)
+shape = SubResource("RectangleShape2D_kkjlo")
 
 [node name="PickupSprite" type="Sprite2D" parent="."]
 position = Vector2(960, 540)

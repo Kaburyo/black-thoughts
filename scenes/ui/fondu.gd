@@ -48,3 +48,5 @@ func fondu_depuis_noir(duree: float = DUREE_FONDU) -> void:
     var tween := create_tween()
     tween.tween_property(voile, "modulate:a", 0.0, duree)
     await tween.finished
+
+    print("-> J'ai fait un Fade In <-")

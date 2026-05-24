@@ -27,6 +27,7 @@ func _definir_contenu() -> void:
         "AlcoolArea": "Ce n'est pas raisonnable durant une enquête...",
         "PaintingArea": "Je me souviens même pas avoir acheté ce truc.",
         "FilesArea": "Si il y a bien quelque chose que je déteste,\n c'est la PAPERASSE !",
+        "ChairArea": "J'ai plus dormi sur cette chaise\n que dans mon lit...",
     }
 
     # Les objets RAMASSABLES : pour chaque zone, la pensée, l'id
