@@ -22,6 +22,7 @@ CatalogueObjets="*res://globals/catalogue_objets.gd"
 Voix="*res://scenes/ui/VoixInterieure.tscn"
 Fondu="*res://scenes/ui/fondu.tscn"
 SanteMentale="*res://globals/sante_mentale.gd"
+Vie="*res://globals/vie.gd"
 
 [display]
 
