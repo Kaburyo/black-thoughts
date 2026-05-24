@@ -1,0 +1,31 @@
+[gd_scene load_steps=3 format=3 uid="uid://decjji6j8kiqr"]
+
+[ext_resource type="FontFile" uid="uid://c2l8hflopw2o5" path="res://assets/fonts/Caveat-Medium.ttf" id="1_dcycs"]
+[ext_resource type="Script" uid="uid://b7scbha42de6i" path="res://scenes/ui/voix_interieure.gd" id="1_igl0g"]
+
+[node name="VoixInterieure" type="CanvasLayer"]
+layer = 10
+script = ExtResource("1_igl0g")
+
+[node name="TextBox" type="ColorRect" parent="."]
+anchors_preset = -1
+offset_left = 460.0
+offset_top = 800.0
+offset_right = 1460.0
+offset_bottom = 1000.0
+mouse_filter = 2
+color = Color(0.061696764, 0.061696764, 0.061696764, 0.87058824)
+
+[node name="ThoughtLabel" type="Label" parent="TextBox"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("1_dcycs")
+theme_override_font_sizes/font_size = 50
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2

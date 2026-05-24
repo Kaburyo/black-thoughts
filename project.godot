@@ -19,6 +19,8 @@ config/icon="res://icon.svg"
 Inventaire="*res://globals/Inventaire.gd"
 Hud="*res://scenes/ui/hud.tscn"
 CatalogueObjets="*res://globals/catalogue_objets.gd"
+Voix="*res://scenes/ui/VoixInterieure.tscn"
+Fondu="*res://scenes/ui/fondu.tscn"
 
 [display]
 
@@ -27,6 +29,10 @@ window/size/viewport_height=1080
 window/size/window_width_override=1280
 window/size/window_height_override=720
 window/stretch/mode="canvas_items"
+
+[gui]
+
+timers/tooltip_delay_sec=0.25
 
 [rendering]
 

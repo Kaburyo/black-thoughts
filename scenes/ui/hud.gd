@@ -8,13 +8,14 @@
 #   - le bouton "Inventaire" ouvre/ferme la vue inventaire (bascule).
 #   - l'inventaire GLISSE depuis la gauche pour entrer/sortir.
 #   - la grille d'inventaire affiche les objets possédés (icônes).
+#   - le nom d'un objet s'affiche au survol de son icône.
+#   - cliquer une icône déclenche une pensée d'Al' qui décrit l'objet.
 #
 # Niveaux d'interface (du moins profond au plus profond) :
 #   menu fermé  ->  menu ouvert  ->  inventaire ouvert
 # Échap referme toujours le niveau le plus profond d'abord.
 #
-# À venir : nom de l'objet au survol (C3-b-3-γ), clic sur un objet
-# -> pensée d'Al' qui le décrit (C3-b-3-δ), 5 sprites du portrait.
+# À venir : 5 sprites du portrait selon l'état d'Al'.
 
 extends CanvasLayer
 
@@ -171,4 +172,18 @@ func _creer_icone(fiche: ObjetInventaire) -> TextureButton:
     icone.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
     icone.custom_minimum_size = Vector2(TAILLE_ICONE, TAILLE_ICONE)
 
+    # Nom de l'objet affiché au survol (infobulle native de Godot).
+    icone.tooltip_text = fiche.nom_affiche
+
+    # Clic sur l'icône -> pensée d'Al' qui décrit l'objet.
+    # .bind(fiche) "accroche" la fiche cliquée : elle revient en
+    # argument de _sur_clic_objet quand le clic arrive.
+    icone.pressed.connect(_sur_clic_objet.bind(fiche))
+
     return icone
+
+
+# --- Clic sur un objet du carnet ---
+# Al' pense la description de l'objet (sa voix intérieure).
+func _sur_clic_objet(fiche: ObjetInventaire) -> void:
+    Voix.afficher_pensee(fiche.description)

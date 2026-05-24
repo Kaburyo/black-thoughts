@@ -2,14 +2,15 @@
 # LE MODÈLE d'une fiche d'objet d'inventaire.
 #
 # Ce script ne décrit AUCUN objet précis. Il dit seulement quelles
-# informations une fiche d'objet contient : un nom, une image.
+# informations une fiche d'objet contient : un nom, une image, une
+# description.
 #
 # Chaque objet réel du jeu (les clés, les cigarettes...) sera un
 # fichier .tres séparé, créé à partir de ce modèle, avec ses cases
-# remplies. Ces .tres vivront aussi dans resources/.
+# remplies. Ces .tres vivent dans resources/.
 #
-# "class_name" donne un nom à ce modèle : il apparaîtra ensuite dans
-# le menu "Create Resource" de Godot, comme un type d'objet à part entière.
+# "class_name" donne un nom à ce modèle : il apparaît dans le menu
+# "Create Resource" de Godot, comme un type d'objet à part entière.
 
 class_name ObjetInventaire
 extends Resource
@@ -24,3 +25,9 @@ extends Resource
 
 # L'image de l'objet, montrée dans l'inventaire.
 @export var icone: Texture2D = null
+
+# La pensée d'Al' quand le joueur clique l'objet dans le carnet.
+# C'est sa voix intérieure : ton cynique, à la première personne.
+# multiline = la case d'édition sera une vraie zone de texte (pratique
+# pour les phrases longues et les retours à la ligne).
+@export_multiline var description: String = ""

@@ -7,4 +7,7 @@
 script = ExtResource("1_632cs")
 nom_affiche = "Paquet de Clop"
 icone = ExtResource("1_uueq5")
+description = "Mon paquet de clop.
+Le docteur dit que ça me tuera.
+Il faudra qu'il fasse la queue."
 metadata/_custom_type_script = "uid://i0mq24axp1k8"

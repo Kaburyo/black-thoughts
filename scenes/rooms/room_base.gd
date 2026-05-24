@@ -1,11 +1,16 @@
 # room_base.gd
 # LE MOULE des pièces point-and-click.
 # Contient toute la mécanique COMMUNE à chaque pièce :
-#   - la voix intérieure d'Al' (afficher une pensée)
 #   - EXAMINER (un clic = une pensée)
 #   - RAMASSER (un clic = pensée + sprite + rangement en inventaire)
 #   - le verrou des interactions
 #   - la sortie de pièce (fondu au noir + fondu musique)
+#
+# La voix intérieure d'Al' (la boîte de texte) NE vit plus ici :
+# c'est le service autonome "Voix" (autoload).
+# Le fondu au noir de l'écran NON plus : c'est le service "Fondu".
+# Les pièces les appellent simplement par Voix.afficher_pensee("...")
+# et Fondu.fondu_au_noir().
 #
 # Une pièce concrète (office_room.gd, plus tard luna_room.gd...) fait
 # "extends RoomBase" et hérite GRATUITEMENT de tout ça.
@@ -17,25 +22,21 @@ extends Node2D
 
 # --- Références aux nœuds ---
 # Ces nœuds doivent exister, avec ces noms exacts, dans CHAQUE pièce.
-@onready var thought_label: Label = $ThoughtLabel
 @onready var music_player: AudioStreamPlayer = $MusicPlayer
-@onready var fade_overlay: ColorRect = $FadeOverlay
 @onready var pickup_sprite: Sprite2D = $PickupSprite
 
 
-# --- Réglages de l'animation du texte ---
-const VITESSE_LETTRE: float = 0.03   # secondes entre deux lettres
-const DUREE_LECTURE: float = 4.0     # secondes d'affichage une fois écrit
-const DUREE_FONDU: float = 0.7       # secondes que dure la disparition
+# --- Réglages ---
+# Durée d'affichage d'une pensée (sert ici à attendre avant de quitter
+# la pièce). Doit rester cohérent avec le DUREE_LECTURE du service Voix.
+const DUREE_LECTURE: float = 4.0
+
+# Durée du fondu de la musique en sortie de pièce.
+const DUREE_FONDU: float = 0.7
 
 # Échelle d'affichage du sprite d'objet ramassé (image 1024px -> ~300px).
 const ECHELLE_PICKUP: float = 0.3
 
-
-# --- Jeton de l'animation en cours ---
-# Chaque nouvel affichage crée un jeton neuf ; une animation qui voit
-# que le jeton a changé comprend qu'elle est périmée et s'arrête.
-var _animation_active: int = 0
 
 # --- Verrou des interactions ---
 # Quand true, tous les clics sont ignorés (utilisé pendant une
@@ -88,7 +89,7 @@ func _sur_clic(_viewport: Node, event: InputEvent, _shape_idx: int, texte: Strin
         return
     if event is InputEventMouseButton:
         if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
-            afficher_pensee(texte)
+            Voix.afficher_pensee(texte)
 
 
 # --- RAMASSER ---
@@ -117,7 +118,7 @@ func ramasser(nom_zone: String, donnees: Dictionary) -> void:
     pickup_sprite.visible = true
 
     # 2. On affiche la pensée et on attend la fin complète de l'animation.
-    await afficher_pensee_finie(donnees["pensee"])
+    await Voix.afficher_pensee_finie(donnees["pensee"])
 
     # 3. Le texte est fini : on range l'objet et on cache le sprite.
     pickup_sprite.visible = false
@@ -128,54 +129,9 @@ func ramasser(nom_zone: String, donnees: Dictionary) -> void:
     zone.input_pickable = false
 
 
-# --- AFFICHAGE DES PENSÉES (la voix intérieure d'Al') ---
-# Écriture lettre par lettre, pause, puis fondu.
-# Un nouvel appel rend tout appel précédent "périmé" : il s'arrête de lui-même.
-func afficher_pensee(texte: String) -> void:
-    _animation_active += 1
-    var mon_jeton: int = _animation_active
-
-    # Préparation : Label vide, visible et opaque.
-    thought_label.text = texte
-    thought_label.visible_ratio = 0.0
-    thought_label.modulate.a = 1.0
-    thought_label.visible = true
-
-    # Écriture lettre par lettre.
-    var nb_lettres: int = texte.length()
-    for i in range(nb_lettres):
-        thought_label.visible_ratio = float(i + 1) / float(nb_lettres)
-        await get_tree().create_timer(VITESSE_LETTRE).timeout
-        if mon_jeton != _animation_active:
-            return
-
-    # Pause de lecture.
-    await get_tree().create_timer(DUREE_LECTURE).timeout
-    if mon_jeton != _animation_active:
-        return
-
-    # Fondu de disparition.
-    var tween := create_tween()
-    tween.tween_property(thought_label, "modulate:a", 0.0, DUREE_FONDU)
-    await tween.finished
-    if mon_jeton != _animation_active:
-        return
-
-    # Nettoyage final.
-    thought_label.visible = false
-
-
-# Variante de afficher_pensee qui ATTEND la fin complète de l'animation.
-# Utile pour enchaîner une action après le fondu (ex. ranger un objet).
-func afficher_pensee_finie(texte: String) -> void:
-    afficher_pensee(texte)
-    var duree_ecriture: float = texte.length() * VITESSE_LETTRE
-    await get_tree().create_timer(
-        duree_ecriture + DUREE_LECTURE + DUREE_FONDU).timeout
-
-
 # --- SORTIE DE PIÈCE ---
-# Fondu au noir + fondu de la musique en parallèle, puis changement de pièce.
+# Fondu au noir (service Fondu) + fondu de la musique, en parallèle,
+# puis changement de pièce.
 func _quitter_la_piece() -> void:
     # On verrouille les interactions : plus aucun clic ne sera pris en compte.
     _interactions_bloquees = true
@@ -183,12 +139,14 @@ func _quitter_la_piece() -> void:
     # On attend : le temps qu'Al' "dise" sa phrase de départ.
     await get_tree().create_timer(DUREE_LECTURE).timeout
 
-    # Un seul Tween en parallèle : les deux fondus jouent EN MÊME TEMPS.
-    var tween := create_tween()
-    tween.set_parallel(true)
-    tween.tween_property(fade_overlay, "modulate:a", 1.0, DUREE_FONDU)
-    tween.tween_property(music_player, "volume_db", -60.0, DUREE_FONDU + 5)
-    await tween.finished
+    # Fondu de la musique : on le lance SANS l'attendre, pour qu'il
+    # joue EN MÊME TEMPS que le fondu de l'écran juste après.
+    var tween_musique := create_tween()
+    tween_musique.tween_property(music_player, "volume_db", -60.0, DUREE_FONDU + 5)
+
+    # Fondu de l'écran au noir : géré par le service global Fondu.
+    # On l'attend : à la fin, l'écran est entièrement noir.
+    await Fondu.fondu_au_noir()
 
     # La musique est inaudible : on l'arrête vraiment.
     music_player.stop()

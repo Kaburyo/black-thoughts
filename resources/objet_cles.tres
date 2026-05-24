@@ -7,4 +7,5 @@
 script = ExtResource("1_slkbk")
 nom_affiche = "Clés du Bureau"
 icone = ExtResource("1_86ql6")
+description = "Elle me permette d'ouvrire et fermer mon Bureau."
 metadata/_custom_type_script = "uid://i0mq24axp1k8"
