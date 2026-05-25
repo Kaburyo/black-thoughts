@@ -24,9 +24,9 @@ extends CanvasLayer
 
 
 # --- Réglages de l'animation du texte ---
-const VITESSE_LETTRE: float = 0.03   # secondes entre deux lettres
+const VITESSE_LETTRE: float = 0.045   # secondes entre deux lettres
 const DUREE_LECTURE: float = 4.0     # secondes d'affichage une fois écrit
-const DUREE_FONDU: float = 0.7       # secondes que dure la disparition
+const DUREE_FONDU: float = 0.5       # secondes que dure la disparition
 
 
 # --- Jeton de l'animation en cours ---

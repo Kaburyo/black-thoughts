@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ObjetInventaire" load_steps=3 format=3 uid="uid://d1fcyuwsefip5"]
+
+[ext_resource type="Texture2D" uid="uid://b8cugmdihadc5" path="res://assets/art/characters/picture/picture_flora.png" id="1_hucmp"]
+[ext_resource type="Script" uid="uid://i0mq24axp1k8" path="res://resources/objet_inventaire.gd" id="2_xwvbx"]
+
+[resource]
+script = ExtResource("2_xwvbx")
+nom_affiche = "2ème Partie de Photo"
+icone = ExtResource("1_hucmp")
+description = "C'est une moitié de photo où on peut voir une jeune femme
+clairement entrain de faire la fête.
+Cette photo me dit quelque chose...."
+metadata/_custom_type_script = "uid://i0mq24axp1k8"

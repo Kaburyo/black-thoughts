@@ -20,6 +20,8 @@ extends Node
 const CATALOGUE: Dictionary = {
     "cles": "res://resources/objet_cles.tres",
     "cigarettes": "res://resources/objet_cigarettes.tres",
+    "bar_ticket" : "res://resources/objet_bar_ticket.tres",
+    "picture_flora" : "res://resources/objet_picture_fora.tres",
 }
 
 

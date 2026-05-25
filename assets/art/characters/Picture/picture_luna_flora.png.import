@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://opu4yrcft2i6"
-path="res://.godot/imported/picture_luna_flora.png-0bb02c81464bee10659f19c5581223b8.ctex"
+path="res://.godot/imported/picture_luna_flora.png-460dd63b4535758cf53f2c104979c783.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/art/characters/Picture/picture_luna_flora.png"
-dest_files=["res://.godot/imported/picture_luna_flora.png-0bb02c81464bee10659f19c5581223b8.ctex"]
+source_file="res://assets/art/characters/picture/picture_luna_flora.png"
+dest_files=["res://.godot/imported/picture_luna_flora.png-460dd63b4535758cf53f2c104979c783.ctex"]
 
 [params]
 

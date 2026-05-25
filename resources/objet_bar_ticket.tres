@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ObjetInventaire" load_steps=3 format=3 uid="uid://cu2ym7x3nobum"]
+
+[ext_resource type="Texture2D" uid="uid://defylgicle7eb" path="res://assets/art/ui/item_barticket_clean.png" id="1_p2o4p"]
+[ext_resource type="Script" uid="uid://i0mq24axp1k8" path="res://resources/objet_inventaire.gd" id="2_8guix"]
+
+[resource]
+script = ExtResource("2_8guix")
+nom_affiche = "Ticket de Bar Branché"
+icone = ExtResource("1_p2o4p")
+description = "C'est le ticket d'entré du bar : Le MACoumba Night
+Pas très recommendable comme endroit...
+Il date d'un peu plus d'1 mois."
+metadata/_custom_type_script = "uid://i0mq24axp1k8"

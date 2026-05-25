@@ -1,0 +1,133 @@
+[gd_scene load_steps=17 format=3 uid="uid://bbs02b4ui3iqq"]
+
+[ext_resource type="Script" uid="uid://ctgmlph3ycdyl" path="res://scenes/rooms/chambre_luna_room.gd" id="1_5ehn0"]
+[ext_resource type="Texture2D" uid="uid://cutg4r0v5hpav" path="res://assets/art/backgrounds/chambre_luna.png" id="1_w8m3c"]
+[ext_resource type="AudioStream" uid="uid://dhctw0gouvx1j" path="res://assets/audio/music/BLACKTHOUGHTS - LUNA ROOM.wav" id="3_4eqay"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_w8m3c"]
+size = Vector2(140, 480)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_5ehn0"]
+size = Vector2(501.5, 282)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_4eqay"]
+size = Vector2(249, 109.5)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_0mpxa"]
+size = Vector2(154.5, 27)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_q72fk"]
+size = Vector2(234, 103)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_btskx"]
+size = Vector2(523.5, 178)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_jjl48"]
+size = Vector2(445, 272)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_u5y78"]
+size = Vector2(84, 55)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_jg1eh"]
+size = Vector2(121, 140)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_w51ww"]
+size = Vector2(305.5, 316.5)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_bsckv"]
+size = Vector2(298, 564.5)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_s4ohh"]
+size = Vector2(305.5, 435)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_tbw8g"]
+size = Vector2(145, 68.5)
+
+[node name="ChambreLunaRoom" type="Node2D"]
+script = ExtResource("1_5ehn0")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(961, 539)
+scale = Vector2(1.2508143, 1.0527344)
+texture = ExtResource("1_w8m3c")
+metadata/_edit_lock_ = true
+
+[node name="PorteChambreArea" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PorteChambreArea"]
+position = Vector2(496, 413)
+shape = SubResource("RectangleShape2D_w8m3c")
+
+[node name="LitArea" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="LitArea"]
+position = Vector2(253.25, 828)
+shape = SubResource("RectangleShape2D_5ehn0")
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="LitArea"]
+position = Vector2(122.5, 522.75)
+shape = SubResource("RectangleShape2D_4eqay")
+
+[node name="CollisionShape2D3" type="CollisionShape2D" parent="LitArea"]
+position = Vector2(412.75, 668.5)
+shape = SubResource("RectangleShape2D_0mpxa")
+
+[node name="PeluchesArea" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PeluchesArea"]
+position = Vector2(215, 631.5)
+shape = SubResource("RectangleShape2D_q72fk")
+
+[node name="BureauArea" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="BureauArea"]
+position = Vector2(1185.25, 635)
+shape = SubResource("RectangleShape2D_btskx")
+
+[node name="FenetreArea" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="FenetreArea"]
+position = Vector2(1216.5, 331)
+shape = SubResource("RectangleShape2D_jjl48")
+
+[node name="CadreArea" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CadreArea"]
+position = Vector2(1315, 515.5)
+shape = SubResource("RectangleShape2D_u5y78")
+
+[node name="PoubelleArea" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PoubelleArea"]
+position = Vector2(1522.5, 679)
+shape = SubResource("RectangleShape2D_jg1eh")
+
+[node name="RobeArea" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RobeArea"]
+position = Vector2(673.25, 822)
+shape = SubResource("RectangleShape2D_w51ww")
+
+[node name="ArmoireLivresArea" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ArmoireLivresArea"]
+position = Vector2(1758, 489.75)
+shape = SubResource("RectangleShape2D_bsckv")
+
+[node name="ArmoireRobesArea" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ArmoireRobesArea"]
+position = Vector2(768.25, 438.5)
+shape = SubResource("RectangleShape2D_s4ohh")
+
+[node name="LivresArea" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="LivresArea"]
+position = Vector2(1026, 506.75)
+shape = SubResource("RectangleShape2D_tbw8g")
+
+[node name="PickupSprite" type="Sprite2D" parent="."]
+position = Vector2(960, 540)
+
+[node name="MusicPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("3_4eqay")
