@@ -17,9 +17,23 @@
 #
 # Ce point de choix n'est PAS un élément autonome de la liste : il
 # vient s'ACCROCHER à la fin d'une réplique (voir replique_dialogue.gd).
+#
+# Une fois une option choisie, sa réponse est PRONONCÉE dans la boîte
+# de dialogue comme une vraie réplique. C'est pourquoi le choix sait
+# QUI parle (champ `locuteur` ci-dessous).
 
 class_name ChoixDialogue
 extends Resource
+
+
+# --- QUI PRONONCE CES RÉPONSES ---
+# Les trois options A/B/C sont toujours dites par le MÊME personnage
+# (la réponse du joueur — en général Al'). Comme pour une réplique,
+# ce personnage est désigné par son NUMÉRO dans la liste
+# `personnages` de la conversation : 0 = premier personnage de la
+# liste, 1 = second. Par défaut 0 — pour l'entretien du bureau, le
+# premier personnage est justement Al', donc rien à régler là-bas.
+@export var locuteur: int = 0
 
 
 # --- OPTION A ---

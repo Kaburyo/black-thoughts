@@ -8,12 +8,15 @@
 #   - Dialogue : les conversations, boîte CLAIRE, reste affichée,
 #                avance au CLIC du joueur (voir la "bible", section E).
 #
-# ÉTAT À CETTE ÉTAPE (D5) : le service joue une conversation, gère les
-# choix et leur effet, ET annonce le début / la fin de la conversation.
-# Pendant un dialogue, le HUD est caché (appel direct) et le décor est
-# gelé (la pièce s'abonne aux signaux ci-dessous et gère son verrou).
-# NOTE : les valeurs cachées des choix valent toutes 0 pour l'instant.
-# PAS ENCORE GÉRÉ : la VARIATION du texte d'Al' selon son palier.
+# ÉTAT À CETTE ÉTAPE (D6-c-3) : le service joue une conversation, gère
+# les choix et leur effet, annonce le début / la fin de la
+# conversation, crée les portraits dynamiquement et met en avant le
+# parleur par estompage. NOUVEAU : quand le joueur choisit une option,
+# cette réponse est PRONONCÉE dans la boîte comme une vraie réplique
+# (écrite lettre par lettre, portrait de son locuteur mis en avant),
+# et l'indication de ton entre parenthèses du bouton est retirée.
+# PAS ENCORE GÉRÉ : la variation du texte d'Al' selon son palier de
+# santé mentale.
 
 extends CanvasLayer
 
@@ -31,6 +34,7 @@ signal conversation_terminee
 @onready var boite: Panel = $BoiteDialogue
 @onready var texte_dialogue: Label = $BoiteDialogue/TexteDialogue
 @onready var zone_choix: VBoxContainer = $ZoneChoix
+@onready var zone_portraits: Control = $ZonePortraits
 
 
 # --- Réglage de l'animation du texte ---
@@ -38,6 +42,25 @@ const VITESSE_LETTRE: float = 0.045
 
 # Taille du texte sur les boutons de choix.
 const TAILLE_TEXTE_CHOIX: int = 36
+
+
+# --- Réglages de placement des portraits ---
+# La résolution du jeu (voir la "bible", section M : 1920x1080).
+const LARGEUR_ECRAN: float = 1920.0
+# Dimensions d'un portrait, identiques à gauche comme à droite.
+const PORTRAIT_LARGEUR: float = 500.0
+const PORTRAIT_HAUTEUR: float = 700.0
+# Distance entre le haut de l'écran et le haut du portrait.
+const PORTRAIT_MARGE_HAUT: float = 100.0
+
+
+# --- Réglages de l'estompage ---
+# Opacité du portrait du personnage QUI PARLE (pleine visibilité).
+const OPACITE_PARLEUR: float = 1.0
+# Opacité du portrait d'un personnage qui NE parle pas (estompé).
+const OPACITE_ESTOMPE: float = 0.45
+# Durée du fondu d'estompage, en secondes.
+const DUREE_ESTOMPAGE: float = 0.25
 
 
 # --- État de l'affichage ---
@@ -56,6 +79,19 @@ var _etat: Etat = Etat.REPOS
 var _conversation: Conversation = null
 var _index: int = 0
 var _choix_courant: ChoixDialogue = null
+
+# Vrai quand la boîte affiche la réponse que le joueur vient de
+# choisir (et non une réplique normale du .tres). Sert à savoir, au
+# clic suivant, qu'il faut simplement passer à la réplique suivante
+# au lieu de re-proposer le choix.
+var _en_reponse_choisie: bool = false
+
+# --- Portraits affichés ---
+# La liste des portraits actuellement à l'écran. IMPORTANT : son ordre
+# suit exactement la liste `personnages` de la conversation, donc
+# _portraits[i] est le portrait de personnages[i]. C'est ce qui permet
+# de retrouver le portrait du locuteur, désigné par un numéro.
+var _portraits: Array[TextureRect] = []
 
 
 # Appelée automatiquement une fois, au lancement.
@@ -76,6 +112,9 @@ func jouer(conversation: Conversation) -> void:
     _conversation = conversation
     _index = 0
 
+    # On fabrique les portraits des personnages de cette conversation.
+    _creer_portraits()
+
     # On annonce le début : le HUD se cache, le décor se gèle.
     Hud.cacher()
     conversation_demarree.emit()
@@ -83,13 +122,69 @@ func jouer(conversation: Conversation) -> void:
     _afficher_replique_courante()
 
 
-# --- AFFICHER LA RÉPLIQUE COURANTE ---
-func _afficher_replique_courante() -> void:
-    var replique: RepliqueDialogue = _conversation.repliques[_index]
+# --- CRÉER LES PORTRAITS DE LA CONVERSATION ---
+# Vide la zone, puis fabrique un TextureRect par personnage de la
+# conversation, placé selon son côté. Aucun portrait n'est câblé dans
+# la scène : ils naissent ici, à partir des fiches PersonnageDialogue.
+func _creer_portraits() -> void:
+    # On repart d'une zone propre (sécurité).
+    for ancien in zone_portraits.get_children():
+        ancien.queue_free()
+    _portraits.clear()
 
-    # Pour l'instant on affiche toujours le texte de base. La variation
-    # selon le palier de santé mentale d'Al' sera branchée plus tard.
-    var texte: String = replique.texte
+    for perso in _conversation.personnages:
+        var portrait := TextureRect.new()
+        portrait.texture = perso.sprite
+        portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+        portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+        portrait.flip_h = true
+        portrait.size = Vector2(PORTRAIT_LARGEUR, PORTRAIT_HAUTEUR)
+        portrait.position = _position_portrait(perso.cote)
+        # Les portraits sont purement décoratifs : ils laissent les
+        # clics traverser (par propreté, comme leur zone parente).
+        portrait.mouse_filter = Control.MOUSE_FILTER_IGNORE
+        # On démarre estompé : le premier parleur sera mis en avant
+        # tout de suite par _mettre_en_avant_le_parleur().
+        portrait.modulate.a = OPACITE_ESTOMPE
+
+        zone_portraits.add_child(portrait)
+        # On garde le portrait dans la liste, dans le MÊME ordre que
+        # les personnages : _portraits[i] <-> personnages[i].
+        _portraits.append(portrait)
+
+
+# Renvoie la position (coin haut-gauche) d'un portrait selon son côté.
+func _position_portrait(cote: PersonnageDialogue.Cote) -> Vector2:
+    if cote == PersonnageDialogue.Cote.GAUCHE:
+        return Vector2(0.0, PORTRAIT_MARGE_HAUT)
+    # DROITE : collé au bord droit de l'écran.
+    return Vector2(LARGEUR_ECRAN - PORTRAIT_LARGEUR, PORTRAIT_MARGE_HAUT)
+
+
+# --- METTRE EN AVANT LE PARLEUR ---
+# Le portrait du personnage `numero_parleur` va en pleine opacité ;
+# tous les autres vont vers l'opacité estompée. La transition est
+# douce (Tween). On joue UNIQUEMENT sur l'opacité — jamais sur la
+# luminosité (réservée au code couleur moral, bible L.2).
+func _mettre_en_avant_le_parleur(numero_parleur: int) -> void:
+    for i in range(_portraits.size()):
+        var portrait: TextureRect = _portraits[i]
+        var opacite_visee: float = OPACITE_ESTOMPE
+        if i == numero_parleur:
+            opacite_visee = OPACITE_PARLEUR
+
+        # Un Tween fait glisser l'opacité en douceur jusqu'à la cible.
+        var tween: Tween = create_tween()
+        tween.tween_property(portrait, "modulate:a",
+                opacite_visee, DUREE_ESTOMPAGE)
+
+
+# --- AFFICHER UN TEXTE DANS LA BOÎTE ---
+# Coeur commun de l'affichage : met en avant le locuteur, puis écrit
+# le texte lettre par lettre. Sert aussi bien aux répliques normales
+# du .tres qu'à la réponse choisie par le joueur.
+func _afficher_texte(texte: String, numero_locuteur: int) -> void:
+    _mettre_en_avant_le_parleur(numero_locuteur)
 
     texte_dialogue.text = texte
     texte_dialogue.visible_ratio = 0.0
@@ -97,6 +192,18 @@ func _afficher_replique_courante() -> void:
 
     _etat = Etat.ECRITURE
     _ecrire_lettre_par_lettre(texte.length())
+
+
+# --- AFFICHER LA RÉPLIQUE COURANTE ---
+func _afficher_replique_courante() -> void:
+    # On affiche une réplique normale du .tres (pas une réponse choisie).
+    _en_reponse_choisie = false
+
+    var replique: RepliqueDialogue = _conversation.repliques[_index]
+
+    # Pour l'instant on affiche toujours le texte de base. La variation
+    # selon le palier de santé mentale d'Al' sera branchée plus tard.
+    _afficher_texte(replique.texte, replique.locuteur)
 
 
 # --- L'ÉCRITURE LETTRE PAR LETTRE ---
@@ -131,8 +238,15 @@ func _afficher_tout_de_suite() -> void:
 
 # --- APRÈS UNE RÉPLIQUE FINIE ---
 func _apres_replique() -> void:
-    var replique: RepliqueDialogue = _conversation.repliques[_index]
+    # Cas 1 : on vient d'afficher la réponse choisie par le joueur.
+    # La suite, c'est simplement la réplique suivante du .tres.
+    if _en_reponse_choisie:
+        _replique_suivante()
+        return
 
+    # Cas 2 : une réplique normale. Si elle porte un choix, on le
+    # présente ; sinon on enchaîne sur la réplique suivante.
+    var replique: RepliqueDialogue = _conversation.repliques[_index]
     if replique.choix != null:
         _afficher_choix(replique.choix)
     else:
@@ -155,6 +269,9 @@ func _afficher_choix(choix: ChoixDialogue) -> void:
 
 
 # Construit un bouton de choix à partir d'un texte et de son numéro.
+# Le bouton garde le texte BRUT, indication de ton comprise : elle
+# aide le joueur à choisir. Elle ne sera retirée qu'au moment où la
+# réponse est prononcée dans la boîte (voir _texte_parle).
 func _creer_bouton_choix(texte: String, numero: int) -> Button:
     var bouton := Button.new()
     bouton.text = texte
@@ -169,13 +286,50 @@ func _sur_clic_choix(numero: int) -> void:
     if _etat != Etat.CHOIX:
         return
 
+    # 1. L'option choisie influe sur la santé mentale d'Al'.
     var delta: float = _valeur_option(numero)
     SanteMentale.modifier(delta)
     print("Dialogue : option %d choisie -> santé mentale %+.0f"
             % [numero, delta])
 
+    # 2. On retient QUI parle et QUOI, avant de nettoyer le choix.
+    var numero_locuteur: int = _choix_courant.locuteur
+    var texte: String = _texte_parle(_texte_option(numero))
+
+    # 3. On efface les boutons de choix.
     _cacher_choix()
-    _replique_suivante()
+
+    # 4. La réponse choisie devient une vraie réplique : elle s'écrit
+    #    dans la boîte, le portrait de son locuteur passe en avant.
+    _en_reponse_choisie = true
+    _afficher_texte(texte, numero_locuteur)
+
+
+# --- TEXTE BRUT D'UNE OPTION ---
+func _texte_option(numero: int) -> String:
+    match numero:
+        0:
+            return _choix_courant.texte_a
+        1:
+            return _choix_courant.texte_b
+        2:
+            return _choix_courant.texte_c
+        _:
+            return ""
+
+
+# --- NETTOYER LE TEXTE D'UNE RÉPONSE ---
+# Le texte d'une option peut commencer par une indication de ton ou
+# de jeu entre parenthèses — ex. « (las) On vous a mal renseignée. »
+# Cette indication aide le joueur sur le bouton, mais Al' ne la "dit"
+# pas : on la retire avant d'écrire la réponse dans la boîte.
+func _texte_parle(texte: String) -> String:
+    var propre: String = texte.strip_edges()
+    if propre.begins_with("("):
+        var fin: int = propre.find(")")
+        if fin != -1:
+            propre = propre.substr(fin + 1)
+    return propre.strip_edges()
 
 
 # --- VALEUR CACHÉE D'UNE OPTION ---
@@ -214,10 +368,17 @@ func _replique_suivante() -> void:
 func _terminer() -> void:
     boite.visible = false
     zone_choix.visible = false
+
+    # On retire les portraits de l'écran.
+    for portrait in _portraits:
+        portrait.queue_free()
+    _portraits.clear()
+
     _etat = Etat.REPOS
     _conversation = null
     _index = 0
     _choix_courant = null
+    _en_reponse_choisie = false
 
     # On annonce la fin : le décor se dégèle, le HUD revient.
     conversation_terminee.emit()
