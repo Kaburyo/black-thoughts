@@ -24,6 +24,18 @@ extends Jauge
 # (ce qui correspond au palier Ok). C'est son fil rouge.
 const SANTE_DEPART: float = 70.0
  
+
+#####
+# --- TÉMOIN TEMPORAIRE --- (à supprimer après le test)
+func _ready() -> void:
+    super()  # garde le démarrage normal de la jauge
+
+    # Toutes les 2 secondes, on fait chuter la santé mentale de 20.
+    # Le filtre doit s'assombrir par paliers, en glissant en douceur.
+    for i in range(5):
+        await get_tree().create_timer(2.0).timeout
+        modifier(-20.0)
+######        
  
 # Le moule (jauge.gd) appelle cette fonction au démarrage pour
 # connaître la valeur de départ de CETTE jauge.

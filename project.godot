@@ -23,6 +23,7 @@ Voix="*res://scenes/ui/VoixInterieure.tscn"
 Fondu="*res://scenes/ui/fondu.tscn"
 SanteMentale="*res://globals/sante_mentale.gd"
 Vie="*res://globals/vie.gd"
+FiltreMental="*res://scenes/ui/FiltreMental.tscn"
 
 [display]
 

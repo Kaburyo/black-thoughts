@@ -1,0 +1,26 @@
+[gd_scene load_steps=4 format=3 uid="uid://cr0byqknqvvm1"]
+
+[ext_resource type="Shader" uid="uid://che2ul574mflm" path="res://scenes/ui/filtre_mental.gdshader" id="1_e6gkr"]
+[ext_resource type="Script" uid="uid://c4ou4cdicnwei" path="res://scenes/ui/filtre_mental.gd" id="1_fniq1"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_fniq1"]
+shader = ExtResource("1_e6gkr")
+shader_parameter/intensite = 0.0
+shader_parameter/filtre_minimum = 0.2000000095
+shader_parameter/rayon_clair = 0.51200002432
+shader_parameter/rayon_sombre = 1.5
+shader_parameter/noirceur_max = 1.0
+
+[node name="FiltreMental" type="CanvasLayer"]
+layer = 15
+script = ExtResource("1_fniq1")
+
+[node name="Voile" type="ColorRect" parent="."]
+z_index = 15
+material = SubResource("ShaderMaterial_fniq1")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
