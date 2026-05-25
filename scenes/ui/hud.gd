@@ -11,11 +11,13 @@
 #   - le nom d'un objet s'affiche au survol de son icône.
 #   - cliquer une icône déclenche une pensée d'Al' qui décrit l'objet.
 #
+# Le HUD sait aussi S'EFFACER : pendant un dialogue, il se cache
+# entièrement (voir cacher() / montrer()), pour que le joueur ne
+# puisse pas ouvrir le carnet en pleine conversation (bible L.11).
+#
 # Niveaux d'interface (du moins profond au plus profond) :
 #   menu fermé  ->  menu ouvert  ->  inventaire ouvert
 # Échap referme toujours le niveau le plus profond d'abord.
-#
-# À venir : 5 sprites du portrait selon l'état d'Al'.
 
 extends CanvasLayer
 
@@ -35,7 +37,6 @@ const DUREE_GLISSEMENT: float = 0.25        # secondes que dure le glissement
 
 # --- Réglage de la grille d'objets ---
 # Taille (en pixels) d'une icône d'objet dans la grille.
-# Trop grand ou trop petit ? Change ce seul nombre.
 const TAILLE_ICONE: float = 128.0
 
 
@@ -44,7 +45,6 @@ var _menu_ouvert: bool = false
 var _inventaire_ouvert: bool = false
 
 # Verrou : true pendant qu'une animation de l'inventaire joue.
-# Empêche un nouveau clic de lancer une 2e animation par-dessus (cf. L.9).
 var _inventaire_en_animation: bool = false
 
 
@@ -81,6 +81,21 @@ func _unhandled_input(event: InputEvent) -> void:
         fermer_inventaire()
     elif _menu_ouvert:
         fermer_menu()
+
+
+# --- EFFACER / RÉAFFICHER TOUT LE HUD ---
+# Appelées par le service Dialogue : le HUD disparaît pendant une
+# conversation, puis revient à la fin (bible L.11).
+
+func cacher() -> void:
+    # On referme d'abord menu et inventaire : au retour, le HUD doit
+    # repartir d'un état propre (rien d'ouvert).
+    fermer_menu()
+    visible = false
+
+
+func montrer() -> void:
+    visible = true
 
 
 # --- Clic sur le portrait : bascule le menu ---
@@ -147,7 +162,6 @@ func _glisser_inventaire(x_cible: float) -> void:
 
 
 # --- Remplissage de la grille d'objets ---
-# Appelée au lancement, et à chaque fois que l'inventaire change.
 func _rafraichir_grille() -> void:
     # 1. On vide la grille de son contenu précédent.
     for ancienne_icone in grille_objets.get_children():
@@ -176,14 +190,11 @@ func _creer_icone(fiche: ObjetInventaire) -> TextureButton:
     icone.tooltip_text = fiche.nom_affiche
 
     # Clic sur l'icône -> pensée d'Al' qui décrit l'objet.
-    # .bind(fiche) "accroche" la fiche cliquée : elle revient en
-    # argument de _sur_clic_objet quand le clic arrive.
     icone.pressed.connect(_sur_clic_objet.bind(fiche))
 
     return icone
 
 
 # --- Clic sur un objet du carnet ---
-# Al' pense la description de l'objet (sa voix intérieure).
 func _sur_clic_objet(fiche: ObjetInventaire) -> void:
     Voix.afficher_pensee(fiche.description)

@@ -1,0 +1,83 @@
+[gd_resource type="Resource" script_class="Conversation" load_steps=20 format=3 uid="uid://b5g4gnkbogrm6"]
+
+[ext_resource type="Script" uid="uid://byknsokd4a1h0" path="res://resources/conversation.gd" id="0"]
+[ext_resource type="Script" uid="uid://c4nqgiisltlk" path="res://resources/replique_dialogue.gd" id="1"]
+[ext_resource type="Script" uid="uid://blm8n7fkmbgfp" path="res://resources/personnage_dialogue.gd" id="1_7eb44"]
+[ext_resource type="Script" uid="uid://dey7xqbrualto" path="res://resources/choix_dialogue.gd" id="2"]
+[ext_resource type="Resource" uid="uid://dskh6uer2righ" path="res://resources/personnage_al.tres" id="3"]
+[ext_resource type="Resource" uid="uid://b6s63magyw5ib" path="res://resources/personnage_jenny.tres" id="4"]
+
+[sub_resource type="Resource" id="Choix1"]
+script = ExtResource("2")
+texte_a = "(las) On vous a mal renseignée. Je ne retrouve plus grand-chose ces temps-ci."
+texte_b = "(glacial) Ça dépend des gens. Et de qui les cherche."
+texte_c = "..."
+
+[sub_resource type="Resource" id="Rep01"]
+script = ExtResource("1")
+locuteur = 1
+texte = "Monsieur... ? On m'a dit que vous retrouviez les gens."
+choix = SubResource("Choix1")
+
+[sub_resource type="Resource" id="Rep02"]
+script = ExtResource("1")
+locuteur = 1
+texte = "(elle s'assoit au bord de la chaise) Merci. Je ne savais plus où aller."
+
+[sub_resource type="Resource" id="Rep03"]
+script = ExtResource("1")
+locuteur = 1
+texte = "C'est ma fille. Luna. Elle n'est pas rentrée... des mois, maintenant."
+
+[sub_resource type="Resource" id="Choix2"]
+script = ExtResource("2")
+texte_a = "(direct) La police n'a rien fait. Sinon vous ne seriez pas assise là."
+texte_b = "(froid) Des mois. Et vous venez seulement maintenant."
+texte_c = "(retranché) ... Continuez."
+
+[sub_resource type="Resource" id="Rep04"]
+script = ExtResource("1")
+locuteur = 1
+texte = "Elle appelait. Tous les dimanches, sans faute. Et puis plus rien."
+choix = SubResource("Choix2")
+
+[sub_resource type="Resource" id="Rep05"]
+script = ExtResource("1")
+locuteur = 1
+texte = "(un temps) ...La police a noté son nom sur un papier. Le papier est dans un tiroir. Voilà ce qu'ils ont fait."
+
+[sub_resource type="Resource" id="Rep06"]
+script = ExtResource("1")
+locuteur = 1
+texte = "Et avant qu'elle parte... elle avait changé. Froide. Elle qui souriait à tout le monde."
+
+[sub_resource type="Resource" id="Rep07"]
+script = ExtResource("1")
+texte = "Les gens changent, madame. Et certains ne veulent pas qu'on les retrouve."
+
+[sub_resource type="Resource" id="Choix3"]
+script = ExtResource("2")
+texte_a = "(la photo) Gardez votre argent. Laissez la photo."
+texte_b = "(las) Vous connaissez même le tiroir où ils l'ont rangée. Vous ne lâcherez pas. Autant que ce soit moi."
+texte_c = "..."
+
+[sub_resource type="Resource" id="Rep08"]
+script = ExtResource("1")
+locuteur = 1
+texte = "(elle pose la photo sur le bureau, sans la lâcher) Je n'ai pas de quoi vous payer beaucoup. J'ai économisé ça. Et j'ai sa photo."
+choix = SubResource("Choix3")
+
+[sub_resource type="Resource" id="Rep09"]
+script = ExtResource("1")
+texte = "Sa chambre. Ses affaires. Tout ce qu'elle a laissé derrière. Je commence par là."
+
+[sub_resource type="Resource" id="Rep10"]
+script = ExtResource("1")
+locuteur = 1
+texte = "Venez chez nous. On n'a touché à rien."
+
+[resource]
+script = ExtResource("0")
+titre = "Entretien du bureau"
+personnages = Array[ExtResource("1_7eb44")]([ExtResource("3"), ExtResource("4")])
+repliques = Array[ExtResource("1")]([SubResource("Rep01"), SubResource("Rep02"), SubResource("Rep03"), SubResource("Rep04"), SubResource("Rep05"), SubResource("Rep06"), SubResource("Rep07"), SubResource("Rep08"), SubResource("Rep09"), SubResource("Rep10")])

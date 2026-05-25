@@ -9,5 +9,5 @@ nom_affiche = "Ticket de Bar Branché"
 icone = ExtResource("1_p2o4p")
 description = "C'est le ticket d'entré du bar : Le MACoumba Night
 Pas très recommendable comme endroit...
-Il date d'un peu plus d'1 mois."
+Il dates d'un peu plus d'1 mois."
 metadata/_custom_type_script = "uid://i0mq24axp1k8"

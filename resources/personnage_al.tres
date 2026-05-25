@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="PersonnageDialogue" load_steps=3 format=3 uid="uid://dskh6uer2righ"]
+
+[ext_resource type="Script" uid="uid://blm8n7fkmbgfp" path="res://resources/personnage_dialogue.gd" id="1_uyfuq"]
+[ext_resource type="Texture2D" uid="uid://ben5vivf2sxtt" path="res://assets/art/characters/al/al_normal.png" id="2_vfacs"]
+
+[resource]
+script = ExtResource("1_uyfuq")
+nom = "Al'"
+sprite = ExtResource("2_vfacs")
+cote = 1
+metadata/_custom_type_script = "uid://blm8n7fkmbgfp"

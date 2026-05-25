@@ -8,7 +8,6 @@ layer = 10
 script = ExtResource("1_igl0g")
 
 [node name="TextBox" type="ColorRect" parent="."]
-anchors_preset = -1
 offset_left = 460.0
 offset_top = 800.0
 offset_right = 1460.0
@@ -25,7 +24,8 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("1_dcycs")
-theme_override_font_sizes/font_size = 50
+theme_override_font_sizes/font_size = 40
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 2
+clip_text = true

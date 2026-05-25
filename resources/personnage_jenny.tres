@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="PersonnageDialogue" load_steps=3 format=3 uid="uid://b6s63magyw5ib"]
+
+[ext_resource type="Script" uid="uid://blm8n7fkmbgfp" path="res://resources/personnage_dialogue.gd" id="1_bpaka"]
+[ext_resource type="Texture2D" uid="uid://d4lpxgrnoilv6" path="res://assets/art/characters/jenny/jenny_normal.png" id="2_bihsy"]
+
+[resource]
+script = ExtResource("1_bpaka")
+nom = "Jenny"
+sprite = ExtResource("2_bihsy")
+metadata/_custom_type_script = "uid://blm8n7fkmbgfp"

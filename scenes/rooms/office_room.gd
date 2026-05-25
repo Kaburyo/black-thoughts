@@ -48,6 +48,18 @@ func _definir_contenu() -> void:
     # La porte a son propre branchement (objet à comportement).
     $DoorArea.input_event.connect(_sur_clic_porte)
 
+ ####
+# --- TEST TEMPORAIRE D5 (à retirer ensuite) ---
+    # On lance la conversation APRÈS la fin du _ready() de la pièce,
+    # pour que l'abonnement aux signaux de Dialogue soit déjà fait.
+    _lancer_test_dialogue.call_deferred()
+
+
+# --- TEST TEMPORAIRE D5 (à retirer ensuite) ---
+func _lancer_test_dialogue() -> void:
+    var entretien: Conversation = load("res://resources/entretien_bureau.tres")
+    Dialogue.jouer(entretien)
+####  
 
 # --- LA PORTE ---
 # Appelée quand on clique la porte.

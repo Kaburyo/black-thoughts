@@ -1,0 +1,70 @@
+[gd_scene load_steps=6 format=3 uid="uid://c03ij4whrlxw0"]
+
+[ext_resource type="Script" uid="uid://cljr1ap6by52c" path="res://scenes/ui/dialogue.gd" id="1_65ue4"]
+[ext_resource type="FontFile" uid="uid://dvd00727ltn8n" path="res://assets/fonts/Amarante-Regular.ttf" id="2_umwmw"]
+[ext_resource type="Texture2D" uid="uid://d4lpxgrnoilv6" path="res://assets/art/characters/jenny/jenny_normal.png" id="3_0hdn5"]
+[ext_resource type="Texture2D" uid="uid://ben5vivf2sxtt" path="res://assets/art/characters/al/al_normal.png" id="4_lm6d5"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0hdn5"]
+bg_color = Color(0.89059, 0.89059, 0.8905901, 1)
+border_width_left = 6
+border_width_top = 6
+border_width_right = 6
+border_width_bottom = 6
+border_color = Color(0, 0, 0, 1)
+
+[node name="Dialogue" type="CanvasLayer"]
+script = ExtResource("1_65ue4")
+
+[node name="PortraitJenny" type="TextureRect" parent="."]
+anchors_preset = -1
+offset_top = 120.0
+offset_right = 450.0
+offset_bottom = 820.0
+texture = ExtResource("3_0hdn5")
+expand_mode = 1
+stretch_mode = 5
+flip_h = true
+
+[node name="PortraitAl" type="TextureRect" parent="."]
+anchors_preset = -1
+offset_left = 1380.0
+offset_top = 120.0
+offset_right = 1996.0
+offset_bottom = 780.0
+texture = ExtResource("4_lm6d5")
+expand_mode = 1
+stretch_mode = 5
+flip_h = true
+
+[node name="BoiteDialogue" type="Panel" parent="."]
+anchors_preset = -1
+offset_left = 460.0
+offset_top = 800.0
+offset_right = 1460.0
+offset_bottom = 1000.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_0hdn5")
+
+[node name="TexteDialogue" type="Label" parent="BoiteDialogue"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("2_umwmw")
+theme_override_font_sizes/font_size = 40
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+clip_text = true
+
+[node name="ZoneChoix" type="VBoxContainer" parent="."]
+anchors_preset = -1
+offset_left = 460.0
+offset_top = 470.0
+offset_right = 1460.0
+offset_bottom = 790.0
+theme_override_constants/separation = 12
+alignment = 2
