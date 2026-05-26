@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="ObjetInventaire" load_steps=3 format=3 uid="uid://bbu555n4b6p8w"]
+
+[ext_resource type="Texture2D" uid="uid://dhfuh8pd2slqc" path="res://assets/art/characters/picture/picture_luna.png" id="1_bjj1l"]
+[ext_resource type="Script" uid="uid://i0mq24axp1k8" path="res://resources/objet_inventaire.gd" id="1_vhppp"]
+
+[resource]
+script = ExtResource("1_vhppp")
+nom_affiche = "Moitié de photo déchiré"
+icone = ExtResource("1_bjj1l")
+description = "C'est la photo de Luna."
+metadata/_custom_type_script = "uid://i0mq24axp1k8"

@@ -22,6 +22,8 @@ const CATALOGUE: Dictionary = {
     "cigarettes": "res://resources/objet_cigarettes.tres",
     "bar_ticket" : "res://resources/objet_bar_ticket.tres",
     "picture_flora" : "res://resources/objet_picture_fora.tres",
+    "picture_luna" : "res://resources/objet_picture_luna.tres",
+    "picture_luna_flora" : "res://resources/objet_picture_luna_flora.tres",
 }
 
 

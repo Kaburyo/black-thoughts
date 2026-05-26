@@ -10,6 +10,9 @@
 #   - la grille d'inventaire affiche les objets possédés (icônes).
 #   - le nom d'un objet s'affiche au survol de son icône.
 #   - cliquer une icône déclenche une pensée d'Al' qui décrit l'objet.
+#   - le bouton "Récap" (à côté du portrait) ouvre/ferme le
+#     récapitulatif de dialogue ; il ne sert que hors conversation,
+#     puisque le HUD est caché pendant un dialogue (voir cacher()).
 #
 # Le HUD sait aussi S'EFFACER : pendant un dialogue, il se cache
 # entièrement (voir cacher() / montrer()), pour que le joueur ne
@@ -24,6 +27,7 @@ extends CanvasLayer
 
 # --- Références aux nœuds ---
 @onready var portrait: TextureButton = $AlPortrait
+@onready var bouton_recap: Button = $BoutonRecap
 @onready var menu_panel: Panel = $MenuPanel
 @onready var inventaire_bouton: Button = $MenuPanel/InventaireBouton
 @onready var inventaire_panel: Panel = $MenuPanel/InventairePanel
@@ -63,6 +67,7 @@ func _ready() -> void:
     # Branchements des clics.
     portrait.pressed.connect(_sur_clic_portrait)
     inventaire_bouton.pressed.connect(_sur_clic_inventaire)
+    bouton_recap.pressed.connect(_sur_clic_recap)
 
     # On se tient au courant des changements de l'inventaire :
     # à chaque ajout d'objet, la grille se redessine toute seule.
@@ -112,6 +117,13 @@ func _sur_clic_inventaire() -> void:
         fermer_inventaire()
     else:
         ouvrir_inventaire()
+
+
+# --- Clic sur le bouton Récap : bascule le récapitulatif de dialogue ---
+# Le HUD ne connaît ni le panneau ni l'historique : il transmet
+# simplement l'ordre au service Dialogue, qui s'occupe de tout.
+func _sur_clic_recap() -> void:
+    Dialogue.basculer_recap()
 
 
 # --- Le menu (le carnet) ---

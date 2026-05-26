@@ -1,4 +1,4 @@
-[gd_scene load_steps=4 format=3 uid="uid://c03ij4whrlxw0"]
+[gd_scene load_steps=5 format=3 uid="uid://c03ij4whrlxw0"]
 
 [ext_resource type="Script" uid="uid://cljr1ap6by52c" path="res://scenes/ui/dialogue.gd" id="1_65ue4"]
 [ext_resource type="FontFile" uid="uid://dvd00727ltn8n" path="res://assets/fonts/Amarante-Regular.ttf" id="2_umwmw"]
@@ -11,8 +11,12 @@ border_width_right = 6
 border_width_bottom = 6
 border_color = Color(0, 0, 0, 1)
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_65ue4"]
+bg_color = Color(0.121814266, 0.121814266, 0.121814266, 1)
+
 [node name="Dialogue" type="CanvasLayer"]
 script = ExtResource("1_65ue4")
+metadata/_edit_vertical_guides_ = [119.0, 1798.0]
 
 [node name="ZonePortraits" type="Control" parent="."]
 layout_mode = 3
@@ -52,3 +56,38 @@ offset_right = 1460.0
 offset_bottom = 790.0
 theme_override_constants/separation = 12
 alignment = 2
+
+[node name="PanneauRecap" type="Panel" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 120.0
+offset_top = 40.0
+offset_right = -123.0
+offset_bottom = -540.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_65ue4")
+
+[node name="TexteRecap" type="RichTextLabel" parent="PanneauRecap"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 2.0
+grow_horizontal = 2
+grow_vertical = 2
+bbcode_enabled = true
+
+[node name="BoutonFermer" type="Button" parent="PanneauRecap"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = 4.0
+offset_top = -30.0
+offset_right = 69.0
+offset_bottom = 33.0
+grow_horizontal = 0
+theme_override_font_sizes/font_size = 40
+text = "X"

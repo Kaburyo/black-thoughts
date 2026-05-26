@@ -8,13 +8,14 @@
 #   - Dialogue : les conversations, boîte CLAIRE, reste affichée,
 #                avance au CLIC du joueur (voir la "bible", section E).
 #
-# ÉTAT À CETTE ÉTAPE (D6-c-3) : le service joue une conversation, gère
+# ÉTAT À CETTE ÉTAPE (D7-b-2) : le service joue une conversation, gère
 # les choix et leur effet, annonce le début / la fin de la
 # conversation, crée les portraits dynamiquement et met en avant le
-# parleur par estompage. NOUVEAU : quand le joueur choisit une option,
-# cette réponse est PRONONCÉE dans la boîte comme une vraie réplique
-# (écrite lettre par lettre, portrait de son locuteur mis en avant),
-# et l'indication de ton entre parenthèses du bouton est retirée.
+# parleur par estompage. La réponse choisie est PRONONCÉE dans la
+# boîte. Le service GARDE EN MÉMOIRE les lignes réellement prononcées
+# (D7-a) et sait afficher un PANNEAU DE RÉCAP qui les réaffiche. Ce
+# récap se bascule (ouvrir / fermer) par la touche R, ou par le bouton
+# Récap du HUD hors conversation — tous deux appellent basculer_recap().
 # PAS ENCORE GÉRÉ : la variation du texte d'Al' selon son palier de
 # santé mentale.
 
@@ -35,6 +36,10 @@ signal conversation_terminee
 @onready var texte_dialogue: Label = $BoiteDialogue/TexteDialogue
 @onready var zone_choix: VBoxContainer = $ZoneChoix
 @onready var zone_portraits: Control = $ZonePortraits
+# Le panneau de récap et ses deux enfants.
+@onready var panneau_recap: Panel = $PanneauRecap
+@onready var texte_recap: RichTextLabel = $PanneauRecap/TexteRecap
+@onready var bouton_fermer: Button = $PanneauRecap/BoutonFermer
 
 
 # --- Réglage de l'animation du texte ---
@@ -93,11 +98,25 @@ var _en_reponse_choisie: bool = false
 # de retrouver le portrait du locuteur, désigné par un numéro.
 var _portraits: Array[TextureRect] = []
 
+# --- Historique de la conversation ---
+# Le "carnet" du dialogue : la liste des lignes RÉELLEMENT prononcées,
+# dans l'ordre. Chaque entrée est une fiche { "nom": ..., "texte": ... }.
+# On y range les répliques du .tres ET la réponse que le joueur a
+# effectivement choisie ; JAMAIS les options qu'il n'a pas retenues
+# (règle actée — bible, section E et L.7).
+# Le carnet est vidé au DÉBUT de chaque conversation (dans jouer()),
+# et PAS à la fin : le récap doit rester relisable une fois la
+# conversation terminée (le bouton du HUD, D7-b, s'utilise hors
+# dialogue, quand le HUD est de nouveau visible).
+var _historique: Array[Dictionary] = []
+
 
 # Appelée automatiquement une fois, au lancement.
 func _ready() -> void:
     boite.visible = false
     zone_choix.visible = false
+    panneau_recap.visible = false
+    bouton_fermer.pressed.connect(_fermer_recap)
     boite.gui_input.connect(_sur_clic_boite)
     print("Dialogue prêt.")
 
@@ -111,6 +130,9 @@ func jouer(conversation: Conversation) -> void:
 
     _conversation = conversation
     _index = 0
+
+    # Page blanche : on vide le carnet de la conversation précédente.
+    _historique.clear()
 
     # On fabrique les portraits des personnages de cette conversation.
     _creer_portraits()
@@ -180,11 +202,16 @@ func _mettre_en_avant_le_parleur(numero_parleur: int) -> void:
 
 
 # --- AFFICHER UN TEXTE DANS LA BOÎTE ---
-# Coeur commun de l'affichage : met en avant le locuteur, puis écrit
-# le texte lettre par lettre. Sert aussi bien aux répliques normales
-# du .tres qu'à la réponse choisie par le joueur.
+# Coeur commun de l'affichage : met en avant le locuteur, range la
+# ligne dans l'historique, puis écrit le texte lettre par lettre.
+# Sert aussi bien aux répliques normales du .tres qu'à la réponse
+# choisie par le joueur — c'est donc le SEUL endroit à observer pour
+# capturer tout ce qui est réellement prononcé, et rien d'autre.
 func _afficher_texte(texte: String, numero_locuteur: int) -> void:
     _mettre_en_avant_le_parleur(numero_locuteur)
+
+    # On range cette ligne dans le carnet de la conversation.
+    _noter_dans_historique(texte, numero_locuteur)
 
     texte_dialogue.text = texte
     texte_dialogue.visible_ratio = 0.0
@@ -192,6 +219,73 @@ func _afficher_texte(texte: String, numero_locuteur: int) -> void:
 
     _etat = Etat.ECRITURE
     _ecrire_lettre_par_lettre(texte.length())
+
+
+# --- NOTER UNE LIGNE DANS L'HISTORIQUE ---
+# Range une fiche { "nom": ..., "texte": ... } dans _historique.
+# On y stocke le NOM du personnage — résolu ici, tant que la
+# conversation est encore vivante — et non son numéro : le panneau de
+# récap (D7-b) pourra ainsi réafficher l'échange même APRÈS la fin de
+# la conversation, sans avoir à recroiser la liste `personnages`.
+func _noter_dans_historique(texte: String, numero_locuteur: int) -> void:
+    var nom: String = "?"
+    if numero_locuteur >= 0 \
+            and numero_locuteur < _conversation.personnages.size():
+        nom = _conversation.personnages[numero_locuteur].nom
+    else:
+        push_warning("Dialogue : locuteur %d hors de la liste des "
+                % numero_locuteur + "personnages.")
+
+    _historique.append({ "nom": nom, "texte": texte })
+
+
+# --- LIRE L'HISTORIQUE ---
+# Donne accès, en lecture, aux lignes réellement jouées de la dernière
+# conversation (ou de celle en cours). On renvoie une COPIE : personne
+# ne peut ainsi modifier le carnet du service depuis l'extérieur.
+func historique() -> Array:
+    return _historique.duplicate()
+
+
+# --- OUVRIR LE PANNEAU DE RÉCAP ---
+# Reconstruit le texte de l'échange depuis le carnet, le met dans
+# TexteRecap, et allume le panneau. Le panneau étant le dernier enfant
+# de la scène, il se dessine par-dessus tout — y compris une
+# conversation en cours. Fonction interne : on passe toujours par
+# basculer_recap() (la seule porte publique).
+func _ouvrir_recap() -> void:
+    texte_recap.text = _construire_texte_recap()
+    # On repart toujours du haut de la liste.
+    texte_recap.scroll_to_line(0)
+    panneau_recap.visible = true
+
+
+# --- FERMER LE PANNEAU DE RÉCAP ---
+# Branché sur le bouton Fermer du panneau (voir _ready). On se contente
+# de cacher le panneau : la conversation, si elle est en cours, a
+# continué tranquillement derrière et reprend là où elle en était.
+func _fermer_recap() -> void:
+    panneau_recap.visible = false
+
+
+# --- CONSTRUIRE LE TEXTE DU RÉCAP ---
+# Transforme le carnet _historique en un seul texte affichable.
+# Chaque entrée devient une ligne au format :  Nom : "Texte"
+# Le nom est mis en gras (BBCode) ; le texte de la réplique est gardé
+# TEL QUEL, retours à la ligne d'origine compris. Une ligne vide
+# sépare deux répliques pour aérer la lecture.
+func _construire_texte_recap() -> String:
+    if _historique.is_empty():
+        return "[i]Aucun échange à afficher pour l'instant.[/i]"
+
+    var morceaux: Array[String] = []
+    for entree in _historique:
+        var nom: String = entree["nom"]
+        var texte: String = entree["texte"]
+        morceaux.append("[b]%s :[/b] \"%s\"" % [nom, texte])
+
+    # Une ligne vide entre chaque réplique.
+    return "\n\n".join(morceaux)
 
 
 # --- AFFICHER LA RÉPLIQUE COURANTE ---
@@ -301,6 +395,9 @@ func _sur_clic_choix(numero: int) -> void:
 
     # 4. La réponse choisie devient une vraie réplique : elle s'écrit
     #    dans la boîte, le portrait de son locuteur passe en avant.
+    #    (C'est _afficher_texte qui la rangera dans l'historique :
+    #    seule la réponse RETENUE y entre, jamais les options A/B/C
+    #    que le joueur n'a pas choisies.)
     _en_reponse_choisie = true
     _afficher_texte(texte, numero_locuteur)
 
@@ -380,8 +477,32 @@ func _terminer() -> void:
     _choix_courant = null
     _en_reponse_choisie = false
 
+    # NOTE : on NE vide PAS _historique ici. Le carnet doit survivre à
+    # la fin de la conversation pour que le récap (D7-b) reste lisible.
+    # Il sera vidé au prochain jouer(), au début de la conversation
+    # suivante.
+
     # On annonce la fin : le décor se dégèle, le HUD revient.
     conversation_terminee.emit()
     Hud.montrer()
 
     print("Dialogue : conversation terminée.")
+
+
+# --- BASCULER LE PANNEAU DE RÉCAP ---
+# PORTE D'ENTRÉE PUBLIQUE du récapitulatif : ouvre le récap s'il est
+# fermé, le ferme s'il est ouvert. Une seule fonction pour les deux
+# sens — appelée aussi bien par la touche R que par le bouton Récap
+# du HUD (D7-b-2). Tout passe par ici.
+func basculer_recap() -> void:
+    if panneau_recap.visible:
+        _fermer_recap()
+    else:
+        _ouvrir_recap()
+
+
+# --- Raccourci clavier : la touche R bascule le récap ---
+func _input(event: InputEvent) -> void:
+    if event is InputEventKey and event.pressed and not event.echo:
+        if event.keycode == KEY_R:
+            basculer_recap()

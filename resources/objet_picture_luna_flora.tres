@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="ObjetInventaire" load_steps=3 format=3 uid="uid://qcst0e50meog"]
+
+[ext_resource type="Texture2D" uid="uid://opu4yrcft2i6" path="res://assets/art/characters/picture/picture_luna_flora.png" id="1_lyg8f"]
+[ext_resource type="Script" uid="uid://i0mq24axp1k8" path="res://resources/objet_inventaire.gd" id="1_m8idv"]
+
+[resource]
+script = ExtResource("1_m8idv")
+nom_affiche = "Photo reconstitué"
+icone = ExtResource("1_lyg8f")
+description = "C'est 2 moitiés font clairement la pair.
+Je devrais essayer d'avoir plus d'informations sur la personne de droite."
+metadata/_custom_type_script = "uid://i0mq24axp1k8"
