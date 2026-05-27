@@ -16,7 +16,17 @@ texte_c = "..."
 [sub_resource type="Resource" id="Rep01"]
 script = ExtResource("1")
 locuteur = 1
-texte = "Monsieur... ? On m'a dit que vous retrouviez les gens."
+texte = "Monsieur, je ne sais plus vers qui me tourner.
+J'ai frappé à toutes les portes,
+parlé à tous les gens qui voulaient bien m'écouter,
+et la plupart ne voulaient pas.
+
+
+On m'a dit que vous, au moins,
+vous pourriez m'aider.
+
+Alors me voilà, dans votre bureau,
+à espérer que ce ne soit pas encore une fausse piste..."
 choix = SubResource("Choix1")
 
 [sub_resource type="Resource" id="Rep02"]

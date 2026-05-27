@@ -8,14 +8,23 @@
 #   - Dialogue : les conversations, boîte CLAIRE, reste affichée,
 #                avance au CLIC du joueur (voir la "bible", section E).
 #
-# ÉTAT À CETTE ÉTAPE (D7-b-2) : le service joue une conversation, gère
+# ÉTAT À CETTE ÉTAPE (L.18-c) : le service joue une conversation, gère
 # les choix et leur effet, annonce le début / la fin de la
 # conversation, crée les portraits dynamiquement et met en avant le
 # parleur par estompage. La réponse choisie est PRONONCÉE dans la
 # boîte. Le service GARDE EN MÉMOIRE les lignes réellement prononcées
-# (D7-a) et sait afficher un PANNEAU DE RÉCAP qui les réaffiche. Ce
-# récap se bascule (ouvrir / fermer) par la touche R, ou par le bouton
-# Récap du HUD hors conversation — tous deux appellent basculer_recap().
+# et sait afficher un PANNEAU DE RÉCAP qui les réaffiche (touche R ou
+# bouton Récap du HUD, tous deux via basculer_recap()).
+#
+# La PAGINATION des répliques longues (L.18) est ACTIVE : une réplique
+# trop longue pour la boîte est automatiquement découpée en "pages"
+# affichées l'une après l'autre, le clic passant de page en page.
+# Voir le bloc OUTILS DE PAGINATION (la découpe) et le trio
+# _afficher_texte / _afficher_page_courante / _apres_page (le
+# déroulé). Une réplique courte tient en une page : elle se comporte
+# exactement comme avant. La réplique ENTIÈRE — et non les pages —
+# est ce qui est enregistré dans l'historique du récap.
+#
 # PAS ENCORE GÉRÉ : la variation du texte d'Al' selon son palier de
 # santé mentale.
 
@@ -68,11 +77,28 @@ const OPACITE_ESTOMPE: float = 0.45
 const DUREE_ESTOMPAGE: float = 0.25
 
 
+# --- Réglages de la pagination des répliques longues (L.18) ---
+# Nombre maximum de lignes qu'une "page" de dialogue peut occuper
+# dans la boîte. Une réplique plus longue est découpée en plusieurs
+# pages affichées l'une après l'autre. Réglable : si une page paraît
+# trop pleine (texte qui frôle le cadre) ou trop vide, on ajuste ce
+# nombre.
+const MAX_LIGNES_PAGE: int = 3
+# Largeur de la boîte de dialogue, en pixels. La boîte est placée en
+# coordonnées fixes (bible L.12) : largeur = offset_right - offset_left
+# = 1460 - 460. Sert à mesurer le repli du texte.
+const LARGEUR_BOITE: float = 1000.0
+# Marge intérieure, en pixels, retirée de la largeur de la boîte
+# avant de mesurer le texte — pour qu'il ne colle pas au cadre noir.
+# C'est un retrait TOTAL (un peu de chaque côté).
+const MARGE_TEXTE_BOITE: float = 24.0
+
+
 # --- État de l'affichage ---
 enum Etat { REPOS, ECRITURE, FINIE, CHOIX }
 #   REPOS    : aucune conversation en cours, boîte cachée.
-#   ECRITURE : une réplique est en train de s'écrire lettre par lettre.
-#   FINIE    : la réplique est entièrement affichée, on attend le clic.
+#   ECRITURE : une page est en train de s'écrire lettre par lettre.
+#   FINIE    : la page est entièrement affichée, on attend le clic.
 #   CHOIX    : 3 boutons sont affichés, on attend que le joueur choisisse.
 var _etat: Etat = Etat.REPOS
 
@@ -109,6 +135,15 @@ var _portraits: Array[TextureRect] = []
 # conversation terminée (le bouton du HUD, D7-b, s'utilise hors
 # dialogue, quand le HUD est de nouveau visible).
 var _historique: Array[Dictionary] = []
+
+# --- Pagination de la réplique en cours (L.18) ---
+# Une réplique trop longue pour la boîte est découpée en plusieurs
+# "pages" affichées l'une après l'autre. _pages contient ces pages
+# (toujours au moins une) ; _page_courante est le numéro de celle
+# actuellement à l'écran. Une réplique courte tient en une seule
+# page : _pages n'a alors qu'un élément.
+var _pages: Array[String] = []
+var _page_courante: int = 0
 
 
 # Appelée automatiquement une fois, au lancement.
@@ -201,24 +236,163 @@ func _mettre_en_avant_le_parleur(numero_parleur: int) -> void:
                 opacite_visee, DUREE_ESTOMPAGE)
 
 
-# --- AFFICHER UN TEXTE DANS LA BOÎTE ---
-# Coeur commun de l'affichage : met en avant le locuteur, range la
-# ligne dans l'historique, puis écrit le texte lettre par lettre.
-# Sert aussi bien aux répliques normales du .tres qu'à la réponse
-# choisie par le joueur — c'est donc le SEUL endroit à observer pour
-# capturer tout ce qui est réellement prononcé, et rien d'autre.
+# === OUTILS DE PAGINATION (L.18) =============================
+# Ce bloc sait, à partir d'une réplique, dire combien de lignes elle
+# occupe et la découper en une LISTE DE PAGES tenant chacune dans la
+# boîte. Il ne touche à RIEN à l'écran : c'est de la préparation de
+# texte. C'est le déroulé (_afficher_texte) qui l'utilise ensuite.
+
+
+# --- UN TEXTE TIENT-IL DANS UNE SEULE PAGE ? ---
+# Renvoie vrai si le texte, une fois replié à la largeur de la boîte,
+# occupe MAX_LIGNES_PAGE lignes ou moins.
+func _texte_tient_dans_une_page(texte: String) -> bool:
+    return _compter_lignes(texte) <= MAX_LIGNES_PAGE
+
+
+# --- COMPTER LES LIGNES qu'un texte occuperait dans la boîte ---
+# Combien de lignes ce texte prendra-t-il une fois affiché dans la
+# boîte de dialogue ? On tient compte du repli automatique à la
+# largeur de la boîte ET des retours à la ligne manuels du texte.
+func _compter_lignes(texte: String) -> int:
+    # Un texte vide n'occupe aucune ligne.
+    if texte.strip_edges() == "":
+        return 0
+
+    # On lit la police et sa taille DIRECTEMENT sur le label : ainsi
+    # la mesure colle toujours exactement à ce qui est affiché, même
+    # si on change la police plus tard.
+    var police: Font = texte_dialogue.get_theme_font("font")
+    var taille_police: int = texte_dialogue.get_theme_font_size("font_size")
+
+    # Largeur où le texte a le droit de s'étaler : la largeur de la
+    # boîte, moins la marge pour ne pas coller au cadre noir.
+    var largeur: float = LARGEUR_BOITE - MARGE_TEXTE_BOITE
+
+    # Hauteur totale qu'occuperait le texte une fois replié à cette
+    # largeur. Godot calcule ça tout seul, sans rien afficher.
+    var hauteur_totale: float = police.get_multiline_string_size(
+            texte, HORIZONTAL_ALIGNMENT_CENTER, largeur, taille_police).y
+
+    # Hauteur d'une seule ligne, pour cette police et cette taille.
+    var hauteur_ligne: float = police.get_height(taille_police)
+
+    # Nombre de lignes = hauteur totale divisée par la hauteur d'une
+    # ligne (arrondi au plus proche, pour absorber les petits écarts).
+    return int(round(hauteur_totale / hauteur_ligne))
+
+
+# --- DÉCOUPER UN TEXTE EN MOTS ---
+# Transforme un texte en liste de "mots". Les retours à la ligne
+# manuels (\n) sont isolés comme des mots à part entière : ainsi le
+# massicot pourra les conserver tels quels au lieu de les écraser.
+func _decouper_en_mots(texte: String) -> Array[String]:
+    # On entoure chaque \n d'espaces pour qu'il devienne un mot isolé,
+    # puis on découpe sur les espaces (false = on ignore les vides).
+    var avec_marqueurs: String = texte.replace("\n", " \n ")
+    var bruts: PackedStringArray = avec_marqueurs.split(" ", false)
+
+    var mots: Array[String] = []
+    for m in bruts:
+        mots.append(m)
+    return mots
+
+
+# --- RECOLLER UNE LISTE DE MOTS EN TEXTE ---
+# L'inverse de _decouper_en_mots : reforme un texte propre à partir
+# d'une liste de mots. Les mots sont séparés par une espace ; un mot
+# "\n" est recollé sans espace autour, pour rester un vrai retour à
+# la ligne et non " \n ".
+func _assembler(mots: Array[String]) -> String:
+    var resultat: String = ""
+    for mot in mots:
+        if resultat == "":
+            resultat = mot
+        elif mot == "\n":
+            resultat += "\n"
+        elif resultat.ends_with("\n"):
+            resultat += mot
+        else:
+            resultat += " " + mot
+    return resultat
+
+
+# --- PAGINER : découper une réplique en pages ---
+# Le "massicot". Reçoit le texte d'une réplique, renvoie la liste des
+# pages à afficher l'une après l'autre, chacune tenant dans la boîte.
+#
+# Principe : on empile les mots un par un dans la page en cours ;
+# avant chaque mot, on vérifie que la page tiendrait encore. Si oui,
+# on l'ajoute ; si non, on FERME la page en cours et on en ouvre une
+# nouvelle qui démarre par ce mot. On ne coupe donc jamais un mot.
+func _paginer(texte: String) -> Array[String]:
+    # Cas courant : la réplique tient déjà en une page -> rien à
+    # découper, on la renvoie intacte (une liste d'une seule page).
+    if _texte_tient_dans_une_page(texte):
+        var une_page: Array[String] = [texte]
+        return une_page
+
+    var pages: Array[String] = []
+    var mots: Array[String] = _decouper_en_mots(texte)
+    var page_courante: Array[String] = []
+
+    for mot in mots:
+        # On teste la page en cours AVEC ce mot en plus.
+        var essai: Array[String] = page_courante.duplicate()
+        essai.append(mot)
+
+        if _texte_tient_dans_une_page(_assembler(essai)):
+            # Le mot rentre encore : on garde la page agrandie.
+            page_courante = essai
+        else:
+            # Le mot ne rentre plus : on ferme la page en cours (en
+            # nettoyant ses bords) et on en ouvre une nouvelle.
+            if not page_courante.is_empty():
+                pages.append(_assembler(page_courante).strip_edges())
+            page_courante = [mot]
+
+    # La dernière page en cours n'a pas été fermée par la boucle.
+    if not page_courante.is_empty():
+        pages.append(_assembler(page_courante).strip_edges())
+
+    return pages
+
+
+# --- AFFICHER UNE RÉPLIQUE DANS LA BOÎTE ---
+# Démarre l'affichage d'une réplique — réplique normale du .tres OU
+# réponse choisie par le joueur. Trois choses, dans l'ordre :
+#   1. met en avant le portrait du locuteur ;
+#   2. range la réplique ENTIÈRE dans l'historique, une seule fois,
+#      AVANT toute découpe : le récap montre des répliques complètes,
+#      jamais des bouts de page ;
+#   3. découpe la réplique en pages (L.18) et affiche la première.
+# C'est le SEUL endroit où une réplique entre en scène : c'est donc
+# ici, et nulle part ailleurs, qu'on capture ce qui est prononcé.
 func _afficher_texte(texte: String, numero_locuteur: int) -> void:
     _mettre_en_avant_le_parleur(numero_locuteur)
 
-    # On range cette ligne dans le carnet de la conversation.
+    # On range la réplique ENTIÈRE dans le carnet (avant la découpe).
     _noter_dans_historique(texte, numero_locuteur)
 
-    texte_dialogue.text = texte
+    # On découpe la réplique en pages et on affiche la première.
+    _pages = _paginer(texte)
+    _page_courante = 0
+    _afficher_page_courante()
+
+
+# --- AFFICHER LA PAGE COURANTE ---
+# Met la page _page_courante dans la boîte et lance son écriture
+# lettre par lettre. Sert pour la première page d'une réplique comme
+# pour chacune des pages suivantes.
+func _afficher_page_courante() -> void:
+    var page: String = _pages[_page_courante]
+
+    texte_dialogue.text = page
     texte_dialogue.visible_ratio = 0.0
     boite.visible = true
 
     _etat = Etat.ECRITURE
-    _ecrire_lettre_par_lettre(texte.length())
+    _ecrire_lettre_par_lettre(page.length())
 
 
 # --- NOTER UNE LIGNE DANS L'HISTORIQUE ---
@@ -321,13 +495,28 @@ func _sur_clic_boite(event: InputEvent) -> void:
     if _etat == Etat.ECRITURE:
         _afficher_tout_de_suite()
     elif _etat == Etat.FINIE:
-        _apres_replique()
+        _apres_page()
 
 
-# --- AFFICHER LA RÉPLIQUE D'UN COUP ---
+# --- AFFICHER LA PAGE D'UN COUP ---
+# Un clic pendant l'écriture termine l'animation de la page en cours.
 func _afficher_tout_de_suite() -> void:
     _etat = Etat.FINIE
     texte_dialogue.visible_ratio = 1.0
+
+
+# --- APRÈS UNE PAGE FINIE ---
+# Le joueur a cliqué sur une page entièrement affichée. S'il reste
+# des pages à cette réplique, on passe à la suivante. Sinon, la
+# réplique est vraiment terminée : on enchaîne sur la suite.
+func _apres_page() -> void:
+    if _page_courante < _pages.size() - 1:
+        # Il reste des pages : on affiche la suivante.
+        _page_courante += 1
+        _afficher_page_courante()
+    else:
+        # Dernière page : la réplique est finie pour de bon.
+        _apres_replique()
 
 
 # --- APRÈS UNE RÉPLIQUE FINIE ---
@@ -395,9 +584,6 @@ func _sur_clic_choix(numero: int) -> void:
 
     # 4. La réponse choisie devient une vraie réplique : elle s'écrit
     #    dans la boîte, le portrait de son locuteur passe en avant.
-    #    (C'est _afficher_texte qui la rangera dans l'historique :
-    #    seule la réponse RETENUE y entre, jamais les options A/B/C
-    #    que le joueur n'a pas choisies.)
     _en_reponse_choisie = true
     _afficher_texte(texte, numero_locuteur)
 
@@ -476,6 +662,10 @@ func _terminer() -> void:
     _index = 0
     _choix_courant = null
     _en_reponse_choisie = false
+
+    # On remet aussi à zéro la pagination de la dernière réplique.
+    _pages.clear()
+    _page_courante = 0
 
     # NOTE : on NE vide PAS _historique ici. Le carnet doit survivre à
     # la fin de la conversation pour que le récap (D7-b) reste lisible.
