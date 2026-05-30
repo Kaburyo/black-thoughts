@@ -25,8 +25,11 @@
 # exactement comme avant. La réplique ENTIÈRE — et non les pages —
 # est ce qui est enregistré dans l'historique du récap.
 #
-# PAS ENCORE GÉRÉ : la variation du texte d'Al' selon son palier de
-# santé mentale.
+# La VARIATION DU TEXTE D'AL' selon son palier de santé mentale (L.20)
+# est ACTIVE : au moment d'afficher une réplique normale, le service
+# choisit la bonne version du texte selon SanteMentale.palier(), en
+# retombant sur le texte de base quand la variante du palier est vide
+# (voir _texte_selon_sante).
 
 extends CanvasLayer
 
@@ -462,6 +465,45 @@ func _construire_texte_recap() -> String:
     return "\n\n".join(morceaux)
 
 
+# --- TEXTE D'UNE RÉPLIQUE SELON LA SANTÉ MENTALE (L.20) ---
+# Choisit la bonne version du texte d'une réplique selon le palier de
+# santé mentale courant d'Al'.
+#
+# Rappel du modèle (replique_dialogue.gd) : une réplique a un `texte` de
+# base PLUS quatre variantes optionnelles (good/mid/bof/bad). Le palier
+# Ok correspond AU texte de base — il n'a pas de champ séparé.
+#
+# DEUX PROPRIÉTÉS VOULUES :
+#   - Les variantes ne servent QUE pour les répliques d'Al' qu'on a
+#     choisi de nuancer. Laissée vide, une variante retombe sur le
+#     texte de base.
+#   - Les répliques des PNJ (Jenny...) n'ont jamais de variantes
+#     remplies : elles affichent donc toujours leur texte de base.
+#     C'est pourquoi on n'a AUCUN besoin de tester "est-ce Al' ?" ici :
+#     le repli s'en occupe tout seul.
+func _texte_selon_sante(replique: RepliqueDialogue) -> String:
+    # On lit la variante correspondant au palier courant. Le cas Ok
+    # (et tout cas imprévu) laisse `variante` vide -> repli sur le
+    # texte de base, géré juste en dessous.
+    var variante: String = ""
+    match SanteMentale.palier():
+        Jauge.Palier.GOOD:
+            variante = replique.texte_good
+        Jauge.Palier.MID:
+            variante = replique.texte_mid
+        Jauge.Palier.BOF:
+            variante = replique.texte_bof
+        Jauge.Palier.BAD:
+            variante = replique.texte_bad
+
+    # Repli : une variante vide (ou un palier Ok) -> on prend le texte
+    # de base. strip_edges() évite qu'un champ contenant juste des
+    # espaces passe pour "rempli".
+    if variante.strip_edges() == "":
+        return replique.texte
+    return variante
+
+
 # --- AFFICHER LA RÉPLIQUE COURANTE ---
 func _afficher_replique_courante() -> void:
     # On affiche une réplique normale du .tres (pas une réponse choisie).
@@ -469,9 +511,10 @@ func _afficher_replique_courante() -> void:
 
     var replique: RepliqueDialogue = _conversation.repliques[_index]
 
-    # Pour l'instant on affiche toujours le texte de base. La variation
-    # selon le palier de santé mentale d'Al' sera branchée plus tard.
-    _afficher_texte(replique.texte, replique.locuteur)
+    # La version affichée dépend du palier de santé mentale d'Al' (L.20).
+    # Une réplique de PNJ — ou une réplique d'Al' sans variante remplie —
+    # retombe d'elle-même sur son texte de base (voir _texte_selon_sante).
+    _afficher_texte(_texte_selon_sante(replique), replique.locuteur)
 
 
 # --- L'ÉCRITURE LETTRE PAR LETTRE ---

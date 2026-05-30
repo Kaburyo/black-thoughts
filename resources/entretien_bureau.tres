@@ -32,7 +32,8 @@ choix = SubResource("Choix1")
 [sub_resource type="Resource" id="Rep02"]
 script = ExtResource("1")
 locuteur = 1
-texte = "(elle s'assoit au bord de la chaise) Merci. Je ne savais plus où aller."
+texte = "(elle s'assoit au bord de la chaise)
+Merci. Je ne savais plus où aller."
 
 [sub_resource type="Resource" id="Rep03"]
 script = ExtResource("1")
@@ -64,6 +65,7 @@ texte = "Et avant qu'elle parte... elle avait changé. Froide. Elle qui souriait
 [sub_resource type="Resource" id="Rep07"]
 script = ExtResource("1")
 texte = "Les gens changent, madame. Et certains ne veulent pas qu'on les retrouve."
+texte_bad = "Les gens qui disparaissent ont souvent quelque chose à ce reprocher, Madame..."
 
 [sub_resource type="Resource" id="Choix3"]
 script = ExtResource("2")
