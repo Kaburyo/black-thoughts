@@ -30,6 +30,14 @@
 # choisit la bonne version du texte selon SanteMentale.palier(), en
 # retombant sur le texte de base quand la variante du palier est vide
 # (voir _texte_selon_sante).
+#
+# La RÉACTION DES PNJ AU CHOIX DU JOUEUR est ACTIVE : une réplique peut
+# porter, en plus, des textes de "réaction" (reaction_a/b/c) choisis
+# selon la dernière option retenue par le joueur (A/B/C). C'est un axe
+# distinct de la santé mentale : il fait réagir Jenny (et les futurs
+# PNJ) au TON de la réponse d'Al', sans créer de vrais embranchements
+# (la liste de répliques reste linéaire). La réaction est prioritaire
+# sur la variante de palier (voir _texte_a_afficher).
 
 extends CanvasLayer
 
@@ -120,6 +128,15 @@ var _choix_courant: ChoixDialogue = null
 # au lieu de re-proposer le choix.
 var _en_reponse_choisie: bool = false
 
+# Le NUMÉRO de la dernière option choisie par le joueur dans cette
+# conversation : 0 = A, 1 = B, 2 = C ; -1 = aucun choix fait pour
+# l'instant. Sert à faire RÉAGIR une réplique au dernier choix (voir
+# _texte_de_reaction). Remis à -1 au début de chaque conversation
+# (jouer()), mis à jour à chaque clic sur une option (_sur_clic_choix).
+# Il PERSISTE d'une réplique à l'autre jusqu'au choix suivant : ainsi
+# une réaction peut tomber une ou deux répliques après le choix.
+var _dernier_choix: int = -1
+
 # --- Portraits affichés ---
 # La liste des portraits actuellement à l'écran. IMPORTANT : son ordre
 # suit exactement la liste `personnages` de la conversation, donc
@@ -171,6 +188,9 @@ func jouer(conversation: Conversation) -> void:
 
     # Page blanche : on vide le carnet de la conversation précédente.
     _historique.clear()
+
+    # On oublie le dernier choix : nouvelle conversation, page blanche.
+    _dernier_choix = -1
 
     # On fabrique les portraits des personnages de cette conversation.
     _creer_portraits()
@@ -504,6 +524,48 @@ func _texte_selon_sante(replique: RepliqueDialogue) -> String:
     return variante
 
 
+# --- TEXTE À AFFICHER POUR UNE RÉPLIQUE (chef d'orchestre) ---
+# Décide quelle version du texte d'une réplique on montre, en
+# combinant les deux axes de variation, par ordre de priorité :
+#   1. RÉACTION au dernier choix du joueur (si une réaction est
+#      remplie pour l'option choisie) — l'événement le plus récent ;
+#   2. sinon, VARIANTE selon la santé mentale d'Al' (L.20) ;
+#   3. sinon (tout vide), le texte de base.
+# Un PNJ sans réaction ni variante remplie retombe donc sur son texte
+# de base, sans aucun test "qui parle ?".
+func _texte_a_afficher(replique: RepliqueDialogue) -> String:
+    var reaction: String = _texte_de_reaction(replique)
+    if reaction != "":
+        return reaction
+    return _texte_selon_sante(replique)
+
+
+# --- TEXTE D'UNE RÉPLIQUE SELON LE DERNIER CHOIX ---
+# Si un choix a déjà été fait dans cette conversation, renvoie la
+# réaction correspondante (reaction_a/b/c) — mais seulement si elle est
+# remplie. Sinon renvoie "" (chaîne vide), qui veut dire "pas de
+# réaction, occupe-toi du reste" pour _texte_a_afficher. Même logique
+# de repli que les variantes de santé mentale.
+func _texte_de_reaction(replique: RepliqueDialogue) -> String:
+    # Aucun choix fait pour l'instant : pas de réaction possible.
+    if _dernier_choix < 0:
+        return ""
+
+    var variante: String = ""
+    match _dernier_choix:
+        0:
+            variante = replique.reaction_a
+        1:
+            variante = replique.reaction_b
+        2:
+            variante = replique.reaction_c
+
+    # Une réaction vide -> on signale "rien" en renvoyant "".
+    if variante.strip_edges() == "":
+        return ""
+    return variante
+
+
 # --- AFFICHER LA RÉPLIQUE COURANTE ---
 func _afficher_replique_courante() -> void:
     # On affiche une réplique normale du .tres (pas une réponse choisie).
@@ -514,7 +576,10 @@ func _afficher_replique_courante() -> void:
     # La version affichée dépend du palier de santé mentale d'Al' (L.20).
     # Une réplique de PNJ — ou une réplique d'Al' sans variante remplie —
     # retombe d'elle-même sur son texte de base (voir _texte_selon_sante).
-    _afficher_texte(_texte_selon_sante(replique), replique.locuteur)
+    # Quel texte afficher ? Réaction au dernier choix si elle existe,
+    # sinon variante de santé mentale, sinon texte de base (voir
+    # _texte_a_afficher). Un PNJ sans rien de rempli -> texte de base.
+    _afficher_texte(_texte_a_afficher(replique), replique.locuteur)
 
 
 # --- L'ÉCRITURE LETTRE PAR LETTRE ---
@@ -613,6 +678,10 @@ func _sur_clic_choix(numero: int) -> void:
         return
 
     # 1. L'option choisie influe sur la santé mentale d'Al'.
+    # On retient l'option choisie : elle pourra faire réagir une
+    # réplique suivante (un PNJ qui répond selon le ton d'Al').
+    _dernier_choix = numero
+
     var delta: float = _valeur_option(numero)
     SanteMentale.modifier(delta)
     print("Dialogue : option %d choisie -> santé mentale %+.0f"

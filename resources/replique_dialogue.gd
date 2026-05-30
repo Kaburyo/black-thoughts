@@ -51,6 +51,23 @@ extends Resource
 @export_multiline var texte_bad: String = ""
 
 
+# --- Réaction au DERNIER CHOIX du joueur (optionnel) ---
+# Autre axe de variation, DISTINCT des variantes de santé mentale
+# ci-dessus. Ici, le texte change selon la dernière OPTION choisie par
+# le joueur (A, B ou C), et non selon une jauge. Sert surtout aux PNJ
+# (ex. Jenny) pour qu'ils "réagissent" au ton de la réponse d'Al'.
+#   - reaction_a -> utilisée si la dernière option choisie était A ;
+#   - reaction_b -> option B ;  reaction_c -> option C.
+# Laissée vide -> repli sur le `texte` de base (même principe que les
+# variantes de palier). Si une réaction ET une variante de palier sont
+# remplies sur la même réplique, la RÉACTION est prioritaire (c'est
+# l'événement le plus récent) — voir _texte_a_afficher() dans dialogue.gd.
+@export_group("Réaction au dernier choix (optionnel)")
+@export_multiline var reaction_a: String = ""
+@export_multiline var reaction_b: String = ""
+@export_multiline var reaction_c: String = ""
+
+
 # --- Choix accroché (optionnel) ---
 # Si rempli : une fois cette réplique affichée, le jeu présente ce
 # point de choix. Si laissé vide : on passe directement à la réplique
