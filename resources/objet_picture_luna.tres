@@ -5,7 +5,7 @@
 
 [resource]
 script = ExtResource("1_vhppp")
-nom_affiche = "Moitié de photo déchiré"
+nom_affiche = "Moitié de photo déchiré (gauche)"
 icone = ExtResource("1_bjj1l")
 description = "C'est la photo de Luna."
 metadata/_custom_type_script = "uid://i0mq24axp1k8"

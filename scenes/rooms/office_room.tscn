@@ -1,8 +1,9 @@
-[gd_scene load_steps=14 format=3 uid="uid://cmb4d64jnojw2"]
+[gd_scene load_steps=16 format=3 uid="uid://cmb4d64jnojw2"]
 
 [ext_resource type="Texture2D" uid="uid://dwen5xltt24pl" path="res://assets/art/backgrounds/office.png" id="1_17l8b"]
 [ext_resource type="Script" uid="uid://dk8ygbdwkyyky" path="res://scenes/rooms/office_room.gd" id="1_xdoaq"]
 [ext_resource type="AudioStream" uid="uid://dqtmghg30m0pa" path="res://assets/audio/music/BLACKTHOUGHTS - OFFICE THEME.wav" id="3_74blg"]
+[ext_resource type="Texture2D" uid="uid://dhfuh8pd2slqc" path="res://assets/art/characters/picture/picture_luna.png" id="3_t6pyg"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_17l8b"]
 size = Vector2(140, 154)
@@ -32,7 +33,10 @@ size = Vector2(188, 541)
 size = Vector2(253.5, 480)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_kkjlo"]
-size = Vector2(176, 91)
+size = Vector2(176, 87)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_6qy7x"]
+size = Vector2(54.5, 31)
 
 [node name="OfficeRoom" type="Node2D"]
 script = ExtResource("1_xdoaq")
@@ -110,8 +114,22 @@ shape = SubResource("RectangleShape2D_8flyr")
 metadata/_edit_lock_ = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="ChairArea"]
-position = Vector2(899, 557.5)
+position = Vector2(899, 555.5)
 shape = SubResource("RectangleShape2D_kkjlo")
+
+[node name="PhotoArea" type="Area2D" parent="."]
+visible = false
+input_pickable = false
+
+[node name="PhotoSprite" type="Sprite2D" parent="PhotoArea"]
+position = Vector2(1057, 619)
+rotation = -1.5201818
+scale = Vector2(0.05, 0.05)
+texture = ExtResource("3_t6pyg")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PhotoArea"]
+position = Vector2(1056.75, 617.5)
+shape = SubResource("RectangleShape2D_6qy7x")
 
 [node name="PickupSprite" type="Sprite2D" parent="."]
 position = Vector2(960, 540)

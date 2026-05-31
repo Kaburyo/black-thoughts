@@ -5,7 +5,7 @@
 
 [resource]
 script = ExtResource("2_xwvbx")
-nom_affiche = "Moitié de photo déchiré"
+nom_affiche = "Moitié de photo déchiré (droite)"
 icone = ExtResource("1_hucmp")
 description = "C'est une moitié de photo où on peut voir une jeune femme
 clairement entrain de faire la fête.

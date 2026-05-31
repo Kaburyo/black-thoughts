@@ -1,5 +1,5 @@
-# office_room.gd
-# Pièce "Bureau d'Al'".
+# chambre_luna_room.gd
+# Pièce "BChambre Luna'".
 #
 # Ce script est très court : toute la MÉCANIQUE (examiner, ramasser,
 # verrou, sortie de pièce) vit dans le moule room_base.gd. La voix
