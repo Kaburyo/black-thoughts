@@ -38,7 +38,7 @@ func _definir_contenu() -> void:
         "PoubelleArea": {
             "pensee": "Pourquoi cette moité de photo est à la poubelle ?\n Je devrais poser des questions à Jenny\n à son sujet!",
             "id": "picture_flora",
-            "sprite": "res://assets/art/characters/Picture/picture_flora.png",
+            "sprite": "res://assets/art/characters/picture/picture_flora.png",
         },
         "RobeArea": {
             "pensee": "Tiens, tiens, tiens.\n Qu'est ce qu'on a là ?",

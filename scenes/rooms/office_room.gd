@@ -53,7 +53,7 @@ func _definir_contenu() -> void:
         "PhotoArea": {
             "pensee": "La photo de la petite Luna.\n Autant la garder sur moi —\n c'est tout ce que j'ai pour l'instant.",
             "id": "picture_luna",
-            "sprite": "res://assets/art/characters/Picture/picture_luna.png",
+            "sprite": "res://assets/art/characters/picture/picture_luna.png",
         },
     }
 
