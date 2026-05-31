@@ -17,6 +17,7 @@ config/icon="res://icon.svg"
 [autoload]
 
 Inventaire="*res://globals/Inventaire.gd"
+ObjetEnMain="*res://globals/objet_en_main.gd"
 Hud="*res://scenes/ui/hud.tscn"
 CatalogueObjets="*res://globals/catalogue_objets.gd"
 Voix="*res://scenes/ui/VoixInterieure.tscn"

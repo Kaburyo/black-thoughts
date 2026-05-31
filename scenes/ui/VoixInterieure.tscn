@@ -1,19 +1,32 @@
-[gd_scene load_steps=3 format=3 uid="uid://decjji6j8kiqr"]
+[gd_scene load_steps=4 format=3 uid="uid://decjji6j8kiqr"]
 
 [ext_resource type="FontFile" uid="uid://c2l8hflopw2o5" path="res://assets/fonts/Caveat-Medium.ttf" id="1_dcycs"]
 [ext_resource type="Script" uid="uid://b7scbha42de6i" path="res://scenes/ui/voix_interieure.gd" id="1_igl0g"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_igl0g"]
+bg_color = Color(0.15294118, 0.15294118, 0.15294118, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(1, 1, 1, 1)
+border_blend = true
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
 
 [node name="VoixInterieure" type="CanvasLayer"]
 layer = 10
 script = ExtResource("1_igl0g")
 
-[node name="TextBox" type="ColorRect" parent="."]
+[node name="TextBox" type="Panel" parent="."]
 offset_left = 460.0
 offset_top = 800.0
 offset_right = 1460.0
 offset_bottom = 1000.0
 mouse_filter = 2
-color = Color(0.061696764, 0.061696764, 0.061696764, 0.87058824)
+theme_override_styles/panel = SubResource("StyleBoxFlat_igl0g")
 
 [node name="ThoughtLabel" type="Label" parent="TextBox"]
 layout_mode = 1

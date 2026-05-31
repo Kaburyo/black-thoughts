@@ -10,9 +10,23 @@ border_width_top = 6
 border_width_right = 6
 border_width_bottom = 6
 border_color = Color(0, 0, 0, 1)
+border_blend = true
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_65ue4"]
 bg_color = Color(0.121814266, 0.121814266, 0.121814266, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_blend = true
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
 
 [node name="Dialogue" type="CanvasLayer"]
 script = ExtResource("1_65ue4")

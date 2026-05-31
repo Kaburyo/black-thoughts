@@ -19,7 +19,7 @@ extends CanvasLayer
 # La boîte (ColorRect) est le parent ; le label est son enfant.
 # On allume / fait disparaître la BOÎTE : le texte, étant son enfant,
 # suit automatiquement (il hérite de la transparence du parent).
-@onready var boite: ColorRect = $TextBox
+@onready var boite: Panel = $TextBox
 @onready var thought_label: Label = $TextBox/ThoughtLabel
 
 
