@@ -3,7 +3,8 @@
 #
 # Ce script ne décrit AUCUN personnage précis. Il dit seulement quelles
 # informations une fiche de personnage contient : un nom, un sprite de
-# portrait, et le côté de l'écran où ce portrait s'affiche.
+# portrait par défaut, sa galerie d'expressions, et le côté de l'écran
+# où ce portrait s'affiche.
 #
 # Chaque personnage qui peut apparaître dans un dialogue (Al', Jenny,
 # plus tard le videur du bar...) sera un fichier .tres séparé, créé à
@@ -35,8 +36,18 @@ enum Cote { GAUCHE, DROITE }
 # dans l'éditeur, et pourra servir plus tard d'étiquette "qui parle".
 @export var nom: String = ""
 
-# L'image du portrait, montrée pendant le dialogue.
+# L'image du portrait par DÉFAUT (le visage neutre), montrée pendant
+# le dialogue quand une réplique ne demande aucune expression précise.
 @export var sprite: Texture2D = null
+
+# La GALERIE d'expressions de ce personnage.
+# C'est un dictionnaire : à chaque MOT-CLÉ (ex. "angry", "smile") on
+# associe une image de portrait. Une réplique (voir replique_dialogue.gd)
+# n'a qu'à citer un de ces mots-clés pour afficher le bon visage.
+# Laissé vide -> le personnage n'a que son visage par défaut (cas de
+# Jenny pour la démo). Ajouter une expression = ajouter une ligne ici,
+# sans toucher au code (règles A.8 / A.9 de la bible).
+@export var expressions: Dictionary[String, Texture2D] = {}
 
 # Le côté de l'écran où ce portrait se place. Dans l'éditeur, ce
 # champ devient un menu déroulant (Gauche / Droite).

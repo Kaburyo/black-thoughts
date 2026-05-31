@@ -10,6 +10,7 @@
 [sub_resource type="Resource" id="Choix1"]
 script = ExtResource("2")
 texte_a = "On vous a mal renseignée. Je ne retrouve plus grand-chose, ces temps-ci. Surtout pas les gens."
+valeur_a = -2.5
 texte_b = "Ça dépend des gens. Et de qui les cherche. Asseyez-vous, ou sortez. Mais décidez."
 valeur_b = -5.0
 texte_c = "..."
@@ -23,10 +24,9 @@ choix = SubResource("Choix1")
 [sub_resource type="Resource" id="Rep02"]
 script = ExtResource("1")
 locuteur = 1
-texte = "Merci. Je ne savais plus où aller."
-reaction_a = "Au moins, vous, vous ne me promettez rien. Les autres me juraient monts et merveilles, et ne rappelaient jamais."
-reaction_b = "Je décide. Voyez — je suis assise. Je n'ai plus le luxe d'avoir peur des gens froids."
-reaction_c = "Vous ne dites rien. Tant mieux. Ceux qui parlaient trop ne m'ont menée nulle part."
+texte = "(elle s'assoit au bord de la chaise)
+Merci. Je ne savais plus où aller."
+reaction_b = "Vous au moins, vous ne mentez pas..."
 
 [sub_resource type="Resource" id="Rep03"]
 script = ExtResource("1")

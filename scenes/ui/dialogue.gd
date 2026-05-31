@@ -38,6 +38,21 @@
 # PNJ) au TON de la réponse d'Al', sans créer de vrais embranchements
 # (la liste de répliques reste linéaire). La réaction est prioritaire
 # sur la variante de palier (voir _texte_a_afficher).
+#
+# L'EXPRESSION DU PORTRAIT (L.21) est CÂBLÉE mais DORMANTE pour la démo
+# (choix éditorial : aucune réplique ne remplit de mot-clé, donc tous
+# les visages restent neutres et la démo est inchangée). Le mécanisme :
+# au début de CHAQUE réplique, _afficher_texte repose d'abord TOUS les
+# visages au neutre (_reposer_tous_les_visages), puis pose l'expression
+# du seul locuteur (_appliquer_expression) selon le mot-clé de la
+# réplique, piochée dans la galerie `expressions` de sa fiche
+# PersonnageDialogue (repli sur le visage par défaut, champ `sprite`,
+# si le mot-clé est vide ou inconnu). CONSÉQUENCE VOULUE : une
+# expression ne dure QUE le temps de sa réplique ; tout le monde revient
+# au neutre dès qu'un autre personnage prend la parole. Les réponses
+# CHOISIES par le joueur ne portent pas (encore) de mot-clé : elles
+# s'affichent au neutre — une expression par option (A/B/C) est NOTÉE
+# pour le grand jeu, pas codée ici.
 
 extends CanvasLayer
 
@@ -259,6 +274,47 @@ func _mettre_en_avant_le_parleur(numero_parleur: int) -> void:
                 opacite_visee, DUREE_ESTOMPAGE)
 
 
+# --- APPLIQUER UNE EXPRESSION AU PORTRAIT DU LOCUTEUR (L.21) ---
+# Pose le bon VISAGE sur le portrait du personnage qui parle, selon le
+# mot-clé d'expression de la réplique. Le mot-clé est cherché dans la
+# galerie `expressions` de la fiche PersonnageDialogue du locuteur :
+#   - mot-clé vide    -> visage par défaut (le champ `sprite`) ;
+#   - mot-clé inconnu -> visage par défaut aussi (sécurité) ;
+#   - mot-clé trouvé  -> le visage correspondant de la galerie.
+# Appelée pour CHAQUE réplique depuis _afficher_texte, JUSTE APRÈS
+# _reposer_tous_les_visages : on part donc d'une ardoise neutre, et on
+# ne repeint que le locuteur. Une expression ne dure ainsi que le temps
+# de sa réplique (voir _reposer_tous_les_visages et la bible L.21).
+func _appliquer_expression(numero_locuteur: int, mot_cle: String) -> void:
+    # Garde : un numéro hors de la liste n'a pas de portrait.
+    if numero_locuteur < 0 or numero_locuteur >= _portraits.size():
+        return
+
+    var perso: PersonnageDialogue = \
+            _conversation.personnages[numero_locuteur]
+
+    # Par défaut, le visage neutre de la fiche.
+    var visage: Texture2D = perso.sprite
+
+    # Si la réplique demande une expression CONNUE, on la prend.
+    if mot_cle.strip_edges() != "" and perso.expressions.has(mot_cle):
+        visage = perso.expressions[mot_cle]
+
+    _portraits[numero_locuteur].texture = visage
+
+
+# --- REMETTRE TOUS LES VISAGES AU NEUTRE (L.21) ---
+# Repose chaque portrait sur le visage par défaut de sa fiche (le champ
+# `sprite`). Appelée au début de CHAQUE réplique, juste AVANT qu'on
+# applique l'expression du locuteur : c'est ce qui fait qu'une
+# expression ne dure QUE le temps de la réplique qui la demande. Dès
+# qu'un autre personnage prend la parole, l'ancien locuteur a déjà été
+# reposé au neutre par cette fonction (comportement voulu — bible L.21).
+func _reposer_tous_les_visages() -> void:
+    for i in range(_portraits.size()):
+        _portraits[i].texture = _conversation.personnages[i].sprite
+
+
 # === OUTILS DE PAGINATION (L.18) =============================
 # Ce bloc sait, à partir d'une réplique, dire combien de lignes elle
 # occupe et la découper en une LISTE DE PAGES tenant chacune dans la
@@ -383,16 +439,28 @@ func _paginer(texte: String) -> Array[String]:
 
 # --- AFFICHER UNE RÉPLIQUE DANS LA BOÎTE ---
 # Démarre l'affichage d'une réplique — réplique normale du .tres OU
-# réponse choisie par le joueur. Trois choses, dans l'ordre :
+# réponse choisie par le joueur. Cinq choses, dans l'ordre :
 #   1. met en avant le portrait du locuteur ;
-#   2. range la réplique ENTIÈRE dans l'historique, une seule fois,
+#   2. repose TOUS les visages au neutre (L.21) — l'expression ne dure
+#      que le temps d'une réplique ;
+#   3. pose le bon VISAGE sur le portrait du locuteur selon `expression`
+#      (L.21) ;
+#   4. range la réplique ENTIÈRE dans l'historique, une seule fois,
 #      AVANT toute découpe : le récap montre des répliques complètes,
 #      jamais des bouts de page ;
-#   3. découpe la réplique en pages (L.18) et affiche la première.
+#   5. découpe la réplique en pages (L.18) et affiche la première.
 # C'est le SEUL endroit où une réplique entre en scène : c'est donc
-# ici, et nulle part ailleurs, qu'on capture ce qui est prononcé.
-func _afficher_texte(texte: String, numero_locuteur: int) -> void:
+# ici, et nulle part ailleurs, qu'on capture ce qui est prononcé et
+# qu'on règle le visage du parleur. `expression` est facultatif :
+# laissé vide (cas d'une réponse choisie), le visage reste neutre.
+func _afficher_texte(texte: String, numero_locuteur: int,
+        expression: String = "") -> void:
     _mettre_en_avant_le_parleur(numero_locuteur)
+
+    # On repart d'une ardoise neutre, puis on pose le visage demandé
+    # (ou le neutre par défaut) sur le seul locuteur — L.21.
+    _reposer_tous_les_visages()
+    _appliquer_expression(numero_locuteur, expression)
 
     # On range la réplique ENTIÈRE dans le carnet (avant la découpe).
     _noter_dans_historique(texte, numero_locuteur)
@@ -579,7 +647,10 @@ func _afficher_replique_courante() -> void:
     # Quel texte afficher ? Réaction au dernier choix si elle existe,
     # sinon variante de santé mentale, sinon texte de base (voir
     # _texte_a_afficher). Un PNJ sans rien de rempli -> texte de base.
-    _afficher_texte(_texte_a_afficher(replique), replique.locuteur)
+    # On transmet aussi le mot-clé d'expression de la réplique (L.21) :
+    # le portrait du locuteur prendra le visage demandé, ou le neutre.
+    _afficher_texte(_texte_a_afficher(replique), replique.locuteur,
+            replique.expression)
 
 
 # --- L'ÉCRITURE LETTRE PAR LETTRE ---

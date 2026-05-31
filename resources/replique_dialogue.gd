@@ -5,7 +5,7 @@
 # Une conversation (voir conversation.gd) est une LISTE de ces
 # répliques, jouées les unes après les autres.
 #
-# DEUX SUBTILITÉS, voulues par le design :
+# QUATRE SUBTILITÉS, voulues par le design :
 #
 # 1. LE LOCUTEUR EST UN NUMÉRO. La réplique ne nomme pas son
 #    personnage en dur : elle le désigne par sa PLACE dans la liste
@@ -21,7 +21,11 @@
 #    version Ok. Les 4 autres ne servent que si on VEUT faire varier
 #    la réplique — sinon on les laisse vides.
 #
-# 3. LE CHOIX ACCROCHÉ. Une réplique peut, en option, porter un point
+# 3. L'EXPRESSION. Une réplique peut demander un VISAGE précis pour son
+#    locuteur (mot-clé piochant dans la galerie `expressions` de sa
+#    fiche perso). Laissée vide -> le visage par défaut (bible L.21).
+#
+# 4. LE CHOIX ACCROCHÉ. Une réplique peut, en option, porter un point
 #    de choix « accroché à sa fin ». Si `choix` est vide, la réplique
 #    est suivie simplement de la réplique suivante.
 
@@ -39,6 +43,15 @@ extends Resource
 # La phrase dite. Pour un PNJ, c'est le SEUL texte à remplir.
 # Pour Al', c'est sa réplique au palier Ok (le palier de départ).
 @export_multiline var texte: String = ""
+
+
+# --- Expression du portrait (optionnel) ---
+# Le MOT-CLÉ d'un visage de la galerie `expressions` du locuteur
+# (ex. "angry", "smile", "shock"). Laissé vide -> visage par défaut
+# (le champ `sprite` de la fiche). Si le mot-clé n'existe pas dans la
+# galerie, on retombe aussi sur le visage par défaut (sécurité).
+@export_group("Expression du portrait (optionnel)")
+@export var expression: String = ""
 
 
 # --- Variantes d'Al' selon la santé mentale (optionnel) ---
