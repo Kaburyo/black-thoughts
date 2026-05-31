@@ -25,6 +25,7 @@ SanteMentale="*res://globals/sante_mentale.gd"
 Vie="*res://globals/vie.gd"
 FiltreMental="*res://scenes/ui/FiltreMental.tscn"
 Dialogue="*res://scenes/ui/dialogue.tscn"
+Combinaison="*res://globals/combinaison.gd"
 
 [display]
 

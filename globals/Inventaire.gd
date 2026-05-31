@@ -1,4 +1,4 @@
-# inventaire.gd
+# Inventaire.gd
 # Inventaire du joueur — script AUTOLOAD (global).
 # Un autoload est chargé une seule fois et reste accessible depuis
 # TOUTES les scènes : c'est ce qui permet à l'inventaire de SURVIVRE
@@ -27,6 +27,17 @@ func ajouter(id_objet: String) -> void:
     objets.append(id_objet)
     inventaire_modifie.emit()
     print("Objet ajouté à l'inventaire : ", id_objet)
+
+
+# Retire un objet de l'inventaire (ignoré s'il n'y est pas).
+# Le miroir de ajouter() : même logique, même signal, pour que
+# la grille du carnet se redessine toute seule après un retrait.
+func retirer(id_objet: String) -> void:
+    if id_objet not in objets:
+        return
+    objets.erase(id_objet)
+    inventaire_modifie.emit()
+    print("Objet retiré de l'inventaire : ", id_objet)
 
 
 # Renvoie true si le joueur possède cet objet.
