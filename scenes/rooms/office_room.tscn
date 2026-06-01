@@ -1,9 +1,9 @@
-[gd_scene load_steps=16 format=3 uid="uid://cmb4d64jnojw2"]
+[gd_scene format=3 uid="uid://cmb4d64jnojw2"]
 
 [ext_resource type="Texture2D" uid="uid://dwen5xltt24pl" path="res://assets/art/backgrounds/office.png" id="1_17l8b"]
 [ext_resource type="Script" uid="uid://dk8ygbdwkyyky" path="res://scenes/rooms/office_room.gd" id="1_xdoaq"]
-[ext_resource type="AudioStream" uid="uid://dqtmghg30m0pa" path="res://assets/audio/music/BLACKTHOUGHTS - OFFICE THEME.wav" id="3_74blg"]
 [ext_resource type="Texture2D" uid="uid://dhfuh8pd2slqc" path="res://assets/art/characters/picture/picture_luna.png" id="3_t6pyg"]
+[ext_resource type="AudioStream" uid="uid://byasxpyw045l0" path="res://assets/audio/music/office_theme.wav" id="4_t6pyg"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_17l8b"]
 size = Vector2(140, 154)
@@ -38,103 +38,103 @@ size = Vector2(176, 87)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_6qy7x"]
 size = Vector2(54.5, 31)
 
-[node name="OfficeRoom" type="Node2D"]
+[node name="OfficeRoom" type="Node2D" unique_id=987816447]
 script = ExtResource("1_xdoaq")
 metadata/_edit_lock_ = true
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=542272633]
 scale = Vector2(1.15, 1.15)
 texture = ExtResource("1_17l8b")
 centered = false
 metadata/_edit_lock_ = true
 
-[node name="LampArea" type="Area2D" parent="."]
+[node name="LampArea" type="Area2D" parent="." unique_id=1346873151]
 metadata/_edit_lock_ = true
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="LampArea"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="LampArea" unique_id=1367402752]
 position = Vector2(690, 551)
 shape = SubResource("RectangleShape2D_17l8b")
 metadata/_edit_lock_ = true
 
-[node name="WindowArea" type="Area2D" parent="."]
+[node name="WindowArea" type="Area2D" parent="." unique_id=1292962548]
 metadata/_edit_lock_ = true
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="WindowArea"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="WindowArea" unique_id=204045903]
 position = Vector2(1017, 321)
 shape = SubResource("RectangleShape2D_xdoaq")
 metadata/_edit_lock_ = true
 
-[node name="JacketArea" type="Area2D" parent="."]
+[node name="JacketArea" type="Area2D" parent="." unique_id=1184188234]
 metadata/_edit_lock_ = true
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="JacketArea"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="JacketArea" unique_id=1664814596]
 position = Vector2(1428, 420)
 shape = SubResource("RectangleShape2D_74blg")
 
-[node name="DoorArea" type="Area2D" parent="."]
+[node name="DoorArea" type="Area2D" parent="." unique_id=23935424]
 metadata/_edit_lock_ = true
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="DoorArea"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DoorArea" unique_id=327112836]
 position = Vector2(1817.5, 496)
 shape = SubResource("RectangleShape2D_t6pyg")
 
-[node name="AlcoolArea" type="Area2D" parent="."]
+[node name="AlcoolArea" type="Area2D" parent="." unique_id=1688310524]
 metadata/_edit_lock_ = true
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="AlcoolArea"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AlcoolArea" unique_id=538388740]
 position = Vector2(214.5, 549.5)
 shape = SubResource("RectangleShape2D_ce6de")
 
-[node name="PaintingArea" type="Area2D" parent="."]
+[node name="PaintingArea" type="Area2D" parent="." unique_id=858293599]
 metadata/_edit_lock_ = true
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="PaintingArea"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PaintingArea" unique_id=170955881]
 position = Vector2(135.5, 238.25)
 shape = SubResource("RectangleShape2D_6dkxl")
 
-[node name="AshtrayArea" type="Area2D" parent="."]
+[node name="AshtrayArea" type="Area2D" parent="." unique_id=1512755183]
 metadata/_edit_lock_ = true
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="AshtrayArea"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AshtrayArea" unique_id=916360612]
 position = Vector2(1157, 609)
 shape = SubResource("RectangleShape2D_1sauu")
 
-[node name="FilesArea" type="Area2D" parent="."]
+[node name="FilesArea" type="Area2D" parent="." unique_id=1035093750]
 metadata/_edit_lock_ = true
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="FilesArea"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="FilesArea" unique_id=397721452]
 position = Vector2(1607, 550)
 shape = SubResource("RectangleShape2D_asqm3")
 
-[node name="CollisionShape2D2" type="CollisionShape2D" parent="FilesArea"]
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="FilesArea" unique_id=530368762]
 position = Vector2(421.25, 555)
 shape = SubResource("RectangleShape2D_8flyr")
 
-[node name="ChairArea" type="Area2D" parent="."]
+[node name="ChairArea" type="Area2D" parent="." unique_id=1744644540]
 metadata/_edit_lock_ = true
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="ChairArea"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ChairArea" unique_id=537688800]
 position = Vector2(899, 555.5)
 shape = SubResource("RectangleShape2D_kkjlo")
 
-[node name="PhotoArea" type="Area2D" parent="."]
+[node name="PhotoArea" type="Area2D" parent="." unique_id=1919944746]
 visible = false
 input_pickable = false
 
-[node name="PhotoSprite" type="Sprite2D" parent="PhotoArea"]
+[node name="PhotoSprite" type="Sprite2D" parent="PhotoArea" unique_id=68493440]
 position = Vector2(1057, 619)
 rotation = -1.5201818
 scale = Vector2(0.05, 0.05)
 texture = ExtResource("3_t6pyg")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="PhotoArea"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PhotoArea" unique_id=981792431]
 position = Vector2(1056.75, 617.5)
 shape = SubResource("RectangleShape2D_6qy7x")
 
-[node name="PickupSprite" type="Sprite2D" parent="."]
+[node name="PickupSprite" type="Sprite2D" parent="." unique_id=1478364548]
 position = Vector2(960, 540)
 scale = Vector2(2, 2)
 metadata/_edit_lock_ = true
 
-[node name="MusicPlayer" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("3_74blg")
+[node name="MusicPlayer" type="AudioStreamPlayer" parent="." unique_id=1550024099]
+stream = ExtResource("4_t6pyg")
