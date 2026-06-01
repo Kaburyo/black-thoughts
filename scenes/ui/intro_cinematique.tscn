@@ -1,0 +1,130 @@
+[gd_scene format=3 uid="uid://c0i2xvkbi3uh5"]
+
+[ext_resource type="Script" uid="uid://dtowe7cgb378t" path="res://scenes/ui/intro_cinematique.gd" id="1_introscript"]
+[ext_resource type="Texture2D" uid="uid://c2wx0jfp3yyau" path="res://assets/art/cinematique/cinematique_intro_1.png" id="2_case1"]
+[ext_resource type="Texture2D" uid="uid://dfafftgoujjdy" path="res://assets/art/cinematique/cinematique_intro_2.png" id="3_case2"]
+[ext_resource type="Texture2D" uid="uid://wbvd26khfmsn" path="res://assets/art/cinematique/cinematique_intro_3.png" id="4_case3"]
+[ext_resource type="Texture2D" uid="uid://hrhxftrqv8ap" path="res://assets/art/cinematique/cinematique_intro_4.png" id="5_case4"]
+[ext_resource type="FontFile" uid="uid://dvd00727ltn8n" path="res://assets/fonts/Amarante-Regular.ttf" id="6_2wavu"]
+[ext_resource type="AudioStream" uid="uid://bc6cr0lcyare5" path="res://assets/audio/music/intro_music.wav" id="6_music"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cadre"]
+bg_color = Color(0, 0, 0, 0)
+border_width_left = 5
+border_width_top = 5
+border_width_right = 5
+border_width_bottom = 5
+border_color = Color(0.847, 0.812, 0.741, 1)
+
+[node name="IntroCinematique" type="Control" unique_id=1484203048]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_introscript")
+metadata/_edit_vertical_guides_ = [1714.0, 200.0]
+
+[node name="FondNoir" type="ColorRect" parent="." unique_id=1391962633]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.078, 0.067, 0.051, 1)
+
+[node name="Case1" type="TextureRect" parent="." unique_id=1056401254]
+layout_mode = 0
+offset_left = 204.0
+offset_top = 38.0
+offset_right = 781.0
+offset_bottom = 832.0
+texture = ExtResource("2_case1")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="Cadre1" type="Panel" parent="Case1" unique_id=2128819608]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_cadre")
+metadata/_edit_lock_ = true
+
+[node name="Case2" type="TextureRect" parent="." unique_id=166862929]
+layout_mode = 0
+offset_left = 1101.0
+offset_top = 44.0
+offset_right = 1714.0
+offset_bottom = 849.0
+texture = ExtResource("3_case2")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="Cadre2" type="Panel" parent="Case2" unique_id=275065601]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_cadre")
+metadata/_edit_lock_ = true
+
+[node name="Case3" type="TextureRect" parent="." unique_id=787980964]
+layout_mode = 0
+offset_left = 525.0
+offset_top = 445.0
+offset_right = 1446.0
+offset_bottom = 1023.0
+texture = ExtResource("4_case3")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="Case3_detail" type="TextureRect" parent="Case3" unique_id=2094061599]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("5_case4")
+expand_mode = 1
+stretch_mode = 6
+metadata/_edit_lock_ = true
+
+[node name="Cadre3" type="Panel" parent="Case3" unique_id=2097225844]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_cadre")
+metadata/_edit_lock_ = true
+
+[node name="PlaqueAgence" type="Label" parent="Case3" unique_id=1023078402]
+layout_mode = 0
+offset_left = 438.2128
+offset_top = 191.01593
+offset_right = 618.80896
+offset_bottom = 260.30194
+rotation = -0.101229094
+theme_override_colors/font_color = Color(0.847, 0.812, 0.741, 1)
+theme_override_fonts/font = ExtResource("6_2wavu")
+theme_override_font_sizes/font_size = 16
+text = "A. — DÉTECTIVE PRIVÉ"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="MusiqueIntro" type="AudioStreamPlayer" parent="." unique_id=938691004]
+stream = ExtResource("6_music")
+autoplay = true
