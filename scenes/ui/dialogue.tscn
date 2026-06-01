@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://c03ij4whrlxw0"]
+[gd_scene format=3 uid="uid://c03ij4whrlxw0"]
 
 [ext_resource type="Script" uid="uid://cljr1ap6by52c" path="res://scenes/ui/dialogue.gd" id="1_65ue4"]
 [ext_resource type="FontFile" uid="uid://dvd00727ltn8n" path="res://assets/fonts/Amarante-Regular.ttf" id="2_umwmw"]
@@ -28,11 +28,11 @@ corner_radius_top_right = 6
 corner_radius_bottom_right = 6
 corner_radius_bottom_left = 6
 
-[node name="Dialogue" type="CanvasLayer"]
+[node name="Dialogue" type="CanvasLayer" unique_id=1608070071]
 script = ExtResource("1_65ue4")
 metadata/_edit_vertical_guides_ = [119.0, 1798.0]
 
-[node name="ZonePortraits" type="Control" parent="."]
+[node name="ZonePortraits" type="Control" parent="." unique_id=452505789]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -41,14 +41,14 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="BoiteDialogue" type="Panel" parent="."]
+[node name="BoiteDialogue" type="Panel" parent="." unique_id=1872155870]
 offset_left = 460.0
 offset_top = 800.0
 offset_right = 1460.0
 offset_bottom = 1000.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_0hdn5")
 
-[node name="TexteDialogue" type="Label" parent="BoiteDialogue"]
+[node name="TexteDialogue" type="Label" parent="BoiteDialogue" unique_id=751826369]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -63,15 +63,15 @@ vertical_alignment = 1
 autowrap_mode = 3
 clip_text = true
 
-[node name="ZoneChoix" type="VBoxContainer" parent="."]
+[node name="ZoneChoix" type="VBoxContainer" parent="." unique_id=1638870988]
 offset_left = 460.0
-offset_top = 470.0
+offset_top = 430.0
 offset_right = 1460.0
-offset_bottom = 790.0
+offset_bottom = 750.0005
 theme_override_constants/separation = 12
 alignment = 2
 
-[node name="PanneauRecap" type="Panel" parent="."]
+[node name="PanneauRecap" type="Panel" parent="." unique_id=43040193]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -83,7 +83,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_65ue4")
 
-[node name="TexteRecap" type="RichTextLabel" parent="PanneauRecap"]
+[node name="TexteRecap" type="RichTextLabel" parent="PanneauRecap" unique_id=808124222]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -93,7 +93,7 @@ grow_horizontal = 2
 grow_vertical = 2
 bbcode_enabled = true
 
-[node name="BoutonFermer" type="Button" parent="PanneauRecap"]
+[node name="BoutonFermer" type="Button" parent="PanneauRecap" unique_id=1817375853]
 layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0

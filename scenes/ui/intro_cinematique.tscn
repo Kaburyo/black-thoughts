@@ -7,6 +7,9 @@
 [ext_resource type="Texture2D" uid="uid://hrhxftrqv8ap" path="res://assets/art/cinematique/cinematique_intro_4.png" id="5_case4"]
 [ext_resource type="FontFile" uid="uid://dvd00727ltn8n" path="res://assets/fonts/Amarante-Regular.ttf" id="6_2wavu"]
 [ext_resource type="AudioStream" uid="uid://bc6cr0lcyare5" path="res://assets/audio/music/intro_music.wav" id="6_music"]
+[ext_resource type="FontFile" uid="uid://b41ruyxvyshkt" path="res://assets/fonts/PirataOne-Regular.ttf" id="7_imfd4"]
+[ext_resource type="AudioStream" uid="uid://dqbbxv4vs3inl" path="res://assets/audio/sfx/sfx_toc_toc_x2.wav" id="7_toctoc"]
+[ext_resource type="AudioStream" uid="uid://bvmcu1rdrrft0" path="res://assets/audio/sfx/sfx_porte_ouvre.wav" id="8_porte"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cadre"]
 bg_color = Color(0, 0, 0, 0)
@@ -15,6 +18,18 @@ border_width_top = 5
 border_width_right = 5
 border_width_bottom = 5
 border_color = Color(0.847, 0.812, 0.741, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_imfd4"]
+bg_color = Color(1, 1, 1, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
 
 [node name="IntroCinematique" type="Control" unique_id=1484203048]
 layout_mode = 3
@@ -118,13 +133,108 @@ offset_top = 191.01593
 offset_right = 618.80896
 offset_bottom = 260.30194
 rotation = -0.101229094
-theme_override_colors/font_color = Color(0.847, 0.812, 0.741, 1)
+theme_override_colors/font_color = Color(1.4009995, 1.1955277, 0.7703783, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_fonts/font = ExtResource("6_2wavu")
 theme_override_font_sizes/font_size = 16
 text = "A. — DÉTECTIVE PRIVÉ"
 horizontal_alignment = 1
 vertical_alignment = 1
 
+[node name="LettrageTocToc" type="Label" parent="." unique_id=1378572736]
+layout_mode = 0
+offset_left = 772.0
+offset_top = 697.0
+offset_right = 1210.0
+offset_bottom = 795.0
+rotation = -0.12
+pivot_offset = Vector2(230, 85)
+theme_override_colors/font_color = Color(0.949, 0.929, 0.886, 1)
+theme_override_colors/font_outline_color = Color(0.05, 0.04, 0.03, 1)
+theme_override_constants/outline_size = 14
+theme_override_fonts/font = ExtResource("6_2wavu")
+theme_override_font_sizes/font_size = 30
+text = "« TOC TOC »"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BoiteDialogue" type="Panel" parent="." unique_id=1557990341]
+layout_mode = 0
+offset_left = 1120.0
+offset_top = 471.0
+offset_right = 1420.0
+offset_bottom = 597.0
+pivot_offset = Vector2(150, 63)
+theme_override_styles/panel = SubResource("StyleBoxFlat_imfd4")
+
+[node name="LettrageEntrez" type="Label" parent="BoiteDialogue" unique_id=102294753]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+rotation = -0.04
+pivot_offset = Vector2(210, 55)
+theme_override_colors/font_color = Color(0.97, 0.96, 0.93, 1)
+theme_override_colors/font_outline_color = Color(0.05, 0.04, 0.03, 1)
+theme_override_constants/outline_size = 12
+theme_override_fonts/font = ExtResource("6_2wavu")
+theme_override_font_sizes/font_size = 60
+text = "Entrez..."
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/_edit_lock_ = true
+
+[node name="CartonTitre" type="Control" parent="." unique_id=1723316150]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+metadata/_edit_lock_ = true
+
+[node name="TitreJeu" type="Label" parent="CartonTitre" unique_id=1768491020]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 12.0
+offset_top = 119.0
+offset_right = 12.0
+offset_bottom = 269.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0.902, 0.882, 0.831, 1)
+theme_override_fonts/font = ExtResource("7_imfd4")
+theme_override_font_sizes/font_size = 161
+text = "BLACK THOUGHTS"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SousTitre" type="Label" parent="CartonTitre" unique_id=1781425146]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 5.0
+offset_top = 351.0
+offset_right = 5.0
+offset_bottom = 421.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0.694, 0.671, 0.616, 1)
+theme_override_fonts/font = ExtResource("6_2wavu")
+theme_override_font_sizes/font_size = 59
+text = "Chapitre 1 : Le Commencement"
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [node name="MusiqueIntro" type="AudioStreamPlayer" parent="." unique_id=938691004]
 stream = ExtResource("6_music")
 autoplay = true
+
+[node name="SfxTocToc" type="AudioStreamPlayer" parent="." unique_id=889718936]
+stream = ExtResource("7_toctoc")
+
+[node name="SfxPorteOuvre" type="AudioStreamPlayer" parent="." unique_id=1671510487]
+stream = ExtResource("8_porte")
