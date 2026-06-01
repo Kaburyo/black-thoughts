@@ -50,6 +50,7 @@ const ACTION_UTILISER: int = 2
 @onready var grille_objets: GridContainer = $MenuPanel/InventairePanel/MargeInventaire/GrilleObjets
 @onready var menu_objet: PopupMenu = $MenuObjet
 @onready var curseur: TextureRect = $CurseurObjet
+@onready var bouton_menu: TextureButton = $BoutonMenu
 
 
 # --- Réglages du glissement de l'inventaire ---
@@ -114,6 +115,7 @@ func _ready() -> void:
     portrait.pressed.connect(_sur_clic_portrait)
     inventaire_bouton.pressed.connect(_sur_clic_inventaire)
     bouton_recap.pressed.connect(_sur_clic_recap)
+    bouton_menu.pressed.connect(_sur_clic_menu)
 
     # Le PopupMenu nous renvoie le numéro de l'action choisie.
     menu_objet.id_pressed.connect(_sur_action_menu)
@@ -242,6 +244,15 @@ func _basculer_inventaire() -> void:
 # --- Clic sur le bouton Récap ---
 func _sur_clic_recap() -> void:
     Dialogue.basculer_recap()
+
+
+# --- Clic sur le bouton roue crantée : ouvre le menu pause ---
+# On referme d'abord le carnet (et tout objet en main) pour repartir
+# d'un état propre, puis on ouvre le menu pause (service autonome qui
+# met le jeu en pause).
+func _sur_clic_menu() -> void:
+    fermer_menu()
+    MenuPause.ouvrir()
 
 
 # --- Le menu (le carnet) ---

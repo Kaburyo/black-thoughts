@@ -24,15 +24,15 @@ extends Control
 
 # --- Rythme du carton-titre ---
 const TITRE_FONDU_IN: float = 1.2
-const TITRE_ENTRE_DEUX: float = 0.5  # pause entre le titre et le sous-titre
+const TITRE_ENTRE_DEUX: float = 0.7  # pause entre le titre et le sous-titre
 const TITRE_HOLD: float = 2.6
 const TITRE_FONDU_OUT: float = 1.0
 const TITRE_AVANT_CASES: float = 0.5
 
 # --- Rythme des cases ---
-const FONDU_CASE: float = 0.5        # apparition d'une case
-const PAUSE_APRES_CASE: float = 1.4  # temps de lecture entre deux cases
-const SWITCH_IMAGE_3_4: float = 0.18 # bascule image 3 -> 4 (rapide = "animé")
+const FONDU_CASE: float = 1.0        # apparition d'une case
+const PAUSE_APRES_CASE: float = 2.0  # temps de lecture entre deux cases
+const SWITCH_IMAGE_3_4: float = 0.15 # bascule image 3 -> 4 (rapide = "animé")
 
 # --- Rythme du climax ---
 const AVANT_LE_TOC: float = 0.6      # tension avant les coups
@@ -40,8 +40,8 @@ const APRES_LE_TOC: float = 1.5      # le temps des coups, avant "Entrez."
 const APRES_ENTREZ: float = 1.0      # respiration avant de partir
 
 # --- Musique ---
-const MUSIQUE_DB_FOND: float = -8.0 # niveau "en fond" pendant le climax
-const DUCK_DUREE: float = 0.4        # temps pour plonger en fond
+const MUSIQUE_DB_FOND: float = -10.0 # niveau "en fond" pendant le climax
+const DUCK_DUREE: float = 1.5        # temps pour plonger en fond
 const FADE_FINAL_DUREE: float = 0.7  # fade-out final, calé sur le fondu écran
 
 # Scène à charger une fois la cinématique finie.
@@ -85,6 +85,15 @@ func _ready() -> void:
     # éviter un flash à pleine opacité avant le début de l'animation.
     titre_jeu.modulate.a = 0.0
     sous_titre.modulate.a = 0.0
+
+    # On peut arriver ici avec l'écran ENCORE NOIR : l'écran-titre fait un
+    # fondu au noir avant de lancer la cinématique, et ce voile (service
+    # Fondu, persistant) resterait opaque par-dessus toute la scène. On
+    # révèle donc l'écran maintenant que tout est en place et invisible :
+    # le voile se lève sur le fond noir de la cinématique, puis le carton-
+    # titre apparaît proprement. (Lancée seule en F6, le voile est déjà
+    # transparent : cet appel est alors sans effet visible. Sûr partout.)
+    Fondu.fondu_depuis_noir()
 
     _jouer_cinematique()
 

@@ -1,0 +1,66 @@
+[gd_scene format=3 uid="uid://ba7u20khu3hue"]
+
+[ext_resource type="Script" path="res://scenes/ui/menu_pause.gd" id="1_pausescript"]
+[ext_resource type="FontFile" uid="uid://b41ruyxvyshkt" path="res://assets/fonts/PirataOne-Regular.ttf" id="2_pirata"]
+[ext_resource type="FontFile" uid="uid://dvd00727ltn8n" path="res://assets/fonts/Amarante-Regular.ttf" id="3_amarante"]
+
+[node name="MenuPause" type="CanvasLayer"]
+layer = 100
+script = ExtResource("1_pausescript")
+
+[node name="Voile" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.04, 0.035, 0.027, 0.82)
+
+[node name="Titre" type="Label" parent="Voile"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 240.0
+offset_bottom = 400.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0.902, 0.882, 0.831, 1)
+theme_override_fonts/font = ExtResource("2_pirata")
+theme_override_font_sizes/font_size = 96
+text = "PAUSE"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Boutons" type="VBoxContainer" parent="Voile"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -180.0
+offset_top = -40.0
+offset_right = 180.0
+offset_bottom = 160.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 28
+
+[node name="BoutonReprendre" type="Button" parent="Voile/Boutons"]
+custom_minimum_size = Vector2(360, 72)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.902, 0.882, 0.831, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("3_amarante")
+theme_override_font_sizes/font_size = 36
+text = "Reprendre"
+flat = true
+
+[node name="BoutonQuitter" type="Button" parent="Voile/Boutons"]
+custom_minimum_size = Vector2(360, 72)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.694, 0.671, 0.616, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("3_amarante")
+theme_override_font_sizes/font_size = 36
+text = "Quitter"
+flat = true
