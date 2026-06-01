@@ -24,6 +24,7 @@ extends Control
 
 # --- Rythme du carton-titre ---
 const TITRE_FONDU_IN: float = 1.2
+const TITRE_ENTRE_DEUX: float = 0.5  # pause entre le titre et le sous-titre
 const TITRE_HOLD: float = 2.6
 const TITRE_FONDU_OUT: float = 1.0
 const TITRE_AVANT_CASES: float = 0.5
@@ -56,6 +57,8 @@ const SCENE_BUREAU: String = "res://scenes/rooms/office_room.tscn"
 @onready var boite_dialogue: Panel = $BoiteDialogue
 @onready var lettrage_entrez: Label = $BoiteDialogue/LettrageEntrez
 @onready var carton_titre: Control = $CartonTitre
+@onready var titre_jeu: Label = $CartonTitre/TitreJeu
+@onready var sous_titre: Label = $CartonTitre/SousTitre
 @onready var musique: AudioStreamPlayer = $MusiqueIntro
 @onready var sfx_toc_toc: AudioStreamPlayer = $SfxTocToc
 @onready var sfx_porte: AudioStreamPlayer = $SfxPorteOuvre
@@ -71,13 +74,17 @@ func _ready() -> void:
     case1.modulate.a = 0.0
     case2.modulate.a = 0.0
     case3.modulate.a = 0.0
-    carton_titre.modulate.a = 0.0
 
     # Les lettrages BD sont posés mais cachés. On règle leur texte ici :
     # le "TOC TOC" tient sur deux lignes pour le rythme des quatre coups.
     lettrage_toc.text = "TOC TOC\nTOC TOC..."
     lettrage_toc.modulate.a = 0.0
     boite_dialogue.modulate.a = 0.0
+
+    # Carton-titre : on neutralise ses deux textes dès maintenant pour
+    # éviter un flash à pleine opacité avant le début de l'animation.
+    titre_jeu.modulate.a = 0.0
+    sous_titre.modulate.a = 0.0
 
     _jouer_cinematique()
 
@@ -113,14 +120,28 @@ func _jouer_cinematique() -> void:
 
 
 # --- CARTON-TITRE ---
-# Apparition en fondu, temps de lecture, disparition.
+# Écran noir, puis le titre du jeu apparaît, PUIS le sous-titre en
+# dessous. Temps de lecture, puis tout disparaît ensemble.
 func _jouer_carton_titre() -> void:
     carton_titre.visible = true
+    carton_titre.modulate.a = 1.0   # le conteneur est visible...
+    titre_jeu.modulate.a = 0.0      # ...mais ses deux textes partent invisibles
+    sous_titre.modulate.a = 0.0
 
-    var apparition := create_tween()
-    apparition.tween_property(carton_titre, "modulate:a", 1.0, TITRE_FONDU_IN)
-    await apparition.finished
+    # 1. Le titre du jeu apparaît.
+    var apparition_titre := create_tween()
+    apparition_titre.tween_property(titre_jeu, "modulate:a", 1.0, TITRE_FONDU_IN)
+    await apparition_titre.finished
 
+    # Petite respiration avant le sous-titre.
+    await get_tree().create_timer(TITRE_ENTRE_DEUX).timeout
+
+    # 2. Puis le sous-titre, en dessous.
+    var apparition_sous := create_tween()
+    apparition_sous.tween_property(sous_titre, "modulate:a", 1.0, TITRE_FONDU_IN)
+    await apparition_sous.finished
+
+    # 3. Temps de lecture, puis tout le carton disparaît d'un bloc.
     await get_tree().create_timer(TITRE_HOLD).timeout
 
     var disparition := create_tween()

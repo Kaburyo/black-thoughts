@@ -19,6 +19,11 @@ const PORTE_OUVERTE: String = "Allons voir Jenny, elle pourra surement m'aiguill
 # --- Contenu propre à la chambre ---
 # Appelée par le moule (room_base.gd) au tout début de _ready().
 func _definir_contenu() -> void:
+    # Après la chambre, on retourne voir Jenny : sa cuisine.
+    # (Note : le fichier de cette scène est en PascalCase, contrairement
+    #  aux autres pièces — nommage à harmoniser un jour.)
+    scene_suivante = "res://scenes/rooms/cuisine_jenny_room.tscn"
+
     # Les objets EXAMINABLES : clé = nom du nœud Area2D, valeur = pensée.
     pensees = {
         "LitArea": "Son lit à été fait,\n soit par elle, soit par sa mère.",
@@ -48,6 +53,30 @@ func _definir_contenu() -> void:
 
     # La porte a son propre branchement (comportement propre à la pièce).
     $PorteChambreArea.input_event.connect(_sur_clic_porte)
+
+    # --- LA PHOTO DE FLORA (cohérence avec la photo de Luna du bureau) ---
+    # La demi-photo est POSÉE sur la poubelle dès le départ : son sprite
+    # est visible (réduit), et la zone est cliquable. Une fois ramassée
+    # (rangée dans l'inventaire), on la retire de la poubelle.
+    _montrer_photo_flora(true)
+    Inventaire.inventaire_modifie.connect(_sur_inventaire_modifie)
+
+
+# --- LA PHOTO DE FLORA : visible sur la poubelle, puis retirée ---
+
+# Montre ou cache la photo sur la poubelle, EN MÊME TEMPS que sa zone
+# cliquable : on ne peut jamais cliquer une photo invisible, ni voir une
+# photo non cliquable. (Même principe que _montrer_photo() du bureau.)
+func _montrer_photo_flora(est_visible: bool) -> void:
+    $PoubelleArea.visible = est_visible
+    $PoubelleArea.input_pickable = est_visible
+
+
+# L'inventaire a changé : si la photo de Flora vient d'y entrer, on
+# l'enlève de la poubelle.
+func _sur_inventaire_modifie() -> void:
+    if Inventaire.possede("picture_flora"):
+        _montrer_photo_flora(false)
 
 
 # --- LA PORTE ---

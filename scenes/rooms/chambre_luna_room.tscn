@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://ctgmlph3ycdyl" path="res://scenes/rooms/chambre_luna_room.gd" id="1_5ehn0"]
 [ext_resource type="Texture2D" uid="uid://cutg4r0v5hpav" path="res://assets/art/backgrounds/chambre_luna.png" id="1_w8m3c"]
+[ext_resource type="Texture2D" uid="uid://b8cugmdihadc5" path="res://assets/art/characters/picture/picture_flora.png" id="3_0mpxa"]
 [ext_resource type="AudioStream" uid="uid://buanw4dwiv0xs" path="res://assets/audio/music/luna_room.wav" id="3_4eqay"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_w8m3c"]
@@ -101,6 +102,12 @@ shape = SubResource("RectangleShape2D_u5y78")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="PoubelleArea" unique_id=1325295691]
 position = Vector2(1522.5, 679)
 shape = SubResource("RectangleShape2D_jg1eh")
+
+[node name="PhotoFloraSprite" type="Sprite2D" parent="PoubelleArea" unique_id=223113812]
+position = Vector2(1523.0001, 625.99994)
+rotation = 1.2566371
+scale = Vector2(0.03, 0.03)
+texture = ExtResource("3_0mpxa")
 
 [node name="RobeArea" type="Area2D" parent="." unique_id=1106066062]
 

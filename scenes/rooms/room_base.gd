@@ -87,6 +87,13 @@ var utilisables: Dictionary = {}
 # MONTRER ne consomme jamais l'objet (une preuve reste une preuve).
 var pnj_presents: Dictionary = {}
 
+# La pièce vers laquelle on enchaîne quand on quitte CELLE-CI par la
+# porte. Chemin d'une scène (res://...). Laissée vide -> pas de pièce
+# suivante connue (ex. la dernière pièce de la démo, dont la suite —
+# le bar — n'existe pas encore) : la sortie se contente alors du fondu.
+# Chaque pièce renseigne ce champ dans son _definir_contenu().
+var scene_suivante: String = ""
+
 
 # --- Point d'accroche à remplir par chaque pièce ---
 func _definir_contenu() -> void:
@@ -95,6 +102,12 @@ func _definir_contenu() -> void:
 
 # Appelée automatiquement une fois, au lancement de la scène.
 func _ready() -> void:
+    # 0. À l'arrivée, l'écran peut être encore noir (voile laissé opaque
+    #    par la transition de la pièce/cinématique précédente). On révèle
+    #    donc la pièce en fondu. Si le voile était déjà transparent (pièce
+    #    lancée seule), cet appel est sans effet visible : c'est sûr.
+    Fondu.fondu_depuis_noir()
+
     # 1. La pièce déclare son contenu (pensées, objets, porte, PNJ...).
     _definir_contenu()
 
@@ -306,16 +319,21 @@ func demander_a_quitter(pensee_sortie: String = "",
 
 
 func _confirmer_sortie(pensee_sortie: String) -> void:
+    _interactions_bloquees = true
+    # On ATTEND que la pensée de départ soit entièrement finie (écriture +
+    # lecture + fondu de la boîte) AVANT de lancer la transition. Sinon le
+    # fondu d'écran démarrait trop tôt et la fin de la boîte de pensée
+    # bavait sur l'ouverture de la pièce suivante.
     if pensee_sortie != "":
-        Voix.afficher_pensee(pensee_sortie)
+        await Voix.afficher_pensee_finie(pensee_sortie)
     _quitter_la_piece()
 
 
 # --- SORTIE DE PIÈCE (le mécanisme bas niveau : fondu + musique) ---
+# Note : l'attente de la pensée de départ a déjà eu lieu dans
+# _confirmer_sortie. Ici on enchaîne directement sur le fondu.
 func _quitter_la_piece() -> void:
     _interactions_bloquees = true
-
-    await get_tree().create_timer(DUREE_LECTURE).timeout
 
     var tween_musique := create_tween()
     tween_musique.tween_property(music_player, "volume_db", -60.0, DUREE_FONDU + 5)
@@ -324,4 +342,12 @@ func _quitter_la_piece() -> void:
 
     music_player.stop()
 
-    print("-> Changement de Room (a venir)")
+    # Enchaînement vers la pièce suivante, si la pièce en a déclaré une.
+    # (Le voile de Fondu reste noir : la pièce suivante se révélera
+    #  d'elle-même au début de son _ready(), via Fondu.fondu_depuis_noir.)
+    if scene_suivante != "":
+        get_tree().change_scene_to_file(scene_suivante)
+    else:
+        # Pas de suite connue (ex. dernière pièce de la démo). On reste
+        # sur le fondu au noir, sans rien charger.
+        print("-> Fin du parcours : aucune scène suivante déclarée.")

@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="Conversation" load_steps=14 format=3]
+[gd_resource type="Resource" script_class="Conversation" format=3 uid="uid://c0n0t8kojvbfy"]
 
 [ext_resource type="Script" uid="uid://byknsokd4a1h0" path="res://resources/conversation.gd" id="0"]
 [ext_resource type="Script" uid="uid://c4nqgiisltlk" path="res://resources/replique_dialogue.gd" id="1"]
@@ -7,65 +7,86 @@
 [ext_resource type="Resource" uid="uid://dskh6uer2righ" path="res://resources/personnage_al.tres" id="3"]
 [ext_resource type="Resource" uid="uid://b6s63magyw5ib" path="res://resources/personnage_jenny.tres" id="4"]
 
-[sub_resource type="Resource" id="Choix1"]
-script = ExtResource("2")
-texte_a = "C'est vous qui avez déchiré la photo."
-valeur_a = 5.0
-texte_b = "Vous avez déchiré votre fille en deux pour en arracher une autre. Pourquoi ?"
-valeur_b = -5.0
-texte_c = "..."
-
 [sub_resource type="Resource" id="Rep01"]
 script = ExtResource("1")
-texte = "Je les ai retrouvées. Luna, et l'autre moitié.
-Recollées."
+texte = "J'ai retrouvées ceci. 
+L'autre moitié qui manqueait à la photo de Luna."
+
+[sub_resource type="Resource" id="Choix1"]
+script = ExtResource("2")
+texte_a = "C'est vous qui avez déchiré la photo ?
+Pourquoi ?"
+valeur_a = 1.0
+texte_b = "Vous avez déchiré la photo de votre fille en deux.
+Pourquoi ?"
+valeur_b = -1.0
+texte_c = "... Pourquoi ?"
 
 [sub_resource type="Resource" id="Rep02"]
 script = ExtResource("1")
 locuteur = 1
-texte = "(elle prend la photo, ses mains tremblent)
-Vous les avez remises ensemble.
-Moi, je les avais séparées."
+texte = "Moi, je les avais séparées...
+Vous les avez remises ensemble...."
 choix = SubResource("Choix1")
 
 [sub_resource type="Resource" id="Rep03"]
 script = ExtResource("1")
 locuteur = 1
-texte = "Oui. C'est moi. Un soir, après son départ,
-je n'ai plus supporté de la voir sourire à côté de cette fille.
-J'ai arraché Flora. J'ai gardé ma Luna.
-Comme si ça pouvait la ramener."
-reaction_a = "(un sanglot retenu)
-Oui. Je n'ai pas pu garder cette fille chez moi, même en photo.
-Alors je l'ai déchirée. Je sais. C'est ridicule."
+reaction_a = "Oui. Je n'ai pas pu garder cette fille chez moi, même en photo.
+Alors je l'ai déchirée. Je sais, c'est ridicule..."
 reaction_b = "Oui, je l'ai déchirée ! C'est ce que vous vouliez entendre ?
 J'ai voulu effacer Flora de sa vie.
-On n'efface pas les gens en déchirant du papier. Je le sais, maintenant."
+On n'efface pas les gens en déchirant du papier. Je le sais, c'est ridicule...
+Mais que voulez-vous..."
+reaction_c = "Un soir, après son absence,
+je n'ai plus supporté de la voir sourire à côté de cette fille.
+J'ai arraché Flora de la photo !
+J'ai gardé que ma petite Luna.
+Comme si ça pouvait me la ramener..."
 
 [sub_resource type="Resource" id="Rep04"]
 script = ExtResource("1")
 locuteur = 1
-texte = "Flora souriait à tout le monde et ne pensait qu'à elle.
-Luna ne voyait pas. Luna ne voyait jamais.
-Elle la traînait dans ses histoires, ses dettes, ses mauvais lieux.
+texte = "Flora ne souriait à personne et ne pensait qu'à elle !
+Luna ne le voyait pas. Luna ne voulait pas le voir.
+
+Elle la traînait dans des histoires louches, des dettes, des endroits malfamé...
+
 Et ma fille suivait, parce qu'elle croyait pouvoir la sauver.
-Voilà ce qu'était leur « amitié » : l'une qui prend, l'autre qui se vide."
+Voilà ce qu'était leur « amitié » : l'une qui prend, tendis que l'autre donnait."
 
 [sub_resource type="Resource" id="Rep05"]
 script = ExtResource("1")
 locuteur = 1
 texte = "Si vous voulez savoir où est passée ma fille, trouvez d'abord cette fille-là.
-Flora. Là où il y a Flora, il y a les ennuis.
-Et Luna n'est jamais bien loin des ennuis de Flora."
+Là où il y a Flora, il y a les ennuis.
+Et Luna n'est jamais bien loin des ennuis de Flora..."
 
 [sub_resource type="Resource" id="Rep06"]
 script = ExtResource("1")
 texte = "Alors c'est Flora que je cherche. Et à travers elle, votre fille."
-texte_good = "Une fille qui se vide pour en sauver une autre. J'ai connu ça.
-On peut peut-être encore la rattraper. Je vais essayer."
-texte_bad = "Une qui prend, une qui se vide.
-J'ai déjà vu où ça mène. Mais je vais la chercher quand même —
-c'est mon métier de remuer la boue des autres."
+texte_good = "Quelqu'un qui donne de sa personne pour en sauver une autre.
+Je connais bien ça...
+
+On peut peut-être encore la rattraper.
+Je vais voir ce que je peux faire."
+texte_mid = "Quelqu'un qui donne de sa personne pour en sauver une autre.
+Je connais bien ça...
+
+On peut peut-être encore la rattraper.
+Je vais voir ce que je peux faire."
+texte_bof = "Une qui prend, une qui donne.
+J'ai déjà vu où ça mène...
+
+Mais je vais la chercher quand même —
+
+c'est mon métier de remuer la merde des autres..."
+texte_bad = "Une qui prend, une qui donne.
+J'ai déjà vu où ça mène...
+
+Mais je vais la chercher quand même —
+
+c'est mon métier de remuer la merde des autres..."
 
 [resource]
 script = ExtResource("0")

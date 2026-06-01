@@ -78,9 +78,12 @@ ils l'ont rangé dans un tiroir, et m'ont dit de rentrer chez moi.
 Voilà leur enquête !"
 reaction_b = "Vous croyez que j'ai attendu ?!
 J'ai supplié. 
-On m'a fait patienter, remplir des papiers, fait revenir pour rien...
+On m'a fait patienter, remplir des papiers,
+fait revenir pour rien...
 
-Une mère pauvre qui s'inquiète, ça les fait bâiller."
+
+Une mère pauvre qui s'inquiète,
+ça les fait bâiller..."
 reaction_c = "Ils ont noté son nom sur un papier.
 Le papier est dans un tiroir.
 Voilà ce qu'ils ont fait. 
@@ -117,7 +120,7 @@ texte_c = "..."
 [sub_resource type="Resource" id="Rep07"]
 script = ExtResource("1")
 locuteur = 1
-texte = "C'est elle. Voici une photo récente.
+texte = "Voici une photo récente d'elle.
 Je n'ai pas de quoi vous payer comme on paie un homme de votre métier.
 J'ai mis de côté ce que j'ai pu.
 C'est peu, je le sais..."

@@ -20,15 +20,18 @@ extends RoomBase
 # --- Textes de la porte ---
 # Mains vides, selon qu'on a déjà les clés ou non (règle E : le joueur
 # doit toujours comprendre QUOI faire).
-const PORTE_SANS_CLES: String = "Je ferais mieux de prendre\n mon manteau et mes CLES\n avant de partir."
-const PORTE_AVEC_CLES: String = "JE ferais mieux de fermer\n avant de partir.\n Mes clés devraient faire l'affaire."
+const PORTE_SANS_CLES: String = "Je ferais mieux de prendre mon manteau et\n mes clés du bureau avant de partir."
+const PORTE_AVEC_CLES: String = "Je ferais mieux de fermer avant de partir.\n Et d'être sur de n'avoir rien oublié."
 # Pensée de départ, affichée quand on confirme la sortie (sur "Oui").
-const PORTE_OUVERTE: String = "Bon, il est temps d'y aller.\n Cette enquête n'avancera pas toute seule."
+const PORTE_OUVERTE: String = "Bon, il est temps d'y aller.\n Cette enquête n'avancera pas toute seule..."
 
 
 # --- Contenu propre au bureau ---
 # Appelée par le moule (room_base.gd) au tout début de _ready().
 func _definir_contenu() -> void:
+    # Après le bureau, l'enquête mène chez Jenny, dans la chambre de Luna.
+    scene_suivante = "res://scenes/rooms/chambre_luna_room.tscn"
+
     # Les objets EXAMINABLES : clé = nom du nœud Area2D, valeur = pensée.
     pensees = {
         "LampArea": "Cette lampe a vu plus de nuits blanches que moi.",
@@ -43,17 +46,17 @@ func _definir_contenu() -> void:
     # d'inventaire et le sprite montré au centre de l'écran au ramassage.
     objets_ramassables = {
         "JacketArea": {
-            "pensee": "Les CLES du bureau sont\n toujours dans la poche.",
+            "pensee": "Les clés du bureau sont\n toujours dans la poche.",
             "id": "cles",
             "sprite": "res://assets/art/ui/item_keys.png",
         },
         "AshtrayArea": {
-            "pensee": "Pas maintenant.\n Je peux les prendre pour plus tard.",
+            "pensee": "Pas maintenant...\n Je peux les prendre au cas ou,\n pour plus tard.",
             "id": "cigarettes",
             "sprite": "res://assets/art/ui/item_cigarettes.png",
         },
         "PhotoArea": {
-            "pensee": "La photo de la petite Luna.\n Autant la garder sur moi —\n c'est tout ce que j'ai pour l'instant.",
+            "pensee": "La photo de Luna.\n Autant la garder sur moi —\n c'est tout ce que j'ai pour l'instant.",
             "id": "picture_luna",
             "sprite": "res://assets/art/characters/picture/picture_luna.png",
         },

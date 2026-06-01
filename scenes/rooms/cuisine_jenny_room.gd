@@ -16,6 +16,11 @@ const PENSEE_SORTIE: String = "Assez traîné ici.\n En route."
 
 # --- Contenu propre à la cuisine ---
 func _definir_contenu() -> void:
+    # Dernière pièce de la démo : la suite (le bar) n'existe pas encore.
+    # On laisse donc scene_suivante vide -> la porte fait son fondu et
+    # s'arrête là (repli géré par le moule). À renseigner quand le bar
+    # sera créé : scene_suivante = "res://scenes/rooms/bar_room.tscn".
+
     # Zones d'AMBIANCE (examiner) : clé = nom du nœud Area2D, valeur = pensée.
     pensees = {
         "ChaiseVideArea": "Une chaise vide, en face d'elle.\n Elle ne l'a pas rangée.\n Comme si quelqu'un allait revenir s'asseoir.",
@@ -39,11 +44,6 @@ func _definir_contenu() -> void:
         },
     }
     
-######    
-# --- TEST TEMPORAIRE (à retirer) ---
-    Inventaire.ajouter("picture_flora")
-    Inventaire.ajouter("picture_luna_flora")
-######    
     
     # La porte a son propre branchement (comportement propre à la pièce).
     $PorteCuisineArea.input_event.connect(_sur_clic_porte)

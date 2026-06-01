@@ -18,31 +18,31 @@ texte_c = "..."
 [sub_resource type="Resource" id="Rep01"]
 script = ExtResource("1")
 locuteur = 1
-texte = "Vous avez fouillé sa chambre.
-Asseyez-vous. J'ai fait du café.
-Il n'est pas bon, mais il est chaud."
+texte = "Vous avez fouillé sa chambre?
+Asseyez-vous avec moi.
+J'ai fait du café.
+Il n'est pas bon, mais il est encore chaud."
 choix = SubResource("Choix1")
 
 [sub_resource type="Resource" id="Rep02"]
 script = ExtResource("1")
 locuteur = 1
-texte = "(elle remplit une tasse malgré tout)
+reaction_a = "Vous êtes plus poli que vous n'en avez l'air."
+reaction_b = "Personne ne vient jamais pour un mauvais café.
+Asseyez-vous quand même."
+reaction_c = "(elle remplit une tasse malgré tout)
 Vous lui ressemblez, par moments.
 Elle non plus ne disait jamais ce qu'elle pensait."
-reaction_a = "(un pâle sourire)
-Vous êtes plus poli que vous n'en avez l'air."
-reaction_b = "Personne ne vient jamais pour le café.
-Asseyez-vous quand même."
 
 [sub_resource type="Resource" id="Rep03"]
 script = ExtResource("1")
 locuteur = 1
 texte = "Luna ramenait toujours quelque chose.
-Un chat à trois pattes. Une voisine qui pleurait.
+Un chat à trois pattes, une voisine qui pleurait.
 Un type croisé une fois dans la rue.
 Elle disait que tout le monde méritait qu'on s'arrête.
 Je lui répétais que le monde n'est pas si tendre.
-Elle ne m'écoutait pas."
+Elle ne m'écoutait jamais..."
 
 [sub_resource type="Resource" id="Rep04"]
 script = ExtResource("1")

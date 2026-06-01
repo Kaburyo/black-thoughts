@@ -1,8 +1,8 @@
 [gd_scene format=3 uid="uid://bp6k0qxbnayq3"]
 
-[ext_resource type="Script" uid="uid://1i7eyr1bvgb" path="res://scenes/rooms/cuisine_jenny_room.gd" id="1_behl5"]
-[ext_resource type="Texture2D" uid="uid://cc8meln2gj2hx" path="res://assets/art/backgrounds/cuisine_jenny.png" id="1_fkawq"]
-[ext_resource type="AudioStream" uid="uid://cprlw7l0ps0ky" path="res://assets/audio/music/jenny_kitchen.wav" id="3_behl5"]
+[ext_resource type="Script" uid="uid://1i7eyr1bvgb" path="res://scenes/rooms/cuisine_jenny_room.gd" id="1_bfl11"]
+[ext_resource type="Texture2D" uid="uid://cc8meln2gj2hx" path="res://assets/art/backgrounds/cuisine_jenny.png" id="2_38d8k"]
+[ext_resource type="AudioStream" uid="uid://cprlw7l0ps0ky" path="res://assets/audio/music/jenny_kitchen.wav" id="3_7ojod"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_behl5"]
 radius = 188.0
@@ -39,13 +39,13 @@ size = Vector2(360.5, 205)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_mxjm5"]
 size = Vector2(274.5, 380.5)
 
-[node name="CuisineJennyRoom" type="Node2D" unique_id=115586146]
-script = ExtResource("1_behl5")
+[node name="cuisine_jenny_room" type="Node2D" unique_id=115586146]
+script = ExtResource("1_bfl11")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=460991768]
 position = Vector2(960, 540)
 scale = Vector2(1.25, 1.055)
-texture = ExtResource("1_fkawq")
+texture = ExtResource("2_38d8k")
 metadata/_edit_lock_ = true
 
 [node name="PickupSprite" type="Sprite2D" parent="." unique_id=33797101]
@@ -112,4 +112,4 @@ position = Vector2(1488.75, 659.75)
 shape = SubResource("RectangleShape2D_mxjm5")
 
 [node name="MusicPlayer" type="AudioStreamPlayer" parent="." unique_id=324582074]
-stream = ExtResource("3_behl5")
+stream = ExtResource("3_7ojod")

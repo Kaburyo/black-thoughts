@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="Conversation" load_steps=13 format=3]
+[gd_resource type="Resource" script_class="Conversation" format=3 uid="uid://wucxxukt8y87"]
 
 [ext_resource type="Script" uid="uid://byknsokd4a1h0" path="res://resources/conversation.gd" id="0"]
 [ext_resource type="Script" uid="uid://c4nqgiisltlk" path="res://resources/replique_dialogue.gd" id="1"]
@@ -7,54 +7,71 @@
 [ext_resource type="Resource" uid="uid://dskh6uer2righ" path="res://resources/personnage_al.tres" id="3"]
 [ext_resource type="Resource" uid="uid://b6s63magyw5ib" path="res://resources/personnage_jenny.tres" id="4"]
 
-[sub_resource type="Resource" id="Choix1"]
-script = ExtResource("2")
-texte_a = "Dans sa chambre. Qui est-ce, madame ?"
-valeur_a = 5.0
-texte_b = "Dans une poubelle. On ne jette pas les gens qu'on aime. Qui est-ce ?"
-valeur_b = -5.0
-texte_c = "..."
-
 [sub_resource type="Resource" id="Rep01"]
 script = ExtResource("1")
-texte = "Cette moitié de photo. Dans la poubelle de sa chambre.
-Une jeune renarde — pas Luna.
-Quelqu'un a déchiré le cliché en deux, et jeté ce morceau."
+texte = "J'ai touvé cette moitié de photo dans la poubelle de sa chambre.
+Quelqu'un a déchiré la photo en deux, et jeté ce morceau là."
+texte_good = "J'ai touvé cette moitié de photo dans la poubelle de sa chambre.
+Quelqu'un a déchiré la photo en deux, et jeté ce morceau là."
+texte_mid = "J'ai touvé cette moitié de photo dans la poubelle de sa chambre.
+Quelqu'un a déchiré la photo en deux, et jeté ce morceau là."
+texte_bof = "J'ai touvé cette moitié de photo dans la poubelle de sa chambre.
+Quelqu'un a déchiré la photo en deux, et jeté ce morceau là."
+texte_bad = "J'ai touvé cette moitié de photo dans la poubelle de sa chambre.
+Quelqu'un a déchiré la photo en deux, et jeté ce morceau là."
+
+[sub_resource type="Resource" id="Choix1"]
+script = ExtResource("2")
+texte_a = "Dans sa chambre.
+Qui est-ce, madame ?"
+valeur_a = 1.0
+texte_b = "Dans une poubelle...
+On ne jette pas les gens qu'on aime à la pubelle. Qui est-ce ?"
+valeur_b = -2.0
+texte_c = "..."
 
 [sub_resource type="Resource" id="Rep02"]
 script = ExtResource("1")
 locuteur = 1
-texte = "(son visage se ferme)
-Où avez-vous trouvé ça."
+texte = "Où avez-vous trouvé ça ?"
 choix = SubResource("Choix1")
 
 [sub_resource type="Resource" id="Rep03"]
 script = ExtResource("1")
 locuteur = 1
-texte = "...Flora. Une fille que Luna fréquentait.
-Voilà. Ça ne vaut pas la peine d'en parler."
-reaction_a = "Une amie de Luna. Flora.
+reaction_a = "Une amie de Luna, Flora.
 Je préférais qu'elle reste loin de ma fille, c'est tout."
-reaction_b = "(elle détourne les yeux)
-On ne jette pas ce qu'on aime, non.
-C'est sans doute pour ça que cette photo a fini là. Flora. N'insistez pas."
+reaction_b = "On ne jette pas ce qu'on aime, non.
+C'est sans doute pour ça que cette photo a fini là..."
+reaction_c = "...Flora.
+Une fille que Luna fréquentait.
+Ça ne vaut pas la peine d'en parler."
 
 [sub_resource type="Resource" id="Rep04"]
 script = ExtResource("1")
 locuteur = 1
-texte = "Elle a fini dans cette poubelle, et c'est très bien là.
+texte = "Elle a fini dans cette poubelle,
+et c'est très bien comme ça...
+
 Cette fille n'a jamais rien apporté de bon à Luna.
-Quelque chose en elle ne tournait pas rond. Une mère sent ces choses.
-Voilà. N'en demandez pas plus."
+Quelque chose en elle ne tournait pas rond.
+Une mère sent ces choses."
 
 [sub_resource type="Resource" id="Rep05"]
 script = ExtResource("1")
-texte = "« Tout ce qu'elle a à dire. »
-Les gens disent souvent ça quand ils commencent à peine."
-texte_good = "Un nom, c'est déjà une porte. Flora.
-Je m'en contenterai. Pour l'instant."
-texte_bad = "Une mère qui jette une fille à la poubelle et refuse d'en parler.
-Il y a toujours une sale histoire derrière un silence pareil."
+texte = "Un nom, c'est déjà une porte.
+Flora.
+Je m'en contenterai. Pour l'instant..."
+texte_good = "Un nom, c'est déjà une porte.
+Flora.
+Je m'en contenterai. Pour l'instant..."
+texte_mid = "Un nom, c'est déjà une porte.
+Flora.
+Je m'en contenterai. Pour l'instant..."
+texte_bof = "Une mère qui jette une moitié de photo à la poubelle et refuse d'en parler.
+Il y a toujours une sale histoire derrière un silence pareil..."
+texte_bad = "Une mère qui jette une moitié de photo à la poubelle et refuse d'en parler.
+Il y a toujours une sale histoire derrière un silence pareil..."
 
 [resource]
 script = ExtResource("0")
