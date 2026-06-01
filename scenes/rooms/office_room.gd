@@ -1,13 +1,15 @@
 # office_room.gd
 # Pièce "Bureau d'Al'".
 #
-# Toute la MÉCANIQUE (examiner, ramasser, utiliser, verrou, sortie de
-# pièce) vit dans le moule room_base.gd. La voix intérieure est le
-# service "Voix". Ici, on ne déclare que ce qui est PROPRE au bureau :
+# Toute la MÉCANIQUE (examiner, ramasser, utiliser, quitter, verrou,
+# sortie de pièce) vit dans le moule room_base.gd. La voix intérieure
+# est le service "Voix". Ici, on ne déclare que ce qui est PROPRE au
+# bureau :
 #   - le contenu des pensées et des objets ramassables
 #   - la PORTE : on UTILISE la clé dessus pour partir (verbe Utiliser
 #     du curseur-objet). Mains vides, elle donne un indice ; clé en
-#     main, elle s'ouvre ; autre objet, "Inutile ici.".
+#     main, elle demande confirmation puis sort ; autre objet, "Inutile
+#     ici." La confirmation et la sortie sont communes (helper du moule).
 #   - la PHOTO de Luna : posée sur le bureau, mais seulement APRÈS
 #     l'entretien avec Jenny ; elle se ramasse comme n'importe quel
 #     objet (mécanique héritée), puis disparaît une fois rangée. (L.24)
@@ -20,7 +22,7 @@ extends RoomBase
 # doit toujours comprendre QUOI faire).
 const PORTE_SANS_CLES: String = "Je ferais mieux de prendre\n mon manteau et mes CLES\n avant de partir."
 const PORTE_AVEC_CLES: String = "JE ferais mieux de fermer\n avant de partir.\n Mes clés devraient faire l'affaire."
-# Quand on UTILISE la clé sur la porte : elle s'ouvre, on part.
+# Pensée de départ, affichée quand on confirme la sortie (sur "Oui").
 const PORTE_OUVERTE: String = "Bon, il est temps d'y aller.\n Cette enquête n'avancera pas toute seule."
 
 
@@ -59,15 +61,15 @@ func _definir_contenu() -> void:
 
     # La PORTE est une zone UTILISABLE : on lui applique un objet en main.
     #   - mains vides  -> indice calculé par _texte_porte_fermee()
-    #   - clé en main  -> PORTE_OUVERTE + on quitte la pièce
+    #   - clé en main  -> on demande "Quitter la pièce ?" ; sur "Oui",
+    #                     pensée de départ + sortie (helper du moule)
     #   - autre objet  -> "Inutile ici." (géré par le moule)
     utilisables = {
         "DoorArea": {
             "examiner": _texte_porte_fermee,
             "objets": {
                 "cles": {
-                    "pensee": PORTE_OUVERTE,
-                    "action": _quitter_la_piece,
+                    "action": demander_a_quitter.bind(PORTE_OUVERTE),
                 },
             },
         },
@@ -83,8 +85,7 @@ func _definir_contenu() -> void:
     # 3. Une fois la photo rangée dans l'inventaire, on la retire du bureau.
     Inventaire.inventaire_modifie.connect(_sur_inventaire_modifie)
 
- ####
-# --- TEST TEMPORAIRE D5 (à retirer ensuite) ---
+    # --- TEST TEMPORAIRE D5 (à retirer ensuite) ---
     # On lance la conversation APRÈS la fin du _ready() de la pièce,
     # pour que l'abonnement aux signaux de Dialogue soit déjà fait.
     _lancer_test_dialogue.call_deferred()
@@ -94,7 +95,6 @@ func _definir_contenu() -> void:
 func _lancer_test_dialogue() -> void:
     var entretien: Conversation = load("res://resources/entretien_bureau.tres")
     Dialogue.jouer(entretien)
-####
 
 
 # --- LA PORTE : texte quand on la clique MAINS VIDES ---

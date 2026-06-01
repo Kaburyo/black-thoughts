@@ -369,7 +369,7 @@ func _ouvrir_menu_objet(id_objet: String) -> void:
     menu_objet.clear()
     menu_objet.add_item("Examiner", ACTION_EXAMINER)
     menu_objet.add_item("Combiner", ACTION_COMBINER)
-    menu_objet.add_item("Utiliser", ACTION_UTILISER)
+    menu_objet.add_item("Utiliser/Montrer", ACTION_UTILISER)
 
     menu_objet.position = Vector2i(get_viewport().get_mouse_position())
     menu_objet.popup()

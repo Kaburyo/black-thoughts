@@ -1,0 +1,7 @@
+[gd_scene format=3 uid="uid://c0h1b41y0wnd"]
+
+[ext_resource type="Script" uid="uid://cwtiyolpwjc8p" path="res://scenes/ui/confirmation.gd" id="1_sq2w8"]
+
+[node name="Confirmation" type="CanvasLayer" unique_id=1379524653]
+layer = 15
+script = ExtResource("1_sq2w8")

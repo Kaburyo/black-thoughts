@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://b76ww7edgisy6"]
+[gd_scene format=3 uid="uid://b76ww7edgisy6"]
 
 [ext_resource type="Script" uid="uid://u2n4g0sbmrd4" path="res://scenes/ui/hud.gd" id="1_bo48s"]
 [ext_resource type="FontFile" uid="uid://b41ruyxvyshkt" path="res://assets/fonts/PirataOne-Regular.ttf" id="1_hqnrr"]
@@ -20,17 +20,17 @@ corner_radius_top_right = 6
 corner_radius_bottom_right = 6
 corner_radius_bottom_left = 6
 
-[node name="Hud" type="CanvasLayer"]
+[node name="Hud" type="CanvasLayer" unique_id=255169521]
 script = ExtResource("1_bo48s")
 
-[node name="MenuPanel" type="Panel" parent="."]
+[node name="MenuPanel" type="Panel" parent="." unique_id=1238041752]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="MenuTitre" type="Label" parent="MenuPanel"]
+[node name="MenuTitre" type="Label" parent="MenuPanel" unique_id=969767618]
 layout_mode = 0
 offset_left = 850.0
 offset_top = 8.0
@@ -41,7 +41,7 @@ theme_override_font_sizes/font_size = 86
 text = "MENU"
 horizontal_alignment = 1
 
-[node name="InventairePanel" type="Panel" parent="MenuPanel"]
+[node name="InventairePanel" type="Panel" parent="MenuPanel" unique_id=685111068]
 layout_mode = 1
 anchors_preset = -1
 offset_left = 20.0
@@ -51,7 +51,7 @@ offset_bottom = 967.0
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_8qguk")
 
-[node name="MargeInventaire" type="MarginContainer" parent="MenuPanel/InventairePanel"]
+[node name="MargeInventaire" type="MarginContainer" parent="MenuPanel/InventairePanel" unique_id=2075254912]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -63,11 +63,11 @@ theme_override_constants/margin_top = 20
 theme_override_constants/margin_right = 20
 theme_override_constants/margin_bottom = 20
 
-[node name="GrilleObjets" type="GridContainer" parent="MenuPanel/InventairePanel/MargeInventaire"]
+[node name="GrilleObjets" type="GridContainer" parent="MenuPanel/InventairePanel/MargeInventaire" unique_id=1321709363]
 layout_mode = 2
 columns = 4
 
-[node name="InventaireBouton" type="Button" parent="MenuPanel"]
+[node name="InventaireBouton" type="Button" parent="MenuPanel" unique_id=1796455574]
 layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
@@ -81,7 +81,7 @@ theme_override_fonts/font = ExtResource("1_hqnrr")
 theme_override_font_sizes/font_size = 60
 text = "[i] Inventaire"
 
-[node name="AlPortrait" type="TextureButton" parent="."]
+[node name="AlPortrait" type="TextureButton" parent="." unique_id=1009820439]
 anchors_preset = 3
 anchor_left = 1.0
 anchor_top = 1.0
@@ -99,7 +99,7 @@ stretch_mode = 5
 flip_h = true
 script = ExtResource("4_8qguk")
 
-[node name="CadrePortrait" type="Panel" parent="AlPortrait"]
+[node name="CadrePortrait" type="Panel" parent="AlPortrait" unique_id=1895705294]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -111,7 +111,7 @@ grow_vertical = 2
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_bo48s")
 
-[node name="BoutonRecap" type="Button" parent="."]
+[node name="BoutonRecap" type="Button" parent="." unique_id=234816127]
 offset_left = 1532.0
 offset_top = 979.0
 offset_right = 1740.0
@@ -120,8 +120,8 @@ theme_override_fonts/font = ExtResource("1_hqnrr")
 theme_override_font_sizes/font_size = 60
 text = "[r] Récap"
 
-[node name="MenuObjet" type="PopupMenu" parent="."]
+[node name="MenuObjet" type="PopupMenu" parent="." unique_id=845800318]
 
-[node name="CurseurObjet" type="TextureRect" parent="."]
+[node name="CurseurObjet" type="TextureRect" parent="." unique_id=2115271376]
 offset_right = 40.0
 offset_bottom = 40.0

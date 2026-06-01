@@ -4,6 +4,8 @@
 #   - EXAMINER (un clic = une pensée)
 #   - RAMASSER (un clic = pensée + sprite + rangement en inventaire)
 #   - UTILISER un objet en main sur une zone du décor (verbe du curseur-objet)
+#   - MONTRER un objet à un PNJ, ou lui PARLER (un clic sur un PNJ)
+#   - QUITTER une pièce, avec confirmation Oui/Non (commun à toutes les portes)
 #   - le verrou des interactions
 #   - le gel du décor pendant un dialogue
 #   - la sortie de pièce (fondu au noir + fondu musique)
@@ -12,6 +14,7 @@
 # c'est le service autonome "Voix" (autoload).
 # Le fondu au noir de l'écran NON plus : c'est le service "Fondu".
 # L'objet "en main" appartient au service "ObjetEnMain" (autoload).
+# La fenêtre Oui/Non appartient au service "Confirmation" (autoload).
 #
 # Une pièce concrète (office_room.gd, chambre_luna_room.gd...) fait
 # "extends RoomBase" et hérite GRATUITEMENT de tout ça.
@@ -34,6 +37,14 @@ const ECHELLE_PICKUP: float = 0.3
 # Pensée d'Al' quand il essaie d'utiliser un objet sur une cible qui
 # ne l'accepte pas (le repli générique de la bible, décision L.26-2).
 const PENSEE_OBJET_INUTILE: String = "Inutile ici."
+
+# Pensée d'Al' quand il MONTRE un objet à un PNJ que ça ne concerne pas.
+const PENSEE_RIEN_A_MONTRER: String = "Inutile de lui montrer ça."
+
+# Question posée par les portes avant de quitter une pièce. Centralisée
+# ici pour qu'un SEUL endroit décide du texte (le même pour toutes les
+# portes). Une porte particulière pourra passer une autre question.
+const QUESTION_SORTIE: String = "Quitter la pièce ?"
 
 
 # --- Verrou des interactions ---
@@ -62,6 +73,20 @@ var objets_ramassables: Dictionary = {}
 #   }
 var utilisables: Dictionary = {}
 
+# Les PNJ présents dans la pièce. Un PNJ est PEINT dans le décor ; sa
+# zone cliquable est une simple Area2D invisible posée par-dessus.
+# Forme attendue, pour chaque PNJ (clé = nom du nœud Area2D) :
+#   {
+#     "parler": <chemin .tres d'une Conversation>  -> clic SANS objet en main
+#               (la conversation "par défaut" du PNJ). Optionnel.
+#     "objets": {                                   -> verbe MONTRER
+#         <id de l'objet montré> : <chemin .tres d'une Conversation>,
+#         ...
+#     }
+#   }
+# MONTRER ne consomme jamais l'objet (une preuve reste une preuve).
+var pnj_presents: Dictionary = {}
+
 
 # --- Point d'accroche à remplir par chaque pièce ---
 func _definir_contenu() -> void:
@@ -70,7 +95,7 @@ func _definir_contenu() -> void:
 
 # Appelée automatiquement une fois, au lancement de la scène.
 func _ready() -> void:
-    # 1. La pièce déclare son contenu (pensées, objets, porte...).
+    # 1. La pièce déclare son contenu (pensées, objets, porte, PNJ...).
     _definir_contenu()
 
     # 2. Branchement des objets examinables.
@@ -90,6 +115,12 @@ func _ready() -> void:
         var zone := get_node(nom_zone) as Area2D
         var donnees: Dictionary = utilisables[nom_zone]
         zone.input_event.connect(_sur_clic_utilisable.bind(donnees))
+
+    # 3-ter. Branchement des PNJ (leur parler / leur montrer un objet).
+    for nom_zone in pnj_presents:
+        var zone := get_node(nom_zone) as Area2D
+        var donnees: Dictionary = pnj_presents[nom_zone]
+        zone.input_event.connect(_sur_clic_pnj.bind(donnees))
 
     # 4. On s'abonne au service Dialogue : pendant une conversation,
     #    le décor se gèle ; à la fin, il se dégèle. La pièce n'a rien
@@ -129,7 +160,7 @@ func _sur_clic(_viewport: Node, event: InputEvent, _shape_idx: int, texte: Strin
 
     # Mains vides : examen normal.
     Voix.afficher_pensee(texte)
-    
+
 
 # --- RAMASSER ---
 func _sur_clic_ramassable(_viewport: Node, event: InputEvent, _shape_idx: int,
@@ -213,11 +244,74 @@ func _sur_clic_utilisable(_viewport: Node, event: InputEvent, _shape_idx: int,
 
     # (c) on repose l'objet. La clé est un OUTIL : elle n'est PAS
     #     consommée (elle reste en inventaire). Les charges et les
-    #     consommables viendront au sous-chantier (iii).
+    #     consommables viennent du sous-chantier (iii) / catalogue.
     ObjetEnMain.reposer()
 
 
-# --- SORTIE DE PIÈCE ---
+# --- MONTRER un objet à un PNJ, ou lui PARLER ---
+# Déclenché par un clic gauche sur la zone (invisible) d'un PNJ.
+#   - mains vides            -> on lui PARLE (sa conversation par défaut)
+#   - objet en main reconnu  -> on le lui MONTRE (conversation spéciale)
+#   - objet en main inconnu  -> "Inutile de lui montrer ça.", objet GARDÉ
+# MONTRER ne consomme JAMAIS l'objet (une preuve reste une preuve) ;
+# c'est le démarrage du dialogue qui repose l'objet en main tout seul
+# (le HUD se cache au début d'une conversation -> Hud.cacher()).
+func _sur_clic_pnj(_viewport: Node, event: InputEvent, _shape_idx: int,
+        donnees: Dictionary) -> void:
+    if _interactions_bloquees:
+        return
+    if not (event is InputEventMouseButton):
+        return
+    if not (event.button_index == MOUSE_BUTTON_LEFT and event.pressed):
+        return
+
+    # CAS 1 — mains vides : on PARLE au PNJ (sa conversation par défaut).
+    if not ObjetEnMain.a_un_objet():
+        _jouer_conversation(donnees.get("parler", ""))
+        return
+
+    # CAS 2 — un objet est en main : on tente de le MONTRER.
+    var id_objet: String = ObjetEnMain.id()
+    var conversations: Dictionary = donnees.get("objets", {})
+
+    # Le PNJ n'a rien à dire sur cet objet : pensée générique, objet GARDÉ.
+    if not conversations.has(id_objet):
+        Voix.afficher_pensee(PENSEE_RIEN_A_MONTRER)
+        return
+
+    # Le PNJ réagit à cet objet : on joue sa conversation spéciale.
+    _jouer_conversation(conversations[id_objet])
+
+
+# Petite aide : charge une Conversation (.tres) par son chemin et la joue.
+# Vide -> on ne fait rien (silencieux). Le démarrage du dialogue cache le
+# HUD, ce qui repose l'objet en main : MONTRER n'a donc rien à reposer.
+func _jouer_conversation(chemin: String) -> void:
+    if chemin == "":
+        return
+    var conversation := load(chemin) as Conversation
+    if conversation != null:
+        Dialogue.jouer(conversation)
+
+
+# --- QUITTER AVEC CONFIRMATION (commun à toutes les portes) ---
+# Toute porte de toute pièce appelle ceci en UNE ligne. La pièce fournit
+# seulement sa pensée de départ (sa "voix") ; la question et la séquence
+# de sortie sont communes.
+#   - "Oui" -> on dit la pensée de départ (si fournie), puis on sort.
+#   - "Non" -> la fenêtre se ferme, on reste, rien à faire.
+func demander_a_quitter(pensee_sortie: String = "",
+        question: String = QUESTION_SORTIE) -> void:
+    Confirmation.demander(question, _confirmer_sortie.bind(pensee_sortie))
+
+
+func _confirmer_sortie(pensee_sortie: String) -> void:
+    if pensee_sortie != "":
+        Voix.afficher_pensee(pensee_sortie)
+    _quitter_la_piece()
+
+
+# --- SORTIE DE PIÈCE (le mécanisme bas niveau : fondu + musique) ---
 func _quitter_la_piece() -> void:
     _interactions_bloquees = true
 

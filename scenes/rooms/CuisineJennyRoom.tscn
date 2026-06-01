@@ -1,0 +1,115 @@
+[gd_scene format=3 uid="uid://bp6k0qxbnayq3"]
+
+[ext_resource type="Script" uid="uid://1i7eyr1bvgb" path="res://scenes/rooms/cuisine_jenny_room.gd" id="1_behl5"]
+[ext_resource type="Texture2D" uid="uid://cc8meln2gj2hx" path="res://assets/art/backgrounds/cuisine_jenny.png" id="1_fkawq"]
+[ext_resource type="AudioStream" uid="uid://co7um4c8am4mc" path="res://assets/audio/music/BLACKTHOUGHTS - JENNY KITCHEN.wav" id="3_g1jk4"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_behl5"]
+radius = 188.0
+height = 376.0
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_g1jk4"]
+radius = 171.0
+height = 488.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_behl5"]
+size = Vector2(219, 809)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_g1jk4"]
+size = Vector2(341, 347.5)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_altx6"]
+size = Vector2(164, 127)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wsd33"]
+size = Vector2(379.5, 270)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ahi6p"]
+size = Vector2(88, 133.5)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_m88yb"]
+size = Vector2(498.5, 221)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_k7wnq"]
+size = Vector2(116, 127)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_cx4nb"]
+size = Vector2(360.5, 205)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_mxjm5"]
+size = Vector2(274.5, 380.5)
+
+[node name="CuisineJennyRoom" type="Node2D" unique_id=115586146]
+script = ExtResource("1_behl5")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=460991768]
+position = Vector2(960, 540)
+scale = Vector2(1.25, 1.055)
+texture = ExtResource("1_fkawq")
+metadata/_edit_lock_ = true
+
+[node name="PickupSprite" type="Sprite2D" parent="." unique_id=33797101]
+position = Vector2(960, 540)
+
+[node name="JennyArea" type="Area2D" parent="." unique_id=21404052]
+metadata/_edit_lock_ = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="JennyArea" unique_id=1819759128]
+position = Vector2(1034, 357)
+shape = SubResource("CapsuleShape2D_behl5")
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="JennyArea" unique_id=497731017]
+position = Vector2(1105, 611)
+rotation = 1.5707964
+shape = SubResource("CapsuleShape2D_g1jk4")
+
+[node name="PorteCuisineArea" type="Area2D" parent="." unique_id=145579738]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PorteCuisineArea" unique_id=313896229]
+position = Vector2(1807, 428)
+shape = SubResource("RectangleShape2D_behl5")
+
+[node name="ChaiseVideArea" type="Area2D" parent="." unique_id=1050205489]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ChaiseVideArea" unique_id=398225814]
+position = Vector2(195.5, 896.75)
+shape = SubResource("RectangleShape2D_g1jk4")
+
+[node name="FenetreArea" type="Area2D" parent="." unique_id=2140166725]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="FenetreArea" unique_id=272820691]
+position = Vector2(85, 331.5)
+shape = SubResource("RectangleShape2D_altx6")
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="FenetreArea" unique_id=1078237541]
+position = Vector2(192.75, 131)
+shape = SubResource("RectangleShape2D_wsd33")
+
+[node name="CollisionShape2D3" type="CollisionShape2D" parent="FenetreArea" unique_id=903647715]
+position = Vector2(341, 339.25)
+shape = SubResource("RectangleShape2D_ahi6p")
+
+[node name="EvierArea" type="Area2D" parent="." unique_id=1272635852]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="EvierArea" unique_id=1961876157]
+position = Vector2(259.75, 525.5)
+shape = SubResource("RectangleShape2D_m88yb")
+
+[node name="BouteillesArea" type="Area2D" parent="." unique_id=73896371]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="BouteillesArea" unique_id=1757446869]
+position = Vector2(233, 334.5)
+shape = SubResource("RectangleShape2D_k7wnq")
+
+[node name="FrigoArea" type="Area2D" parent="." unique_id=1763402207]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="FrigoArea" unique_id=489157120]
+position = Vector2(1443.75, 350.5)
+shape = SubResource("RectangleShape2D_cx4nb")
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="FrigoArea" unique_id=1923384541]
+position = Vector2(1488.75, 659.75)
+shape = SubResource("RectangleShape2D_mxjm5")
+
+[node name="MusicPlayer" type="AudioStreamPlayer" parent="." unique_id=324582074]
+stream = ExtResource("3_g1jk4")

@@ -1,12 +1,12 @@
 # chambre_luna_room.gd
-# Pièce "BChambre Luna'".
+# Pièce "Chambre de Luna".
 #
-# Ce script est très court : toute la MÉCANIQUE (examiner, ramasser,
+# Ce script est court : toute la MÉCANIQUE (examiner, ramasser, quitter,
 # verrou, sortie de pièce) vit dans le moule room_base.gd. La voix
-# intérieure, elle, est le service autoload "Voix".
-# Ici, on ne déclare que ce qui est PROPRE au bureau :
+# intérieure est le service autoload "Voix".
+# Ici, on ne déclare que ce qui est PROPRE à la chambre :
 #   - le contenu des pensées et des objets ramassables
-#   - la porte (objet à comportement spécifique à cette pièce)
+#   - la porte (elle exige le ticket de bar ; sinon, fouiller encore)
 
 extends RoomBase
 
@@ -16,9 +16,8 @@ const PORTE_VERROUILLEE: String = "Je ferais mieux de chercher un peu\n avant de
 const PORTE_OUVERTE: String = "Allons voir Jenny, elle pourra surement m'aiguiller"
 
 
-# --- Contenu propre au bureau ---
+# --- Contenu propre à la chambre ---
 # Appelée par le moule (room_base.gd) au tout début de _ready().
-# On remplit ici les données de la pièce et on branche la porte.
 func _definir_contenu() -> void:
     # Les objets EXAMINABLES : clé = nom du nœud Area2D, valeur = pensée.
     pensees = {
@@ -47,20 +46,28 @@ func _definir_contenu() -> void:
         },
     }
 
-    # La porte a son propre branchement (objet à comportement).
+    # La porte a son propre branchement (comportement propre à la pièce).
     $PorteChambreArea.input_event.connect(_sur_clic_porte)
 
 
 # --- LA PORTE ---
-# Appelée quand on clique la porte.
+# Clic sur la porte :
+#   - un objet en main          -> "Inutile ici." (rien à utiliser ici) ;
+#   - mains vides + ticket de bar -> "Quitter la pièce ?" puis sortie ;
+#   - mains vides sans ticket   -> on invite Al' à fouiller encore.
 func _sur_clic_porte(_viewport: Node, event: InputEvent, _shape_idx: int) -> void:
     if _interactions_bloquees:
         return
-    if event is InputEventMouseButton:
-        if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
-            # La porte s'ouvre si Al' possède les clés.
-            if Inventaire.possede("bar_ticket"):
-                Voix.afficher_pensee(PORTE_OUVERTE)
-                _quitter_la_piece()
-            else:
-                Voix.afficher_pensee(PORTE_VERROUILLEE)
+    if not (event is InputEventMouseButton):
+        return
+    if not (event.button_index == MOUSE_BUTTON_LEFT and event.pressed):
+        return
+
+    if ObjetEnMain.a_un_objet():
+        Voix.afficher_pensee(PENSEE_OBJET_INUTILE)
+        return
+
+    if Inventaire.possede("bar_ticket"):
+        demander_a_quitter(PORTE_OUVERTE)
+    else:
+        Voix.afficher_pensee(PORTE_VERROUILLEE)

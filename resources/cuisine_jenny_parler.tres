@@ -1,0 +1,72 @@
+[gd_resource type="Resource" script_class="Conversation" format=3 uid="uid://y4378oced6q4"]
+
+[ext_resource type="Script" uid="uid://byknsokd4a1h0" path="res://resources/conversation.gd" id="0"]
+[ext_resource type="Script" uid="uid://c4nqgiisltlk" path="res://resources/replique_dialogue.gd" id="1"]
+[ext_resource type="Script" uid="uid://blm8n7fkmbgfp" path="res://resources/personnage_dialogue.gd" id="1_7eb44"]
+[ext_resource type="Script" uid="uid://dey7xqbrualto" path="res://resources/choix_dialogue.gd" id="2"]
+[ext_resource type="Resource" uid="uid://dskh6uer2righ" path="res://resources/personnage_al.tres" id="3"]
+[ext_resource type="Resource" uid="uid://b6s63magyw5ib" path="res://resources/personnage_jenny.tres" id="4"]
+
+[sub_resource type="Resource" id="Choix1"]
+script = ExtResource("2")
+texte_a = "Le chaud suffira. Merci."
+valeur_a = 5.0
+texte_b = "Je ne suis pas venu pour le café, madame."
+valeur_b = -5.0
+texte_c = "..."
+
+[sub_resource type="Resource" id="Rep01"]
+script = ExtResource("1")
+locuteur = 1
+texte = "Vous avez fouillé sa chambre.
+Asseyez-vous. J'ai fait du café.
+Il n'est pas bon, mais il est chaud."
+choix = SubResource("Choix1")
+
+[sub_resource type="Resource" id="Rep02"]
+script = ExtResource("1")
+locuteur = 1
+texte = "(elle remplit une tasse malgré tout)
+Vous lui ressemblez, par moments.
+Elle non plus ne disait jamais ce qu'elle pensait."
+reaction_a = "(un pâle sourire)
+Vous êtes plus poli que vous n'en avez l'air."
+reaction_b = "Personne ne vient jamais pour le café.
+Asseyez-vous quand même."
+
+[sub_resource type="Resource" id="Rep03"]
+script = ExtResource("1")
+locuteur = 1
+texte = "Luna ramenait toujours quelque chose.
+Un chat à trois pattes. Une voisine qui pleurait.
+Un type croisé une fois dans la rue.
+Elle disait que tout le monde méritait qu'on s'arrête.
+Je lui répétais que le monde n'est pas si tendre.
+Elle ne m'écoutait pas."
+
+[sub_resource type="Resource" id="Rep04"]
+script = ExtResource("1")
+texte = "La gentillesse, c'est une porte qu'on laisse ouverte.
+Tôt ou tard, quelqu'un finit par entrer."
+texte_good = "Les gens comme elle laissent une trace partout —
+quelqu'un se souvient toujours d'un geste.
+C'est par là qu'on la retrouvera."
+texte_mid = "La bonté n'a jamais protégé personne.
+Mais elle laisse des témoins. C'est déjà ça."
+texte_bof = "J'ai connu cette manie d'aider tout le monde.
+Ça part d'un bon sentiment.
+Ça finit dans des endroits où il ne faut pas être."
+texte_bad = "On commence par sauver les chats à trois pattes.
+On finit dévoré, la main encore tendue."
+
+[sub_resource type="Resource" id="Rep05"]
+script = ExtResource("1")
+locuteur = 1
+texte = "Trouvez-la. C'est tout.
+Ramenez-la, et je trouverai bien de quoi vous payer le reste."
+
+[resource]
+script = ExtResource("0")
+titre = "Cuisine — Jenny (par défaut)"
+personnages = Array[ExtResource("1_7eb44")]([ExtResource("3"), ExtResource("4")])
+repliques = Array[ExtResource("1")]([SubResource("Rep01"), SubResource("Rep02"), SubResource("Rep03"), SubResource("Rep04"), SubResource("Rep05")])

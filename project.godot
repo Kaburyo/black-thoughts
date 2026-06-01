@@ -31,6 +31,7 @@ Vie="*res://globals/vie.gd"
 FiltreMental="*res://scenes/ui/FiltreMental.tscn"
 Dialogue="*res://scenes/ui/dialogue.tscn"
 Combinaison="*res://globals/combinaison.gd"
+Confirmation="*uid://c0h1b41y0wnd"
 
 [display]
 

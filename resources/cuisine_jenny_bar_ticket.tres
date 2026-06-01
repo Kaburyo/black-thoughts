@@ -1,0 +1,74 @@
+[gd_resource type="Resource" script_class="Conversation" load_steps=14 format=3]
+
+[ext_resource type="Script" uid="uid://byknsokd4a1h0" path="res://resources/conversation.gd" id="0"]
+[ext_resource type="Script" uid="uid://c4nqgiisltlk" path="res://resources/replique_dialogue.gd" id="1"]
+[ext_resource type="Script" uid="uid://blm8n7fkmbgfp" path="res://resources/personnage_dialogue.gd" id="1_7eb44"]
+[ext_resource type="Script" uid="uid://dey7xqbrualto" path="res://resources/choix_dialogue.gd" id="2"]
+[ext_resource type="Resource" uid="uid://dskh6uer2righ" path="res://resources/personnage_al.tres" id="3"]
+[ext_resource type="Resource" uid="uid://b6s63magyw5ib" path="res://resources/personnage_jenny.tres" id="4"]
+
+[sub_resource type="Resource" id="Choix1"]
+script = ExtResource("2")
+texte_a = "Les gens nous surprennent, madame. Même nos enfants."
+valeur_a = 5.0
+texte_b = "Le ticket dit le contraire. Et le papier ne ment pas."
+valeur_b = -5.0
+texte_c = "..."
+
+[sub_resource type="Resource" id="Rep01"]
+script = ExtResource("1")
+texte = "Un ticket d'entrée. Pour un bar.
+Le genre d'adresse qui ne se donne pas à voix haute.
+Je l'ai trouvé dans ses affaires."
+
+[sub_resource type="Resource" id="Rep02"]
+script = ExtResource("1")
+locuteur = 1
+texte = "Un bar ? Non.
+Pas Luna. Ce n'est pas son genre.
+Elle ne sortait pas dans ces endroits-là."
+choix = SubResource("Choix1")
+
+[sub_resource type="Resource" id="Rep03"]
+script = ExtResource("1")
+locuteur = 1
+texte = "(ses mains se crispent sur la table)
+Flora. C'est forcément Flora.
+Cette fille l'entraînait toujours là où il ne fallait pas."
+reaction_a = "(elle baisse les yeux)
+Alors on l'y a emmenée. Et je sais très bien qui.
+Flora."
+reaction_b = "Le papier, le papier... Le papier ne la connaissait pas.
+Flora, si. Toujours elle."
+
+[sub_resource type="Resource" id="Rep04"]
+script = ExtResource("1")
+locuteur = 1
+texte = "Une amie, qu'elle disait. Je ne l'ai jamais sentie, celle-là.
+Trop de sourires, jamais dans les yeux.
+Luna voyait le bon partout. Moi, je voyais cette fille
+lui prendre un peu plus à chaque visite."
+
+[sub_resource type="Resource" id="Rep05"]
+script = ExtResource("1")
+texte = "Alors je commence par ce bar. Et par cette Flora."
+texte_good = "Un lieu, un nom. C'est une piste qui se tire.
+Je vais commencer par là."
+texte_mid = "Un bar, une amie qu'on n'aime pas.
+Ça fait deux fils. C'est déjà mieux que rien."
+texte_bof = "Un bar et une mauvaise fréquentation.
+J'ai déjà vu cette histoire-là finir. Jamais bien."
+texte_bad = "Un bar, une amie qu'une mère déteste.
+L'histoire la plus banale qui soit. Et la plus moche, en général."
+
+[sub_resource type="Resource" id="Rep06"]
+script = ExtResource("1")
+locuteur = 1
+texte = "Soyez prudent.
+Et ne jugez pas ma fille avant de l'avoir trouvée."
+
+[resource]
+script = ExtResource("0")
+titre = "Cuisine — Montrer le ticket de bar"
+personnages = Array[ExtResource("1_7eb44")]([ExtResource("3"), ExtResource("4")])
+repliques = Array[ExtResource("1")]([SubResource("Rep01"), SubResource("Rep02"), SubResource("Rep03"), SubResource("Rep04"), SubResource("Rep05"), SubResource("Rep06")])
