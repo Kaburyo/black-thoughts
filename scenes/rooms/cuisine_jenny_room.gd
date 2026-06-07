@@ -4,8 +4,8 @@
 # Toute la MÉCANIQUE vit dans le moule room_base.gd. Ici, on ne déclare
 # que ce qui est PROPRE à la cuisine.
 #
-# ÉTAT : zones d'ambiance (examiner) + Jenny en PNJ (parler + montrer,
-# table complète) + porte avec confirmation (helper du moule).
+# ÉTAT : zones d'ambiance (examiner) + Jenny en PNJ (parler RÉACTIF +
+# montrer, table complète) + porte avec confirmation (helper du moule).
 
 extends RoomBase
 
@@ -16,6 +16,13 @@ const PENSEE_SORTIE: String = "Assez traîné ici.\n En route."
 
 # --- Contenu propre à la cuisine ---
 func _definir_contenu() -> void:
+    # RETOUR-CLÉ (étape 2) : on NOTE qu'Al' est venu chez Jenny. C'est un
+    # FAIT durable (il survit aux allers-retours) que les réactions futures
+    # pourront relire. marquer() est idempotent : seule la 1re entrée le
+    # pose réellement (et l'affiche dans la console) ; les suivantes sont
+    # silencieuses — la preuve que la mémoire persiste.
+    Progression.marquer("cuisine_jenny_visitee")
+
     # Dernière pièce de la démo : la suite (le bar) n'existe pas encore.
     # On laisse donc scene_suivante vide -> la porte fait son fondu et
     # s'arrête là (repli géré par le moule). À renseigner quand le bar
@@ -33,8 +40,17 @@ func _definir_contenu() -> void:
     # Jenny est PEINTE dans le décor ; sa zone cliquable est "JennyArea".
     pnj_presents = {
         "JennyArea": {
-            # Clic mains vides -> sa conversation par défaut.
-            "parler": "res://resources/cuisine_jenny_parler.tres",
+            # PARLER en mode RÈGLES (étape 2) : la 1re règle qui s'applique
+            # gagne. La plus spécifique d'abord, le DÉFAUT en dernier.
+            "parler": [
+                # Si Al' lui a DÉJÀ montré le ticket, elle l'accueille
+                # autrement — et laisse échapper une faille (le twist se
+                # sème ici, sans rien expliquer).
+                { "si_vu": "jenny_ticket_montre",
+                  "conversation": "res://resources/cuisine_jenny_retour.tres" },
+                # Sinon : sa conversation normale (le filet).
+                { "conversation": "res://resources/cuisine_jenny_parler.tres" },
+            ],
             # MONTRER : un objet en main -> la conversation correspondante.
             "objets": {
                 "bar_ticket": "res://resources/cuisine_jenny_bar_ticket.tres",

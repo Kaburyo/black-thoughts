@@ -84,3 +84,4 @@ flat = true
 stream = ExtResource("4_kgr37")
 volume_db = -1.0
 autoplay = true
+bus = &"Musique"

@@ -57,6 +57,7 @@ func _reinitialiser_partie() -> void:
     Vie.reinitialiser()
     Inventaire.reinitialiser()
     Carte.reinitialiser()
+    Progression.reinitialiser()
     ObjetEnMain.reposer()
     OfficeRoom.entretien_deja_joue = false
 

@@ -229,9 +229,12 @@ vertical_alignment = 1
 [node name="MusiqueIntro" type="AudioStreamPlayer" parent="." unique_id=938691004]
 stream = ExtResource("6_music")
 autoplay = true
+bus = &"Musique"
 
 [node name="SfxTocToc" type="AudioStreamPlayer" parent="." unique_id=889718936]
 stream = ExtResource("7_toctoc")
+bus = &"SFX"
 
 [node name="SfxPorteOuvre" type="AudioStreamPlayer" parent="." unique_id=1671510487]
 stream = ExtResource("8_porte")
+bus = &"SFX"

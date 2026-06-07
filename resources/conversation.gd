@@ -37,3 +37,14 @@ extends Resource
 # --- La suite des répliques ---
 # La liste, dans l'ordre où le dialogue se déroule.
 @export var repliques: Array[RepliqueDialogue] = []
+
+
+# --- Fait posé À LA FIN de cette conversation (étape 2 : retours-clés) ---
+# Si ce champ est rempli, le service Dialogue NOTE ce fait dans la
+# Progression quand la conversation se termine. C'est ainsi qu'un
+# échange laisse une TRACE durable que le monde pourra relire plus tard
+# (ex. "jenny_ticket_montre" : Al' a montré le ticket à Jenny -> la
+# prochaine fois qu'il lui parle, elle pourra réagir).
+# Laissé VIDE (le cas le plus courant) -> la conversation ne note rien.
+# Idempotent : rejouer le même échange ne note pas le fait deux fois.
+@export var fait_a_marquer: String = ""

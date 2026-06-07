@@ -247,7 +247,10 @@ func _sur_clic_pnj(_viewport: Node, event: InputEvent, _shape_idx: int,
         return
 
     if not ObjetEnMain.a_un_objet():
-        _jouer_conversation(donnees.get("parler", ""))
+        # PARLER : le champ "parler" peut être un simple chemin OU une
+        # liste de règles selon les faits déjà survenus (voir
+        # _resoudre_parler). On résout d'abord, puis on joue.
+        _jouer_conversation(_resoudre_parler(donnees.get("parler", "")))
         return
 
     var id_objet: String = ObjetEnMain.id()
@@ -258,6 +261,41 @@ func _sur_clic_pnj(_viewport: Node, event: InputEvent, _shape_idx: int,
         return
 
     _jouer_conversation(conversations[id_objet])
+
+
+# --- CHOISIR LA BONNE CONVERSATION "PARLER" SELON LES FAITS ---
+# Le champ "parler" d'un PNJ peut prendre DEUX formes :
+#   - un simple CHEMIN (String) -> on le joue tel quel. C'est le cas par
+#     défaut, RÉTRO-COMPATIBLE : les PNJ déjà câblés ainsi ne changent pas.
+#   - une LISTE DE RÈGLES (Array) -> on parcourt les règles dans l'ordre
+#     et on retient la PREMIÈRE qui s'applique. C'est ce qui rend les
+#     RETOURS-CLÉS possibles : selon ce qui s'est déjà passé, le PNJ
+#     n'ouvre pas la même conversation.
+#
+# Une règle est un petit dictionnaire :
+#   { "si_vu": "fait_id", "conversation": "res://..." }
+#     -> s'applique seulement si ce fait est déjà connu (Progression) ;
+#   { "conversation": "res://..." }   (pas de "si_vu")
+#     -> s'applique TOUJOURS : c'est la règle PAR DÉFAUT. On la place
+#        EN DERNIER, comme un filet : si aucune règle plus spécifique
+#        au-dessus n'a mordu, c'est elle qui tombe.
+func _resoudre_parler(valeur: Variant) -> String:
+    # Forme simple : un chemin direct.
+    if valeur is String:
+        return valeur
+
+    # Forme à règles : on prend la première qui s'applique.
+    if valeur is Array:
+        for regle in valeur:
+            if not (regle is Dictionary):
+                continue
+            var fait: String = regle.get("si_vu", "")
+            # Règle sans condition (le défaut), OU condition satisfaite.
+            if fait == "" or Progression.a_vu(fait):
+                return regle.get("conversation", "")
+
+    # Forme inattendue ou aucune règle applicable : rien à jouer.
+    return ""
 
 
 func _jouer_conversation(chemin: String) -> void:

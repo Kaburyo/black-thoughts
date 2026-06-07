@@ -19,6 +19,10 @@ run/main_scene="uid://b0uwlalh3opxk"
 config/features=PackedStringArray("4.6", "GL Compatibility")
 config/icon="res://icon.svg"
 
+[audio]
+
+buses/default_bus_layout="uid://c0dscviy7inky"
+
 [autoload]
 
 Inventaire="*res://globals/Inventaire.gd"
@@ -30,10 +34,12 @@ Fondu="*res://scenes/ui/fondu.tscn"
 SanteMentale="*res://globals/sante_mentale.gd"
 Vie="*res://globals/vie.gd"
 FiltreMental="*res://scenes/ui/FiltreMental.tscn"
+FiltreSonore="*uid://bmcu8q8f7nhfk"
 Dialogue="*res://scenes/ui/dialogue.tscn"
 Combinaison="*res://globals/combinaison.gd"
 Confirmation="*uid://c0h1b41y0wnd"
 MenuPause="*uid://ba7u20khu3hue"
+Progression="*uid://bpgit8temlkc0"
 Carte="*uid://c76nfmidaavps"
 EcranCarte="*uid://cbypstdnk0s15"
 

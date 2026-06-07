@@ -199,6 +199,7 @@ func _ready() -> void:
     # Lecteur du bruitage (créé en code). On ne charge le son que s'il
     # existe, pour ne rien casser tant que le fichier n'est pas là.
     _sfx_machine = AudioStreamPlayer.new()
+    _sfx_machine.bus = "SFX"            # <-- AJOUT : la machine à écrire passe par le bus SFX
     _sfx_machine.volume_db = -14.0 
     if ResourceLoader.exists(CHEMIN_SFX_MACHINE):
         _sfx_machine.stream = load(CHEMIN_SFX_MACHINE)
@@ -873,6 +874,15 @@ func _replique_suivante() -> void:
 
 # --- FIN DE LA CONVERSATION ---
 func _terminer() -> void:
+    # On lit le fait à poser AVANT de nettoyer _conversation (qui repasse
+    # à null juste après). Une conversation peut déclarer, dans sa fiche,
+    # un FAIT à noter quand elle s'achève (champ `fait_a_marquer`) : c'est
+    # ainsi qu'un échange laisse une TRACE durable que les retours-clés
+    # pourront relire. Vide par défaut -> rien à noter.
+    var fait: String = ""
+    if _conversation != null:
+        fait = _conversation.fait_a_marquer
+
     boite.visible = false
     zone_choix.visible = false
 
@@ -899,6 +909,12 @@ func _terminer() -> void:
     # On annonce la fin : le décor se dégèle, le HUD revient.
     conversation_terminee.emit()
     Hud.montrer()
+
+    # Si la conversation déclarait un fait, on le pose maintenant que tout
+    # est rangé. marquer() est idempotent : revoir le même échange plus
+    # tard ne le notera pas une seconde fois.
+    if fait != "":
+        Progression.marquer(fait)
 
     print("Dialogue : conversation terminée.")
 

@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="Conversation" load_steps=14 format=3]
+[gd_resource type="Resource" script_class="Conversation" format=3 uid="uid://vhxb73dynnm8"]
 
 [ext_resource type="Script" uid="uid://byknsokd4a1h0" path="res://resources/conversation.gd" id="0"]
 [ext_resource type="Script" uid="uid://c4nqgiisltlk" path="res://resources/replique_dialogue.gd" id="1"]
@@ -6,6 +6,13 @@
 [ext_resource type="Script" uid="uid://dey7xqbrualto" path="res://resources/choix_dialogue.gd" id="2"]
 [ext_resource type="Resource" uid="uid://dskh6uer2righ" path="res://resources/personnage_al.tres" id="3"]
 [ext_resource type="Resource" uid="uid://b6s63magyw5ib" path="res://resources/personnage_jenny.tres" id="4"]
+
+[sub_resource type="Resource" id="Rep01"]
+script = ExtResource("1")
+texte = "Un ticket d'entrée. Pour un bar.
+Le genre d'adresse
+qui ne se donne pas à voix haute.
+Je l'ai trouvé dans ses affaires."
 
 [sub_resource type="Resource" id="Choix1"]
 script = ExtResource("2")
@@ -16,13 +23,6 @@ texte_b = "Le ticket dit le contraire.
 Et le papier ment pas."
 valeur_b = -5.0
 texte_c = "..."
-
-[sub_resource type="Resource" id="Rep01"]
-script = ExtResource("1")
-texte = "Un ticket d'entrée. Pour un bar.
-Le genre d'adresse
-qui ne se donne pas à voix haute.
-Je l'ai trouvé dans ses affaires."
 
 [sub_resource type="Resource" id="Rep02"]
 script = ExtResource("1")
@@ -84,3 +84,4 @@ script = ExtResource("0")
 titre = "Cuisine — Montrer le ticket de bar"
 personnages = Array[ExtResource("1_7eb44")]([ExtResource("3"), ExtResource("4")])
 repliques = Array[ExtResource("1")]([SubResource("Rep01"), SubResource("Rep02"), SubResource("Rep03"), SubResource("Rep04"), SubResource("Rep05"), SubResource("Rep06")])
+fait_a_marquer = "jenny_ticket_montre"
