@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="ObjetInventaire" load_steps=6 format=3 uid="uid://dmy6prnbry3ok"]
+[gd_resource type="Resource" script_class="ObjetInventaire" format=3 uid="uid://dmy6prnbry3ok"]
 
 [ext_resource type="Script" uid="uid://i0mq24axp1k8" path="res://resources/objet_inventaire.gd" id="1_632cs"]
 [ext_resource type="Script" uid="uid://blh1kcfx7om5t" path="res://resources/effet_objet.gd" id="1_ap7y6"]
@@ -20,10 +20,10 @@ script = ExtResource("1_632cs")
 nom_affiche = "Paquet de Clop"
 icone = ExtResource("1_uueq5")
 description = "Mon paquet de clop.
-Le docteur dit que ça me tuera.
-Il faudra qu'il fasse la queue."
+Le docteur dit que ça me tuera...
+Il faudra qu'il fasse la queue pour ça."
 effets = Array[ExtResource("1_ap7y6")]([SubResource("Resource_r20cq"), SubResource("Resource_8vedv")])
-pensee_utilisation = "Une taffe.
-Ça me calmera les nerfs."
+pensee_utilisation = "Une petite clop,
+Ça me calmera les nerfs..."
 utilisations_max = 5
 metadata/_custom_type_script = "uid://i0mq24axp1k8"

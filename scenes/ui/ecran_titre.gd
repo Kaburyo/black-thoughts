@@ -16,7 +16,14 @@ func _ready() -> void:
     
     # Rythme de base du jeu. 1.0 = normal, 2.0 = deux fois plus rapide.
     # Un seul réglage global : texte, fondus, minuteries, tweens... tout suit.
-    Engine.time_scale = 2.0
+    Engine.time_scale = 1.8
+    
+    # Curseur personnalisé (la flèche dessinée), point chaud sur la pointe.
+    # set_custom_mouse_cursor est GLOBAL : posé ici au lancement, il vaut
+    # pour tout le jeu. (Quand un objet est en main, le HUD masque la souris
+    # au profit du faux curseur-objet : les deux systèmes cohabitent.)
+    var fleche := load("res://assets/art/curseur/curseur_base_cursor.png")
+    Input.set_custom_mouse_cursor(fleche, Input.CURSOR_ARROW, Vector2(1, 0))
         
     # Sur l'écran-titre, pas de HUD de jeu (portrait, inventaire...).
     Hud.cacher()

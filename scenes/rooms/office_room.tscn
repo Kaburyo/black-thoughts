@@ -3,6 +3,7 @@
 [ext_resource type="Texture2D" uid="uid://dwen5xltt24pl" path="res://assets/art/backgrounds/office.png" id="1_17l8b"]
 [ext_resource type="Script" uid="uid://dk8ygbdwkyyky" path="res://scenes/rooms/office_room.gd" id="1_xdoaq"]
 [ext_resource type="Texture2D" uid="uid://dhfuh8pd2slqc" path="res://assets/art/characters/picture/picture_luna.png" id="3_t6pyg"]
+[ext_resource type="Texture2D" uid="uid://ba5xv8vh3l130" path="res://assets/art/ui/item_cigarettes.png" id="4_ce6de"]
 [ext_resource type="AudioStream" uid="uid://byasxpyw045l0" path="res://assets/audio/music/office_theme.wav" id="4_t6pyg"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_17l8b"]
@@ -24,7 +25,7 @@ size = Vector2(99, 143)
 size = Vector2(165, 276.5)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1sauu"]
-size = Vector2(65.75, 33.5)
+size = Vector2(54.875, 33.5)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_asqm3"]
 size = Vector2(188, 541)
@@ -36,7 +37,7 @@ size = Vector2(253.5, 480)
 size = Vector2(176, 87)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_6qy7x"]
-size = Vector2(54.5, 31)
+size = Vector2(37, 40)
 
 [node name="OfficeRoom" type="Node2D" unique_id=987816447]
 script = ExtResource("1_xdoaq")
@@ -96,7 +97,7 @@ shape = SubResource("RectangleShape2D_6dkxl")
 metadata/_edit_lock_ = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="AshtrayArea" unique_id=916360612]
-position = Vector2(1157, 609)
+position = Vector2(1162.4375, 609)
 shape = SubResource("RectangleShape2D_1sauu")
 
 [node name="FilesArea" type="Area2D" parent="." unique_id=1035093750]
@@ -129,6 +130,17 @@ texture = ExtResource("3_t6pyg")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="PhotoArea" unique_id=981792431]
 position = Vector2(1056.75, 617.5)
+shape = SubResource("RectangleShape2D_6qy7x")
+
+[node name="CigarettesArea" type="Area2D" parent="." unique_id=1996874567]
+
+[node name="CigarettesSprite" type="Sprite2D" parent="CigarettesArea" unique_id=694769968]
+position = Vector2(1115, 608)
+scale = Vector2(0.05, 0.05)
+texture = ExtResource("4_ce6de")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CigarettesArea" unique_id=1658808771]
+position = Vector2(1114.5, 605)
 shape = SubResource("RectangleShape2D_6qy7x")
 
 [node name="PickupSprite" type="Sprite2D" parent="." unique_id=1478364548]

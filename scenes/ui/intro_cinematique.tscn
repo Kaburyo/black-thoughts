@@ -40,6 +40,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_introscript")
 metadata/_edit_vertical_guides_ = [1714.0, 200.0]
+metadata/_edit_horizontal_guides_ = [44.0, 850.0]
 
 [node name="FondNoir" type="ColorRect" parent="." unique_id=1391962633]
 layout_mode = 1
@@ -53,9 +54,9 @@ color = Color(0.078, 0.067, 0.051, 1)
 [node name="Case1" type="TextureRect" parent="." unique_id=1056401254]
 layout_mode = 0
 offset_left = 204.0
-offset_top = 38.0
-offset_right = 781.0
-offset_bottom = 832.0
+offset_top = 45.0
+offset_right = 796.0
+offset_bottom = 848.0
 texture = ExtResource("2_case1")
 expand_mode = 1
 stretch_mode = 6

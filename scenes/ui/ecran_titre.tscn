@@ -36,7 +36,7 @@ anchor_right = 1.0
 offset_top = 25.0
 offset_bottom = 232.0
 grow_horizontal = 2
-theme_override_colors/font_color = Color(0.902, 0.882, 0.831, 1)
+theme_override_colors/font_color = Color(0.9794393, 0.9752429, 0.9642648, 1)
 theme_override_fonts/font = ExtResource("2_pirata")
 theme_override_font_sizes/font_size = 161
 text = "BLACK THOUGHTS"
@@ -61,7 +61,7 @@ theme_override_constants/separation = 28
 [node name="BoutonNouvellePartie" type="Button" parent="Boutons" unique_id=1143819535]
 custom_minimum_size = Vector2(360, 72)
 layout_mode = 2
-theme_override_colors/font_color = Color(0.902, 0.882, 0.831, 1)
+theme_override_colors/font_color = Color(0.6439838, 0.6439838, 0.6439838, 1)
 theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_fonts/font = ExtResource("3_amarante")
@@ -72,7 +72,7 @@ flat = true
 [node name="BoutonQuitter" type="Button" parent="Boutons" unique_id=685949220]
 custom_minimum_size = Vector2(360, 72)
 layout_mode = 2
-theme_override_colors/font_color = Color(0.694, 0.671, 0.616, 1)
+theme_override_colors/font_color = Color(0.7447408, 0.74474084, 0.7447407, 1)
 theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_fonts/font = ExtResource("3_amarante")

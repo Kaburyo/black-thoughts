@@ -181,6 +181,13 @@ var _pages: Array[String] = []
 var _page_courante: int = 0
 
 
+# --- BRUITAGE "MACHINE À ÉCRIRE" (dialogues seulement, 1er jet) ---
+# Le son tourne tant que le texte s'écrit, et s'arrête dès que la page
+# est finie (ou affichée d'un clic). Les PENSÉES d'Al' passent par le
+# service Voix : elles ne sont donc PAS concernées (deux services séparés).
+const CHEMIN_SFX_MACHINE: String = "res://assets/audio/sfx/sfx_ecriture.wav"
+var _sfx_machine: AudioStreamPlayer
+
 # Appelée automatiquement une fois, au lancement.
 func _ready() -> void:
     boite.visible = false
@@ -188,6 +195,18 @@ func _ready() -> void:
     panneau_recap.visible = false
     bouton_fermer.pressed.connect(_fermer_recap)
     boite.gui_input.connect(_sur_clic_boite)
+
+    # Lecteur du bruitage (créé en code). On ne charge le son que s'il
+    # existe, pour ne rien casser tant que le fichier n'est pas là.
+    _sfx_machine = AudioStreamPlayer.new()
+    _sfx_machine.volume_db = -14.0 
+    if ResourceLoader.exists(CHEMIN_SFX_MACHINE):
+        _sfx_machine.stream = load(CHEMIN_SFX_MACHINE)
+    add_child(_sfx_machine)
+    # Boucle "maison" : on relance le son tant qu'on écrit (indépendant
+    # des réglages d'import du fichier).
+    _sfx_machine.finished.connect(_sfx_machine_boucle)
+
     print("Dialogue prêt.")
 
 
@@ -655,13 +674,33 @@ func _afficher_replique_courante() -> void:
 
 # --- L'ÉCRITURE LETTRE PAR LETTRE ---
 func _ecrire_lettre_par_lettre(nb_lettres: int) -> void:
+    _demarrer_sfx_machine()
     for i in range(nb_lettres):
         if _etat != Etat.ECRITURE:
+            _arreter_sfx_machine()
             return
         texte_dialogue.visible_ratio = float(i + 1) / float(nb_lettres)
         await get_tree().create_timer(VITESSE_LETTRE).timeout
 
+    _arreter_sfx_machine()
     _etat = Etat.FINIE
+
+
+# --- BRUITAGE MACHINE À ÉCRIRE : démarrer / boucler / arrêter ---
+func _demarrer_sfx_machine() -> void:
+    if _sfx_machine.stream == null:
+        return
+    _sfx_machine.play()
+
+
+func _sfx_machine_boucle() -> void:
+    # Relancé à chaque fin du clip : tant qu'on écrit, on reboucle.
+    if _etat == Etat.ECRITURE:
+        _sfx_machine.play()
+
+
+func _arreter_sfx_machine() -> void:
+    _sfx_machine.stop()
 
 
 # --- CLIC SUR LA BOÎTE ---
@@ -679,9 +718,11 @@ func _sur_clic_boite(event: InputEvent) -> void:
 
 # --- AFFICHER LA PAGE D'UN COUP ---
 # Un clic pendant l'écriture termine l'animation de la page en cours.
+# --- AFFICHER LA PAGE D'UN COUP ---
 func _afficher_tout_de_suite() -> void:
     _etat = Etat.FINIE
     texte_dialogue.visible_ratio = 1.0
+    _arreter_sfx_machine()
 
 
 # --- APRÈS UNE PAGE FINIE ---

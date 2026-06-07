@@ -20,6 +20,7 @@ const COULEUR_TEXTE_SURVOL: Color = Color(1.0, 1.0, 1.0, 1.0)
 const POLICE_TITRE: String = "res://assets/fonts/PirataOne-Regular.ttf"
 const POLICE_TEXTE: String = "res://assets/fonts/Amarante-Regular.ttf"
 
+const DUREE_FONDU_MUSIQUE: float = 0.6
 
 # Le conteneur qu'on vide puis remplit à chaque ouverture.
 var _liste_boutons: VBoxContainer
@@ -158,8 +159,21 @@ func _aller_a(id: String) -> void:
     if chemin == "":
         return
     fermer()
+    _fondre_musique_piece_courante()
     await Fondu.fondu_au_noir()
     get_tree().change_scene_to_file(chemin)
+
+
+# Adoucit la musique de la pièce qu'on quitte, EN MÊME TEMPS que le fondu
+# au noir (au lieu d'une coupure sèche). La pièce est encore vivante sous
+# la carte : on attrape son lecteur et on le baisse. Le changement de
+# scène, derrière le noir, finira de la couper.
+func _fondre_musique_piece_courante() -> void:
+    var scene := get_tree().current_scene
+    if scene is RoomBase:
+        var mp: AudioStreamPlayer = scene.music_player
+        var t := scene.create_tween()
+        t.tween_property(mp, "volume_db", -60.0, DUREE_FONDU_MUSIQUE)
 
 
 # --- RACCOURCI CLAVIER : OUVRIR / FERMER LA CARTE ---

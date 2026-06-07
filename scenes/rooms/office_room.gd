@@ -1,32 +1,17 @@
-# office_room.gd
-# Pièce "Bureau d'Al'".
-#
-# Toute la MÉCANIQUE vit dans le moule room_base.gd. Ici, on ne déclare
-# que ce qui est PROPRE au bureau : pensées, objets, la porte, la photo
-# de Luna, et le DÉCLENCHEMENT de l'entretien d'ouverture (une seule fois).
-
+# office_room.gd — Pièce "Bureau d'Al'".
 class_name OfficeRoom
 extends RoomBase
 
 
-# Drapeau "entretien d'ouverture déjà joué ?". C'est un "static" PUBLIC :
-#   - static = sa valeur appartient au SCRIPT (pas à l'instance), donc
-#     elle survit aux changements de pièce -> l'entretien ne se rejoue
-#     pas quand on REVIENT au bureau via la carte ;
-#   - public (sans "_") = l'écran-titre peut le remettre à false pour
-#     qu'une NOUVELLE partie rejoue bien l'entretien (et ramène le HUD).
 static var entretien_deja_joue: bool = false
 
 
-# --- Textes de la porte ---
 const PORTE_SANS_CLES: String = "Je ferais mieux de prendre mon manteau et\n mes clés du bureau avant de partir."
 const PORTE_AVEC_CLES: String = "Je ferais mieux de fermer avant de partir.\n Et d'être sur de n'avoir rien oublié."
 const PORTE_OUVERTE: String = "Bon, il est temps d'y aller.\n Cette enquête n'avancera pas toute seule..."
 
 
-# --- Contenu propre au bureau ---
 func _definir_contenu() -> void:
-    # (Champ hérité, désormais inerte : la carte gère la destination.)
     scene_suivante = "res://scenes/rooms/chambre_luna_room.tscn"
 
     pensees = {
@@ -36,6 +21,7 @@ func _definir_contenu() -> void:
         "PaintingArea": "Je me souviens même pas avoir acheté ce truc.",
         "FilesArea": "Si il y a bien quelque chose que je déteste,\n c'est la PAPERASSE !",
         "ChairArea": "J'ai plus dormi sur cette chaise\n que dans mon lit ces derniers temps...",
+        "AshtrayArea": "Un cendrier qui déborde.\n Autant de petites heures parties en fumée.",
     }
 
     objets_ramassables = {
@@ -44,7 +30,7 @@ func _definir_contenu() -> void:
             "id": "cles",
             "sprite": "res://assets/art/ui/item_keys.png",
         },
-        "AshtrayArea": {
+        "CigarettesArea": {
             "pensee": "Pas maintenant...\n Je peux les prendre au cas ou,\n pour plus tard.",
             "id": "cigarettes",
             "sprite": "res://assets/art/ui/item_cigarettes.png",
@@ -67,14 +53,17 @@ func _definir_contenu() -> void:
         },
     }
 
-    # --- LA PHOTO DE LUNA (étape L.24, option A) ---
+    # --- PHOTO DE LUNA (apparaît après l'entretien) ---
     _montrer_photo(false)
     Dialogue.conversation_terminee.connect(_sur_entretien_termine)
     Inventaire.inventaire_modifie.connect(_sur_inventaire_modifie)
 
+    # --- CIGARETTES : visibles dès le départ, mais cachées si déjà prises
+    #     (cas d'un RETOUR au bureau via la carte). Même logique que la photo.
+    if Inventaire.possede("cigarettes"):
+        _montrer_cigarettes(false)
+
     # --- ENTRETIEN D'OUVERTURE (une seule fois) ---
-    # Lancé en call_deferred (après le _ready du moule) pour que le gel
-    # du décor pendant la conversation soit bien branché.
     if not entretien_deja_joue:
         entretien_deja_joue = true
         _lancer_entretien.call_deferred()
@@ -85,24 +74,24 @@ func _lancer_entretien() -> void:
     Dialogue.jouer(entretien)
 
 
-# --- LA PORTE : texte quand on la clique MAINS VIDES ---
 func _texte_porte_fermee() -> String:
     if Inventaire.possede("cles"):
         return PORTE_AVEC_CLES
     return PORTE_SANS_CLES
 
 
-# --- LA PHOTO DE LUNA : apparition / disparition ---
 func _montrer_photo(est_visible: bool) -> void:
     $PhotoArea.visible = est_visible
     $PhotoArea.input_pickable = est_visible
 
 
-func _sur_entretien_termine() -> void:
-    # L'entretien est fini : Jenny a confié l'affaire. Al' sait désormais
-    # où aller -> on débloque la chambre de Luna sur la carte.
-    Carte.debloquer("chambre_luna")
+func _montrer_cigarettes(est_visible: bool) -> void:
+    $CigarettesArea.visible = est_visible
+    $CigarettesArea.input_pickable = est_visible
 
+
+func _sur_entretien_termine() -> void:
+    Carte.debloquer("chambre_luna")
     if Inventaire.possede("picture_luna"):
         return
     _montrer_photo(true)
@@ -111,3 +100,5 @@ func _sur_entretien_termine() -> void:
 func _sur_inventaire_modifie() -> void:
     if Inventaire.possede("picture_luna"):
         _montrer_photo(false)
+    if Inventaire.possede("cigarettes"):
+        _montrer_cigarettes(false)
