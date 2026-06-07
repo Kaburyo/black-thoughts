@@ -9,15 +9,16 @@
 
 [sub_resource type="Resource" id="Rep01"]
 script = ExtResource("1")
-texte = "J'ai retrouvées ceci. 
-L'autre moitié qui manqueait à la photo de Luna."
+texte = "J'ai retrouvé ceci.
+L'autre moitié qui manquait
+à la photo de Luna."
 
 [sub_resource type="Resource" id="Choix1"]
 script = ExtResource("2")
-texte_a = "C'est vous qui avez déchiré la photo ?
+texte_a = "C'est vous qui l'avez déchirée ?
 Pourquoi ?"
 valeur_a = 1.0
-texte_b = "Vous avez déchiré la photo de votre fille en deux.
+texte_b = "Vous avez déchiré votre fille en deux.
 Pourquoi ?"
 valeur_b = -1.0
 texte_c = "... Pourquoi ?"
@@ -25,68 +26,66 @@ texte_c = "... Pourquoi ?"
 [sub_resource type="Resource" id="Rep02"]
 script = ExtResource("1")
 locuteur = 1
-texte = "Moi, je les avais séparées...
-Vous les avez remises ensemble...."
+texte = "Moi, je les avais séparées.
+Vous les avez remises ensemble."
 choix = SubResource("Choix1")
 
 [sub_resource type="Resource" id="Rep03"]
 script = ExtResource("1")
 locuteur = 1
-reaction_a = "Oui. Je n'ai pas pu garder cette fille chez moi, même en photo.
-Alors je l'ai déchirée. Je sais, c'est ridicule..."
-reaction_b = "Oui, je l'ai déchirée ! C'est ce que vous vouliez entendre ?
+reaction_a = "Oui.
+Je n'ai pas pu garder cette fille chez moi,
+même en photo. Alors je l'ai déchirée.
+Je sais. C'est ridicule."
+reaction_b = "Oui, je l'ai déchirée !
+C'est ce que vous vouliez entendre ?
 J'ai voulu effacer Flora de sa vie.
-On n'efface pas les gens en déchirant du papier. Je le sais, c'est ridicule...
-Mais que voulez-vous..."
+On n'efface pas les gens en déchirant du papier.
+Je le sais. Mais que voulez-vous."
 reaction_c = "Un soir, après son absence,
-je n'ai plus supporté de la voir sourire à côté de cette fille.
-J'ai arraché Flora de la photo !
-J'ai gardé que ma petite Luna.
-Comme si ça pouvait me la ramener..."
+je n'ai plus supporté de la voir
+sourire à côté de cette fille.
+J'ai arraché Flora de la photo.
+J'ai gardé ma petite Luna.
+Comme si ça pouvait me la ramener."
 
 [sub_resource type="Resource" id="Rep04"]
 script = ExtResource("1")
 locuteur = 1
-texte = "Flora ne souriait à personne et ne pensait qu'à elle !
-Luna ne le voyait pas. Luna ne voulait pas le voir.
-
-Elle la traînait dans des histoires louches, des dettes, des endroits malfamé...
-
-Et ma fille suivait, parce qu'elle croyait pouvoir la sauver.
-Voilà ce qu'était leur « amitié » : l'une qui prend, tendis que l'autre donnait."
+texte = "Flora ne souriait à personne.
+Elle ne pensait qu'à elle.
+Luna ne le voyait pas. Ne voulait pas le voir.
+Elle l'entraînait dans des histoires louches.
+Des dettes. Des endroits malfamés.
+Et ma fille suivait,
+parce qu'elle croyait pouvoir la sauver.
+Voilà leur « amitié » :
+l'une qui prend, l'autre qui donne."
 
 [sub_resource type="Resource" id="Rep05"]
 script = ExtResource("1")
 locuteur = 1
-texte = "Si vous voulez savoir où est passée ma fille, trouvez d'abord cette fille-là.
+texte = "Si vous voulez savoir où est ma fille,
+trouvez d'abord cette fille-là.
 Là où il y a Flora, il y a les ennuis.
-Et Luna n'est jamais bien loin des ennuis de Flora..."
+Et Luna n'est jamais loin des ennuis de Flora."
 
 [sub_resource type="Resource" id="Rep06"]
 script = ExtResource("1")
-texte = "Alors c'est Flora que je cherche. Et à travers elle, votre fille."
-texte_good = "Quelqu'un qui donne de sa personne pour en sauver une autre.
-Je connais bien ça...
-
-On peut peut-être encore la rattraper.
-Je vais voir ce que je peux faire."
-texte_mid = "Quelqu'un qui donne de sa personne pour en sauver une autre.
-Je connais bien ça...
-
-On peut peut-être encore la rattraper.
+texte = "Alors c'est Flora que je cherche.
+Et à travers elle, votre fille."
+texte_good = "Quelqu'un qui se brûle pour en sauver un autre.
+Je connais la chanson.
+On peut peut-être encore la rattraper."
+texte_mid = "Quelqu'un qui se sacrifie pour un autre.
+Je connais ça.
 Je vais voir ce que je peux faire."
 texte_bof = "Une qui prend, une qui donne.
-J'ai déjà vu où ça mène...
-
-Mais je vais la chercher quand même —
-
-c'est mon métier de remuer la merde des autres..."
+J'ai déjà vu où ça mène.
+Mais je vais creuser quand même."
 texte_bad = "Une qui prend, une qui donne.
-J'ai déjà vu où ça mène...
-
-Mais je vais la chercher quand même —
-
-c'est mon métier de remuer la merde des autres..."
+J'ai déjà vu où ça finit.
+Remuer la merde des autres, c'est mon gagne-pain."
 
 [resource]
 script = ExtResource("0")

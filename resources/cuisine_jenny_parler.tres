@@ -9,19 +9,19 @@
 
 [sub_resource type="Resource" id="Choix1"]
 script = ExtResource("2")
-texte_a = "Le chaud suffira. Merci."
+texte_a = "Le chaud me suffira. Merci."
 valeur_a = 5.0
-texte_b = "Je ne suis pas venu pour le café, madame."
+texte_b = "J'suis pas venu pour le café, madame."
 valeur_b = -5.0
 texte_c = "..."
 
 [sub_resource type="Resource" id="Rep01"]
 script = ExtResource("1")
 locuteur = 1
-texte = "Vous avez fouillé sa chambre?
+texte = "Vous avez fouillé sa chambre ?
 Asseyez-vous avec moi.
 J'ai fait du café.
-Il n'est pas bon, mais il est encore chaud."
+Il n'est pas bon, mais il est chaud."
 choix = SubResource("Choix1")
 
 [sub_resource type="Resource" id="Rep02"]
@@ -30,40 +30,47 @@ locuteur = 1
 reaction_a = "Vous êtes plus poli que vous n'en avez l'air."
 reaction_b = "Personne ne vient jamais pour un mauvais café.
 Asseyez-vous quand même."
-reaction_c = "(elle remplit une tasse malgré tout)
-Vous lui ressemblez, par moments.
-Elle non plus ne disait jamais ce qu'elle pensait."
+reaction_c = "Vous lui ressemblez, par moments.
+Elle non plus ne disait jamais
+ce qu'elle pensait vraiment."
 
 [sub_resource type="Resource" id="Rep03"]
 script = ExtResource("1")
 locuteur = 1
-texte = "Luna ramenait toujours quelque chose.
-Un chat à trois pattes, une voisine qui pleurait.
-Un type croisé une fois dans la rue.
-Elle disait que tout le monde méritait qu'on s'arrête.
-Je lui répétais que le monde n'est pas si tendre.
-Elle ne m'écoutait jamais..."
+texte = "Luna ramenait toujours quelqu'un.
+Un éclopé, une voisine en larmes,
+un inconnu croisé une seule fois.
+Elle disait que chacun méritait qu'on s'arrête.
+Moi, je lui répétais que le monde
+n'a pas tant de douceur en réserve.
+Elle ne m'écoutait jamais.
+Et regardez. J'avais raison.
+Enfin — on a toujours raison, après coup."
 
 [sub_resource type="Resource" id="Rep04"]
 script = ExtResource("1")
-texte = "La gentillesse, c'est une porte qu'on laisse ouverte.
-Tôt ou tard, quelqu'un finit par entrer."
-texte_good = "Les gens comme elle laissent une trace partout —
-quelqu'un se souvient toujours d'un geste.
+texte = "La gentillesse, c'est une porte ouverte.
+Tôt ou tard, quelqu'un entre.
+Et c'est pas toujours pour le thé."
+texte_good = "Les gens comme elle laissent une trace partout.
+Quelqu'un se souvient toujours d'un geste.
 C'est par là qu'on la retrouvera."
 texte_mid = "La bonté n'a jamais protégé personne.
-Mais elle laisse des témoins. C'est déjà ça."
+Mais elle laisse des témoins.
+C'est déjà ça."
 texte_bof = "J'ai connu cette manie d'aider tout le monde.
 Ça part d'un bon sentiment.
-Ça finit dans des endroits où il ne faut pas être."
-texte_bad = "On commence par sauver les chats à trois pattes.
-On finit dévoré, la main encore tendue."
+Ça finit là où faut pas être."
+texte_bad = "On commence par sauver les éclopés.
+On finit dévoré,
+la main encore tendue."
 
 [sub_resource type="Resource" id="Rep05"]
 script = ExtResource("1")
 locuteur = 1
 texte = "Trouvez-la. C'est tout.
-Ramenez-la, et je trouverai bien de quoi vous payer le reste."
+Ramenez-la,
+et je trouverai de quoi vous payer le reste."
 
 [resource]
 script = ExtResource("0")

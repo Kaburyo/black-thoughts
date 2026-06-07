@@ -9,157 +9,166 @@
 
 [sub_resource type="Resource" id="Choix1"]
 script = ExtResource("2")
-texte_a = "On vous a mal renseignée, je ne retrouve plus grand-chose, ces temps-ci.
-Surtout pas les gens."
+texte_a = "La dernière porte, c'est la plus chère.
+J'fais pas ça pour vos beaux yeux.
+Posez vot' peine et vot' fric sur le bureau."
 valeur_a = -2.5
-texte_b = "Ça dépend des gens,et de qui les cherche.
-Asseyez-vous, ou sortez, mais décidez-vous."
+texte_b = "Épargnez-moi le numéro de la pauvre mère.
+Vous vous asseyez, ou vous dégagez.
+J'ai pas que ça à foutre, moi."
 valeur_b = -5.0
-texte_c = "..."
+texte_c = "... Asseyez-vous ..."
 
 [sub_resource type="Resource" id="Rep01"]
 script = ExtResource("1")
 locuteur = 1
-texte = "Bonjour, On m'a dit que vous retrouviez les gens.
-Que vous étiez le dernier, quand tous les autres avaient déjà refermé la porte.
-Alors me voilà. 
-Avant que je n'aie plus de portes du tout."
+texte = "On m'a dit que vous retrouviez les gens.
+Que vous étiez la dernière porte,
+quand toutes les autres se referment.
+Alors me voilà.
+Avant de ne plus en avoir aucune."
 choix = SubResource("Choix1")
 
 [sub_resource type="Resource" id="Rep02"]
 script = ExtResource("1")
 locuteur = 1
-reaction_a = "S'il vous plaît...
-Je ne savais plus cers qui me tourner..."
-reaction_b = "Je vois que vous ne passez pas par quatre chemin, vous..."
-reaction_c = "..."
+reaction_a = "S'il vous plaît.
+Je ne savais plus vers qui me tourner."
+reaction_b = "Je vois que vous ne prenez pas de gants, vous."
+reaction_c = "Vous ne dites rien.
+C'est déjà plus que la police."
 
 [sub_resource type="Resource" id="Rep03"]
 script = ExtResource("1")
 locuteur = 1
 texte = "C'est ma fille, Luna.
-Elle a vingt-trois ans.
-Elle n'est pas rentrée depuis plus d'un mois.
-Elle m'appelait tous les dimanches,
-sans faute,
-depuis qu'elle avait quitté la maison.
-
-On parlait de tout et de rien —la pluie, ses collègues, de films...
-
-Et un dimanche, le téléphone n'a pas sonné...
-Ni le suivant...."
+Vingt-trois ans.
+Plus rentrée depuis plus d'un mois.
+Elle m'appelait tous les dimanches.
+Sans faute, depuis qu'elle avait quitté la maison.
+On parlait de tout et de rien.
+La pluie, ses collègues, un film.
+Et un dimanche, le téléphone n'a pas sonné.
+Ni le suivant."
 
 [sub_resource type="Resource" id="Choix2"]
 script = ExtResource("2")
-texte_a = "La police a clairement classé ça en une après-midi.
-Sinon vous ne seriez pas dans mon bureau..."
+texte_a = "La police a bâclé ça en une après-midi.
+Sinon vous seriez pas
+plantée dans mon bureau."
 texte_b = "Plus d'un mois, madame.
-Et c'est aujourd'hui que vous vous décidez à frapper aux portes ?"
+Et c'est aujourd'hui
+que vous vous décidez à frapper ?"
 valeur_b = -5.0
-texte_c = "... Continuez..."
+texte_c = "... Continuez ..."
 
 [sub_resource type="Resource" id="Rep04"]
 script = ExtResource("1")
 locuteur = 1
-texte = "Avant ça, elle avait changé. Quelques semaines plus tôt. Plus brève,Plus froide...
+texte = "Avant ça, elle avait changé.
+Quelques semaines plus tôt.
+Plus brève. Plus froide.
 Elle qui souriait aux inconnus dans la rue.
-J'ai mis ça sur le compte de la fatigue,
+J'ai mis ça sur le compte de la fatigue.
 Ou d'un garçon, peut-être.
-Je ne sais plus..."
+Je ne sais plus."
 choix = SubResource("Choix2")
 
 [sub_resource type="Resource" id="Rep05"]
 script = ExtResource("1")
 locuteur = 1
 texte = "Ils ont noté son nom sur un papier.
-Le papier est dans un tiroir. Voilà ce qu'ils ont fait. Rien."
-reaction_a = "En une après-midi, oui. Ils ont écrit son nom sur un formulaire,
-ils l'ont rangé dans un tiroir, et m'ont dit de rentrer chez moi.
-Voilà leur enquête !"
-reaction_b = "Vous croyez que j'ai attendu ?!
-J'ai supplié. 
-On m'a fait patienter, remplir des papiers,
-fait revenir pour rien...
-
-
+Le papier dort dans un tiroir.
+Voilà ce qu'ils ont fait. Rien."
+reaction_a = "En une après-midi, oui.
+Son nom sur un formulaire, dans un tiroir.
+On m'a dit de rentrer chez moi.
+Voilà leur enquête."
+reaction_b = "Vous croyez que j'ai attendu ?
+J'ai supplié. On m'a fait patienter,
+remplir des papiers, revenir pour rien.
 Une mère pauvre qui s'inquiète,
-ça les fait bâiller..."
+ça les fait bâiller."
 reaction_c = "Ils ont noté son nom sur un papier.
 Le papier est dans un tiroir.
-Voilà ce qu'ils ont fait. 
-
-Rien!"
+Voilà ce qu'ils ont fait.
+Rien."
 
 [sub_resource type="Resource" id="Rep06"]
 script = ExtResource("1")
-texte = "Les gens changent, madame. Et certains s'arrangent pour qu'on ne les retrouve pas."
-texte_good = "Les gens changent, madame.
-Mais on ne disparaît pas sans laisser un de trace...
-Il y en a toujours,
-Il faut juste savoir où chercher."
+texte = "Les gens changent, madame.
+Et certains s'arrangent
+pour qu'on les retrouve jamais."
+texte_good = "Les gens changent. Mais on s'efface pas
+sans laisser une trace quelque part.
+Suffit de savoir où gratter."
 texte_mid = "Tout le monde change.
-La seule question qui compte : 
-est-elle partie d'elle-même,
-ou l'a-t-on forcer à partir ?"
-texte_bof = "On change tous, Madame.
-On commence par sourire aux inconnus,
-et un matin, on comprend pourquoi il ne fallait pas...."
-texte_bad = "Les gens qui s'effacent ont presque toujours une raison, madame.
-
-Et c'est rarement une raison qu'une mère a envie d'entendre."
+La seule question qui tienne :
+elle est partie, ou on l'a fait partir ?"
+texte_bof = "On change tous, madame.
+On sourit aux inconnus un matin,
+et un soir on comprend pourquoi fallait pas."
+texte_bad = "Les gens qui s'effacent ont leurs raisons.
+Et c'est rarement
+des raisons qu'une mère veut entendre."
 
 [sub_resource type="Resource" id="Choix3"]
 script = ExtResource("2")
-texte_a = "Gardez votre argent.
-Laissez-moi la photo. Ça suffira pour commencer."
+texte_a = "Gardez vos billets, madame.
+Laissez-moi la photo.
+Ça suffira pour commencer."
 valeur_a = 5.0
-texte_b = "Visiblement, Vous ne lâcherez pas l'affaire.
-Autant que ce soit moi qui m'en charge."
+texte_b = "Vous lâcherez pas le morceau, hein.
+Autant que ce soit moi
+qui fouille dans votre merdier."
 texte_c = "..."
 
 [sub_resource type="Resource" id="Rep07"]
 script = ExtResource("1")
 locuteur = 1
 texte = "Voici une photo récente d'elle.
-Je n'ai pas de quoi vous payer comme on paie un homme de votre métier.
+Je n'ai pas de quoi vous payer
+comme on paie un homme de votre métier.
 J'ai mis de côté ce que j'ai pu.
-C'est peu, je le sais..."
+C'est peu, je le sais."
 choix = SubResource("Choix3")
 
 [sub_resource type="Resource" id="Rep08"]
 script = ExtResource("1")
 locuteur = 1
-texte = "Alors c'est oui ? 
-Merci..."
+texte = "Alors c'est oui ?
+Merci."
 reaction_a = "Vous... merci.
-Je trouverai un moyen à vous payer,
-d'une façon ou d'une autre...."
-reaction_b = "S'il vous plaît, retrouver ma fille..."
-reaction_c = "Personne ne l'avait seulement regardée, jusqu'ici."
+Je trouverai de quoi vous payer,
+d'une façon ou d'une autre."
+reaction_b = "S'il vous plaît. Retrouvez ma fille."
+reaction_c = "Personne ne l'avait seulement regardée."
 
 [sub_resource type="Resource" id="Rep09"]
 script = ExtResource("1")
-texte = "Sa chambre, ses affaires. Tout ce qu'elle a laissé derrière elle.
-Je commencerai par là."
-texte_good = "Une chambre raconte une vie, à qui sait la lire.
-Montrez-moi la sienne. Je commencerai par apprendre qui elle est."
-texte_mid = "Les gens laissent toujours quelque chose derrière eux.
+texte = "Sa chambre. Ses affaires.
+Tout ce qu'elle a laissé derrière.
+Je commence par là."
+texte_good = "Une chambre raconte une vie, qui sait lire.
+Montrez-moi la sienne.
+Je commencerai par savoir qui elle est."
+texte_mid = "Les gens laissent toujours quelque chose.
 Une chambre, un tiroir, une habitude.
-C'est par là qu'on les rattrape facilement."
+C'est par là qu'on les rattrape."
 texte_bof = "Montrez-moi sa chambre.
-Ce qu'on garde, ce qu'on jette...
-ça parle plus franchement que n'importe quel témoin."
-texte_bad = "Montrez moi sa chambre.
-On finit toujours par fouiller les affaires des absents. C'est tout ce qu'ils nous laissent —
-de la poussière et des mensonges !"
+Ce qu'on garde, ce qu'on jette,
+ça parle plus franc que les témoins."
+texte_bad = "Montrez-moi sa chambre.
+On finit toujours par fouiller les morts.
+Ils laissent ça : poussière et mensonges."
 
 [sub_resource type="Resource" id="Rep10"]
 script = ExtResource("1")
 locuteur = 1
-texte = "Venez quand vous voulez chez moi.
+texte = "Venez chez moi quand vous voulez.
 Je n'ai touché à rien dans sa chambre.
-
-J'avais peur qu'en rangeant, j'efface le peu qui reste d'elle..."
+J'avais peur qu'en rangeant
+j'efface le peu qui reste d'elle."
 
 [resource]
 script = ExtResource("0")
