@@ -121,3 +121,12 @@ func _palier_pour(v: float) -> Palier:
         return Palier.BOF
     else:
         return Palier.BAD
+        
+
+# --- REMETTRE À ZÉRO (pour une nouvelle partie) ---
+# Replace la jauge à sa valeur de départ. Comme SanteMentale et Vie
+# héritent de ce moule, cette SEULE méthode sait remettre n'importe
+# quelle jauge à zéro. On prévient les afficheurs (portrait, filtre).
+func reinitialiser() -> void:
+    _valeur = clampf(_valeur_depart(), VALEUR_MIN, VALEUR_MAX)
+    modifiee.emit()

@@ -10,14 +10,15 @@ extends CanvasLayer
 #  Ouvert par le bouton roue crantée du HUD (Hud appelle
 #  MenuPause.ouvrir()). Met le jeu en pause via get_tree().paused.
 #
-#  Cet autoload tourne TOUJOURS, même en pause (process_mode ALWAYS,
-#  réglé dans _ready), sinon ses propres boutons seraient gelés.
+#  Cet autoload tourne TOUJOURS, même en pause (process_mode ALWAYS),
+#  sinon ses propres boutons seraient gelés.
 #
-#  NOTE : la sauvegarde et les options viendront plus tard. Pour
-#  l'instant, le strict minimum utile à un testeur.
+#  CURSEUR : quand un objet est en main, le HUD cache la vraie souris au
+#  profit d'un faux curseur qui suit le _process du HUD. En pause, ce
+#  _process gèle -> plus de curseur utilisable. On rend donc la vraie
+#  souris à l'ouverture, et on rétablit le curseur du jeu à la reprise.
 # ============================================================
 
-# L'écran-titre, vers lequel "Quitter" ramène.
 const SCENE_TITRE: String = "res://scenes/ui/ecran_titre.tscn"
 
 @onready var voile: ColorRect = $Voile
@@ -28,44 +29,42 @@ var _ouvert: bool = false
 
 
 func _ready() -> void:
-    # Le menu doit rester actif quand le reste du jeu est en pause :
-    # sans ça, ses propres boutons seraient gelés avec le reste.
     process_mode = Node.PROCESS_MODE_ALWAYS
-
-    # Caché au départ.
     visible = false
-
     bouton_reprendre.pressed.connect(reprendre)
     bouton_quitter.pressed.connect(_quitter_vers_titre)
 
 
 # --- OUVRIR LE MENU ---
-# Appelé par le bouton roue crantée du HUD.
 func ouvrir() -> void:
     if _ouvert:
         return
     _ouvert = true
     visible = true
     get_tree().paused = true
+    # La vraie souris doit réapparaître pour cliquer les boutons du menu.
+    Hud.curseur_systeme()
 
 
 # --- REPRENDRE ---
-# Ferme le menu et relance le jeu.
 func reprendre() -> void:
     if not _ouvert:
         return
     _ouvert = false
     get_tree().paused = false
     visible = false
+    # On rend au jeu son curseur (faux curseur-objet si un objet est encore
+    # en main, sinon vraie souris).
+    Hud.curseur_jeu()
 
 
 # --- QUITTER VERS L'ÉCRAN-TITRE ---
-# On lève la pause AVANT le fondu (sinon le tween du fondu serait gelé),
-# on assombrit l'écran, puis on charge l'écran-titre.
 func _quitter_vers_titre() -> void:
     _ouvert = false
     visible = false
     get_tree().paused = false
+    # On garde la vraie souris visible pour pouvoir cliquer sur le titre.
+    Hud.curseur_systeme()
 
     await Fondu.fondu_au_noir()
     get_tree().change_scene_to_file(SCENE_TITRE)

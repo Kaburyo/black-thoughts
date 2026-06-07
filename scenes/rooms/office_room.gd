@@ -1,38 +1,34 @@
 # office_room.gd
 # Pièce "Bureau d'Al'".
 #
-# Toute la MÉCANIQUE (examiner, ramasser, utiliser, quitter, verrou,
-# sortie de pièce) vit dans le moule room_base.gd. La voix intérieure
-# est le service "Voix". Ici, on ne déclare que ce qui est PROPRE au
-# bureau :
-#   - le contenu des pensées et des objets ramassables
-#   - la PORTE : on UTILISE la clé dessus pour partir (verbe Utiliser
-#     du curseur-objet). Mains vides, elle donne un indice ; clé en
-#     main, elle demande confirmation puis sort ; autre objet, "Inutile
-#     ici." La confirmation et la sortie sont communes (helper du moule).
-#   - la PHOTO de Luna : posée sur le bureau, mais seulement APRÈS
-#     l'entretien avec Jenny ; elle se ramasse comme n'importe quel
-#     objet (mécanique héritée), puis disparaît une fois rangée. (L.24)
+# Toute la MÉCANIQUE vit dans le moule room_base.gd. Ici, on ne déclare
+# que ce qui est PROPRE au bureau : pensées, objets, la porte, la photo
+# de Luna, et le DÉCLENCHEMENT de l'entretien d'ouverture (une seule fois).
 
+class_name OfficeRoom
 extends RoomBase
 
 
+# Drapeau "entretien d'ouverture déjà joué ?". C'est un "static" PUBLIC :
+#   - static = sa valeur appartient au SCRIPT (pas à l'instance), donc
+#     elle survit aux changements de pièce -> l'entretien ne se rejoue
+#     pas quand on REVIENT au bureau via la carte ;
+#   - public (sans "_") = l'écran-titre peut le remettre à false pour
+#     qu'une NOUVELLE partie rejoue bien l'entretien (et ramène le HUD).
+static var entretien_deja_joue: bool = false
+
+
 # --- Textes de la porte ---
-# Mains vides, selon qu'on a déjà les clés ou non (règle E : le joueur
-# doit toujours comprendre QUOI faire).
 const PORTE_SANS_CLES: String = "Je ferais mieux de prendre mon manteau et\n mes clés du bureau avant de partir."
 const PORTE_AVEC_CLES: String = "Je ferais mieux de fermer avant de partir.\n Et d'être sur de n'avoir rien oublié."
-# Pensée de départ, affichée quand on confirme la sortie (sur "Oui").
 const PORTE_OUVERTE: String = "Bon, il est temps d'y aller.\n Cette enquête n'avancera pas toute seule..."
 
 
 # --- Contenu propre au bureau ---
-# Appelée par le moule (room_base.gd) au tout début de _ready().
 func _definir_contenu() -> void:
-    # Après le bureau, l'enquête mène chez Jenny, dans la chambre de Luna.
+    # (Champ hérité, désormais inerte : la carte gère la destination.)
     scene_suivante = "res://scenes/rooms/chambre_luna_room.tscn"
 
-    # Les objets EXAMINABLES : clé = nom du nœud Area2D, valeur = pensée.
     pensees = {
         "LampArea": "Cette lampe a vu plus de nuits blanches que moi.",
         "WindowArea": "Temps de merde, pour une ville de merde...",
@@ -42,8 +38,6 @@ func _definir_contenu() -> void:
         "ChairArea": "J'ai plus dormi sur cette chaise\n que dans mon lit ces derniers temps...",
     }
 
-    # Les objets RAMASSABLES : pour chaque zone, la pensée, l'id
-    # d'inventaire et le sprite montré au centre de l'écran au ramassage.
     objets_ramassables = {
         "JacketArea": {
             "pensee": "Les clés du bureau sont\n toujours dans la poche.",
@@ -62,11 +56,6 @@ func _definir_contenu() -> void:
         },
     }
 
-    # La PORTE est une zone UTILISABLE : on lui applique un objet en main.
-    #   - mains vides  -> indice calculé par _texte_porte_fermee()
-    #   - clé en main  -> on demande "Quitter la pièce ?" ; sur "Oui",
-    #                     pensée de départ + sortie (helper du moule)
-    #   - autre objet  -> "Inutile ici." (géré par le moule)
     utilisables = {
         "DoorArea": {
             "examiner": _texte_porte_fermee,
@@ -79,30 +68,24 @@ func _definir_contenu() -> void:
     }
 
     # --- LA PHOTO DE LUNA (étape L.24, option A) ---
-    # 1. Au départ, la photo n'est pas encore sur le bureau : cachée et
-    #    non cliquable.
     _montrer_photo(false)
-    # 2. Quand l'entretien se termine, Jenny a laissé la photo :
-    #    on la fait apparaître sur le bureau.
     Dialogue.conversation_terminee.connect(_sur_entretien_termine)
-    # 3. Une fois la photo rangée dans l'inventaire, on la retire du bureau.
     Inventaire.inventaire_modifie.connect(_sur_inventaire_modifie)
 
-    # --- TEST TEMPORAIRE D5 (à retirer ensuite) ---
-    # On lance la conversation APRÈS la fin du _ready() de la pièce,
-    # pour que l'abonnement aux signaux de Dialogue soit déjà fait.
-    _lancer_test_dialogue.call_deferred()
+    # --- ENTRETIEN D'OUVERTURE (une seule fois) ---
+    # Lancé en call_deferred (après le _ready du moule) pour que le gel
+    # du décor pendant la conversation soit bien branché.
+    if not entretien_deja_joue:
+        entretien_deja_joue = true
+        _lancer_entretien.call_deferred()
 
 
-# --- TEST TEMPORAIRE D5 (à retirer ensuite) ---
-func _lancer_test_dialogue() -> void:
+func _lancer_entretien() -> void:
     var entretien: Conversation = load("res://resources/entretien_bureau.tres")
     Dialogue.jouer(entretien)
 
 
 # --- LA PORTE : texte quand on la clique MAINS VIDES ---
-# On adapte l'indice à l'état du jeu : pas encore les clés -> aller les
-# chercher ; clés en poche -> penser à les utiliser sur la porte.
 func _texte_porte_fermee() -> String:
     if Inventaire.possede("cles"):
         return PORTE_AVEC_CLES
@@ -110,25 +93,21 @@ func _texte_porte_fermee() -> String:
 
 
 # --- LA PHOTO DE LUNA : apparition / disparition ---
-
-# Montre ou cache la photo sur le bureau, EN MÊME TEMPS que sa zone
-# cliquable. On règle les deux ensemble : ainsi on ne peut jamais
-# cliquer une photo invisible, ni voir une photo non cliquable.
 func _montrer_photo(est_visible: bool) -> void:
     $PhotoArea.visible = est_visible
     $PhotoArea.input_pickable = est_visible
 
 
-# Fin de l'entretien : la photo apparaît sur le bureau.
-# (On ne la ré-affiche pas si Al' l'a déjà ramassée.)
 func _sur_entretien_termine() -> void:
+    # L'entretien est fini : Jenny a confié l'affaire. Al' sait désormais
+    # où aller -> on débloque la chambre de Luna sur la carte.
+    Carte.debloquer("chambre_luna")
+
     if Inventaire.possede("picture_luna"):
         return
     _montrer_photo(true)
 
 
-# L'inventaire a changé : si la photo vient d'y entrer, on l'enlève
-# du bureau.
 func _sur_inventaire_modifie() -> void:
     if Inventaire.possede("picture_luna"):
         _montrer_photo(false)

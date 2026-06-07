@@ -78,3 +78,12 @@ func charges_restantes(id_objet: String) -> int:
 # Renvoie la liste de TOUS les objets possédés (copie).
 func tout() -> Array[String]:
     return objets.duplicate()
+
+
+# --- REMETTRE À ZÉRO (pour une nouvelle partie) ---
+# Vide complètement l'inventaire (objets ET charges) et prévient le
+# carnet une seule fois.
+func reinitialiser() -> void:
+    objets.clear()
+    _charges.clear()
+    inventaire_modifie.emit()

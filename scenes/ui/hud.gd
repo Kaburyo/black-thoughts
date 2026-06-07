@@ -451,3 +451,19 @@ func _rafraichir_curseur() -> void:
         curseur.visible = false
         curseur.texture = null
         Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+
+
+# --- CURSEUR : BASCULE MENU <-> JEU ---
+# Force la VRAIE souris à réapparaître et cache le faux curseur-objet.
+# À appeler quand on ouvre un menu PAR-DESSUS le jeu (menu pause) ou
+# qu'on quitte vers le titre : sinon, un objet en main laisse la vraie
+# souris invisible et le faux curseur figé -> impossible de cliquer.
+func curseur_systeme() -> void:
+    curseur.visible = false
+    Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+
+
+# Rétablit le curseur du JEU : le faux curseur-objet si un objet est en
+# main, sinon la vraie souris. À appeler quand on REVIENT au jeu.
+func curseur_jeu() -> void:
+    _rafraichir_curseur()

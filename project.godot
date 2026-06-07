@@ -34,6 +34,8 @@ Dialogue="*res://scenes/ui/dialogue.tscn"
 Combinaison="*res://globals/combinaison.gd"
 Confirmation="*uid://c0h1b41y0wnd"
 MenuPause="*uid://ba7u20khu3hue"
+Carte="*uid://c76nfmidaavps"
+EcranCarte="*uid://cbypstdnk0s15"
 
 [display]
 

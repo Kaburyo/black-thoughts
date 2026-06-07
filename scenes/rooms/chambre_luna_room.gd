@@ -78,6 +78,11 @@ func _sur_inventaire_modifie() -> void:
     if Inventaire.possede("picture_flora"):
         _montrer_photo_flora(false)
 
+    # Le ticket de bar trouvé = de quoi retourner voir Jenny : on
+    # débloque sa cuisine sur la carte.
+    if Inventaire.possede("bar_ticket"):
+        Carte.debloquer("cuisine_jenny")
+
 
 # --- LA PORTE ---
 # Clic sur la porte :

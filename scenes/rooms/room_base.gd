@@ -5,16 +5,15 @@
 #   - RAMASSER (un clic = pensée + sprite + rangement en inventaire)
 #   - UTILISER un objet en main sur une zone du décor (verbe du curseur-objet)
 #   - MONTRER un objet à un PNJ, ou lui PARLER (un clic sur un PNJ)
-#   - QUITTER une pièce, avec confirmation Oui/Non (commun à toutes les portes)
+#   - QUITTER une pièce -> OUVRE LA CARTE de navigation (choix de destination)
 #   - le verrou des interactions
 #   - le gel du décor pendant un dialogue
-#   - la sortie de pièce (fondu au noir + fondu musique)
 #
 # La voix intérieure d'Al' (la boîte de texte) NE vit plus ici :
 # c'est le service autonome "Voix" (autoload).
 # Le fondu au noir de l'écran NON plus : c'est le service "Fondu".
 # L'objet "en main" appartient au service "ObjetEnMain" (autoload).
-# La fenêtre Oui/Non appartient au service "Confirmation" (autoload).
+# La CARTE de navigation est le service "EcranCarte" (autoload).
 #
 # Une pièce concrète (office_room.gd, chambre_luna_room.gd...) fait
 # "extends RoomBase" et hérite GRATUITEMENT de tout ça.
@@ -31,7 +30,6 @@ extends Node2D
 
 # --- Réglages ---
 const DUREE_LECTURE: float = 4.0
-const DUREE_FONDU: float = 0.7
 const ECHELLE_PICKUP: float = 0.3
 
 # Pensée d'Al' quand il essaie d'utiliser un objet sur une cible qui
@@ -40,11 +38,6 @@ const PENSEE_OBJET_INUTILE: String = "Inutile ici."
 
 # Pensée d'Al' quand il MONTRE un objet à un PNJ que ça ne concerne pas.
 const PENSEE_RIEN_A_MONTRER: String = "Inutile de lui montrer ça."
-
-# Question posée par les portes avant de quitter une pièce. Centralisée
-# ici pour qu'un SEUL endroit décide du texte (le même pour toutes les
-# portes). Une porte particulière pourra passer une autre question.
-const QUESTION_SORTIE: String = "Quitter la pièce ?"
 
 
 # --- Verrou des interactions ---
@@ -78,20 +71,17 @@ var utilisables: Dictionary = {}
 # Forme attendue, pour chaque PNJ (clé = nom du nœud Area2D) :
 #   {
 #     "parler": <chemin .tres d'une Conversation>  -> clic SANS objet en main
-#               (la conversation "par défaut" du PNJ). Optionnel.
 #     "objets": {                                   -> verbe MONTRER
 #         <id de l'objet montré> : <chemin .tres d'une Conversation>,
-#         ...
 #     }
 #   }
 # MONTRER ne consomme jamais l'objet (une preuve reste une preuve).
 var pnj_presents: Dictionary = {}
 
-# La pièce vers laquelle on enchaîne quand on quitte CELLE-CI par la
-# porte. Chemin d'une scène (res://...). Laissée vide -> pas de pièce
-# suivante connue (ex. la dernière pièce de la démo, dont la suite —
-# le bar — n'existe pas encore) : la sortie se contente alors du fondu.
-# Chaque pièce renseigne ce champ dans son _definir_contenu().
+# ANCIEN champ de l'enchaînement en ligne droite. DÉSORMAIS INERTE :
+# c'est la CARTE (EcranCarte) qui décide de la destination quand on
+# quitte une pièce. On le laisse pour ne pas casser les pièces qui le
+# renseignent encore ; on balaiera ces lignes mortes lors d'un nettoyage.
 var scene_suivante: String = ""
 
 
@@ -102,10 +92,7 @@ func _definir_contenu() -> void:
 
 # Appelée automatiquement une fois, au lancement de la scène.
 func _ready() -> void:
-    # 0. À l'arrivée, l'écran peut être encore noir (voile laissé opaque
-    #    par la transition de la pièce/cinématique précédente). On révèle
-    #    donc la pièce en fondu. Si le voile était déjà transparent (pièce
-    #    lancée seule), cet appel est sans effet visible : c'est sûr.
+    # 0. À l'arrivée, l'écran peut être encore noir : on révèle en fondu.
     Fondu.fondu_depuis_noir()
 
     # 1. La pièce déclare son contenu (pensées, objets, porte, PNJ...).
@@ -136,8 +123,7 @@ func _ready() -> void:
         zone.input_event.connect(_sur_clic_pnj.bind(donnees))
 
     # 4. On s'abonne au service Dialogue : pendant une conversation,
-    #    le décor se gèle ; à la fin, il se dégèle. La pièce n'a rien
-    #    à savoir du dialogue lui-même : elle réagit juste aux signaux.
+    #    le décor se gèle ; à la fin, il se dégèle.
     Dialogue.conversation_demarree.connect(_sur_dialogue_demarre)
     Dialogue.conversation_terminee.connect(_sur_dialogue_termine)
 
@@ -146,7 +132,6 @@ func _ready() -> void:
 
 
 # --- GEL DU DÉCOR PENDANT UN DIALOGUE ---
-# Appelées par les signaux du service Dialogue.
 func _sur_dialogue_demarre() -> void:
     _interactions_bloquees = true
 
@@ -164,9 +149,7 @@ func _sur_clic(_viewport: Node, event: InputEvent, _shape_idx: int, texte: Strin
     if not (event.button_index == MOUSE_BUTTON_LEFT and event.pressed):
         return
 
-    # Un objet en main ? Alors ce clic est une tentative d'UTILISER, pas
-    # d'examiner. Cette cible n'accepte rien (zone purement examinable),
-    # donc c'est "Inutile ici." ; on garde l'objet en main.
+    # Un objet en main ? Alors ce clic est une tentative d'UTILISER.
     if ObjetEnMain.a_un_objet():
         Voix.afficher_pensee(PENSEE_OBJET_INUTILE)
         return
@@ -185,8 +168,6 @@ func _sur_clic_ramassable(_viewport: Node, event: InputEvent, _shape_idx: int,
     if not (event.button_index == MOUSE_BUTTON_LEFT and event.pressed):
         return
 
-    # Un objet en main ? Ce clic est une tentative d'UTILISER, pas un
-    # ramassage. Un objet à ramasser n'accepte rien : "Inutile ici.".
     if ObjetEnMain.a_un_objet():
         Voix.afficher_pensee(PENSEE_OBJET_INUTILE)
         return
@@ -213,7 +194,6 @@ func ramasser(nom_zone: String, donnees: Dictionary) -> void:
 
 
 # --- UTILISER un objet sur une zone du décor ---
-# Déclenché par un clic gauche sur une zone déclarée dans "utilisables".
 func _sur_clic_utilisable(_viewport: Node, event: InputEvent, _shape_idx: int,
         donnees: Dictionary) -> void:
     if _interactions_bloquees:
@@ -223,9 +203,7 @@ func _sur_clic_utilisable(_viewport: Node, event: InputEvent, _shape_idx: int,
     if not (event.button_index == MOUSE_BUTTON_LEFT and event.pressed):
         return
 
-    # CAS 1 — mains vides : on EXAMINE la zone. La pensée peut être un
-    # texte fixe OU une fonction (Callable) qui calcule le texte selon
-    # l'état du jeu (ex. la porte : "il me faut mes clés" vs "ouvre-la").
+    # CAS 1 — mains vides : on EXAMINE la zone.
     if not ObjetEnMain.a_un_objet():
         var texte: Variant = donnees.get("examiner", "")
         if texte is Callable:
@@ -238,7 +216,7 @@ func _sur_clic_utilisable(_viewport: Node, event: InputEvent, _shape_idx: int,
     var id_objet: String = ObjetEnMain.id()
     var objets_acceptes: Dictionary = donnees.get("objets", {})
 
-    # Mauvaise cible : pensée générique, objet GARDÉ (on ne repose PAS).
+    # Mauvaise cible : pensée générique, objet GARDÉ.
     if not objets_acceptes.has(id_objet):
         Voix.afficher_pensee(PENSEE_OBJET_INUTILE)
         return
@@ -246,29 +224,18 @@ func _sur_clic_utilisable(_viewport: Node, event: InputEvent, _shape_idx: int,
     # Bonne cible : on applique l'effet de cet objet sur cette zone.
     var effet: Dictionary = objets_acceptes[id_objet]
 
-    # (a) la pensée d'Al' (si présente)
     if effet.get("pensee", "") != "":
         Voix.afficher_pensee(effet["pensee"])
 
-    # (b) l'action propre à la pièce (si présente) — ex. quitter la pièce.
     var action: Variant = effet.get("action", null)
     if action is Callable:
         action.call()
 
-    # (c) on repose l'objet. La clé est un OUTIL : elle n'est PAS
-    #     consommée (elle reste en inventaire). Les charges et les
-    #     consommables viennent du sous-chantier (iii) / catalogue.
+    # On repose l'objet (la clé n'est pas consommée : elle reste en inventaire).
     ObjetEnMain.reposer()
 
 
 # --- MONTRER un objet à un PNJ, ou lui PARLER ---
-# Déclenché par un clic gauche sur la zone (invisible) d'un PNJ.
-#   - mains vides            -> on lui PARLE (sa conversation par défaut)
-#   - objet en main reconnu  -> on le lui MONTRE (conversation spéciale)
-#   - objet en main inconnu  -> "Inutile de lui montrer ça.", objet GARDÉ
-# MONTRER ne consomme JAMAIS l'objet (une preuve reste une preuve) ;
-# c'est le démarrage du dialogue qui repose l'objet en main tout seul
-# (le HUD se cache au début d'une conversation -> Hud.cacher()).
 func _sur_clic_pnj(_viewport: Node, event: InputEvent, _shape_idx: int,
         donnees: Dictionary) -> void:
     if _interactions_bloquees:
@@ -287,18 +254,14 @@ func _sur_clic_pnj(_viewport: Node, event: InputEvent, _shape_idx: int,
     var id_objet: String = ObjetEnMain.id()
     var conversations: Dictionary = donnees.get("objets", {})
 
-    # Le PNJ n'a rien à dire sur cet objet : pensée générique, objet GARDÉ.
     if not conversations.has(id_objet):
         Voix.afficher_pensee(PENSEE_RIEN_A_MONTRER)
         return
 
-    # Le PNJ réagit à cet objet : on joue sa conversation spéciale.
     _jouer_conversation(conversations[id_objet])
 
 
 # Petite aide : charge une Conversation (.tres) par son chemin et la joue.
-# Vide -> on ne fait rien (silencieux). Le démarrage du dialogue cache le
-# HUD, ce qui repose l'objet en main : MONTRER n'a donc rien à reposer.
 func _jouer_conversation(chemin: String) -> void:
     if chemin == "":
         return
@@ -307,47 +270,22 @@ func _jouer_conversation(chemin: String) -> void:
         Dialogue.jouer(conversation)
 
 
-# --- QUITTER AVEC CONFIRMATION (commun à toutes les portes) ---
-# Toute porte de toute pièce appelle ceci en UNE ligne. La pièce fournit
-# seulement sa pensée de départ (sa "voix") ; la question et la séquence
-# de sortie sont communes.
-#   - "Oui" -> on dit la pensée de départ (si fournie), puis on sort.
-#   - "Non" -> la fenêtre se ferme, on reste, rien à faire.
-func demander_a_quitter(pensee_sortie: String = "",
-        question: String = QUESTION_SORTIE) -> void:
-    Confirmation.demander(question, _confirmer_sortie.bind(pensee_sortie))
+# --- QUITTER UNE PIÈCE -> OUVRIR LA CARTE ---
+# La carte de navigation REMPLACE l'ancienne sortie en ligne droite.
+# Toute porte appelle "demander_a_quitter()" en UNE ligne, en fournissant
+# seulement la pensée de départ de la pièce (sa "voix"). Ouvrir la carte
+# EST la décision de partir ; le bouton "Fermer" de la carte sert de
+# "non, finalement je reste" (plus besoin d'une question Oui/Non).
+func demander_a_quitter(pensee_sortie: String = "") -> void:
+    _ouvrir_la_carte(pensee_sortie)
 
 
-func _confirmer_sortie(pensee_sortie: String) -> void:
+func _ouvrir_la_carte(pensee_sortie: String) -> void:
+    # On gèle le décor le temps de dire la pensée de départ, PUIS on le
+    # dégèle juste avant d'afficher la carte : ainsi, si le joueur clique
+    # "Fermer", la pièce n'est pas restée gelée derrière lui.
     _interactions_bloquees = true
-    # On ATTEND que la pensée de départ soit entièrement finie (écriture +
-    # lecture + fondu de la boîte) AVANT de lancer la transition. Sinon le
-    # fondu d'écran démarrait trop tôt et la fin de la boîte de pensée
-    # bavait sur l'ouverture de la pièce suivante.
     if pensee_sortie != "":
         await Voix.afficher_pensee_finie(pensee_sortie)
-    _quitter_la_piece()
-
-
-# --- SORTIE DE PIÈCE (le mécanisme bas niveau : fondu + musique) ---
-# Note : l'attente de la pensée de départ a déjà eu lieu dans
-# _confirmer_sortie. Ici on enchaîne directement sur le fondu.
-func _quitter_la_piece() -> void:
-    _interactions_bloquees = true
-
-    var tween_musique := create_tween()
-    tween_musique.tween_property(music_player, "volume_db", -60.0, DUREE_FONDU + 5)
-
-    await Fondu.fondu_au_noir()
-
-    music_player.stop()
-
-    # Enchaînement vers la pièce suivante, si la pièce en a déclaré une.
-    # (Le voile de Fondu reste noir : la pièce suivante se révélera
-    #  d'elle-même au début de son _ready(), via Fondu.fondu_depuis_noir.)
-    if scene_suivante != "":
-        get_tree().change_scene_to_file(scene_suivante)
-    else:
-        # Pas de suite connue (ex. dernière pièce de la démo). On reste
-        # sur le fondu au noir, sans rien charger.
-        print("-> Fin du parcours : aucune scène suivante déclarée.")
+    _interactions_bloquees = false
+    EcranCarte.ouvrir()

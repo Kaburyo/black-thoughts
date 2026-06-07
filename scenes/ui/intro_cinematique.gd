@@ -83,7 +83,7 @@ func _ready() -> void:
 
     # Carton-titre : on neutralise ses deux textes dès maintenant pour
     # éviter un flash à pleine opacité avant le début de l'animation.
-    titre_jeu.modulate.a = 0.0
+    titre_jeu.modulate.a = 1.0
     sous_titre.modulate.a = 0.0
 
     # On peut arriver ici avec l'écran ENCORE NOIR : l'écran-titre fait un
