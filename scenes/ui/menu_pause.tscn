@@ -56,6 +56,16 @@ theme_override_font_sizes/font_size = 36
 text = "Reprendre"
 flat = true
 
+[node name="BoutonOptions" type="Button" parent="Voile/Boutons" unique_id=685183049]
+custom_minimum_size = Vector2(360, 72)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.902, 0.882, 0.831, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("3_amarante")
+theme_override_font_sizes/font_size = 36
+text = "Options"
+flat = true
+
 [node name="BoutonQuitter" type="Button" parent="Voile/Boutons" unique_id=993994784]
 custom_minimum_size = Vector2(360, 72)
 layout_mode = 2

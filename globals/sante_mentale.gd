@@ -20,9 +20,9 @@ extends Jauge
  
  
 # --- Le seul réglage propre à cette jauge ---
-# Al' commence la démo déjà cabossé : la santé mentale démarre à 70
+# Al' commence la démo déjà cabossé : la santé mentale démarre à 75
 # (ce qui correspond au palier Ok). C'est son fil rouge.
-const SANTE_DEPART: float = 70.0
+const SANTE_DEPART: float = 75.0
  
  
 # Le moule (jauge.gd) appelle cette fonction au démarrage pour

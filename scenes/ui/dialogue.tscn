@@ -42,10 +42,11 @@ grow_vertical = 2
 mouse_filter = 2
 
 [node name="BoiteDialogue" type="Panel" parent="." unique_id=1872155870]
+anchors_preset = -1
 offset_left = 460.0
-offset_top = 800.0
+offset_top = 860.0
 offset_right = 1460.0
-offset_bottom = 1000.0
+offset_bottom = 1060.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_0hdn5")
 
 [node name="TexteDialogue" type="Label" parent="BoiteDialogue" unique_id=751826369]

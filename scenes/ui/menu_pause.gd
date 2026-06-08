@@ -3,26 +3,21 @@ extends CanvasLayer
 # ============================================================
 #  MENU PAUSE — autoload "MenuPause"
 #
-#  Un voile plein écran avec deux choix (version pré-alpha) :
+#  Un voile plein écran avec trois choix (version pré-alpha) :
 #    - "Reprendre" -> ferme le menu, le jeu repart.
+#    - "Options"   -> ouvre l'écran Options par-dessus la pause.
 #    - "Quitter"   -> retour à l'écran-titre.
 #
-#  Ouvert par le bouton roue crantée du HUD (Hud appelle
-#  MenuPause.ouvrir()). Met le jeu en pause via get_tree().paused.
-#
-#  Cet autoload tourne TOUJOURS, même en pause (process_mode ALWAYS),
-#  sinon ses propres boutons seraient gelés.
-#
-#  CURSEUR : quand un objet est en main, le HUD cache la vraie souris au
-#  profit d'un faux curseur qui suit le _process du HUD. En pause, ce
-#  _process gèle -> plus de curseur utilisable. On rend donc la vraie
-#  souris à l'ouverture, et on rétablit le curseur du jeu à la reprise.
+#  Ouvert par le bouton roue crantée du HUD. Met le jeu en pause via
+#  get_tree().paused. Tourne TOUJOURS (process_mode ALWAYS), sinon ses
+#  propres boutons seraient gelés.
 # ============================================================
 
 const SCENE_TITRE: String = "res://scenes/ui/ecran_titre.tscn"
 
 @onready var voile: ColorRect = $Voile
 @onready var bouton_reprendre: Button = $Voile/Boutons/BoutonReprendre
+@onready var bouton_options: Button = $Voile/Boutons/BoutonOptions
 @onready var bouton_quitter: Button = $Voile/Boutons/BoutonQuitter
 
 var _ouvert: bool = false
@@ -32,6 +27,7 @@ func _ready() -> void:
     process_mode = Node.PROCESS_MODE_ALWAYS
     visible = false
     bouton_reprendre.pressed.connect(reprendre)
+    bouton_options.pressed.connect(_ouvrir_options)
     bouton_quitter.pressed.connect(_quitter_vers_titre)
 
 
@@ -56,6 +52,13 @@ func reprendre() -> void:
     # On rend au jeu son curseur (faux curseur-objet si un objet est encore
     # en main, sinon vraie souris).
     Hud.curseur_jeu()
+
+
+# --- OUVRIR LES OPTIONS (par-dessus la pause) ---
+# Le menu pause reste ouvert et en pause dessous ; l'écran Options
+# s'affiche au-dessus (calque 110) et se referme sur lui-même.
+func _ouvrir_options() -> void:
+    EcranOptions.ouvrir()
 
 
 # --- QUITTER VERS L'ÉCRAN-TITRE ---

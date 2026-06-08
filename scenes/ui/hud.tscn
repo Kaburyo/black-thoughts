@@ -76,13 +76,11 @@ columns = 4
 
 [node name="InventaireBouton" type="Button" parent="MenuPanel" unique_id=1796455574]
 layout_mode = 1
-anchors_preset = 2
-anchor_top = 1.0
-anchor_bottom = 1.0
-offset_left = 20.0
-offset_top = -101.0
-offset_right = 325.0
-offset_bottom = -10.0
+anchors_preset = -1
+offset_left = 470.0
+offset_top = 979.0
+offset_right = 600.0
+offset_bottom = 1070.0
 grow_vertical = 0
 theme_override_fonts/font = ExtResource("1_hqnrr")
 theme_override_font_sizes/font_size = 60
@@ -119,13 +117,24 @@ mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_bo48s")
 
 [node name="BoutonRecap" type="Button" parent="." unique_id=234816127]
-offset_left = 1532.0
+anchors_preset = -1
+offset_left = 250.0
 offset_top = 979.0
-offset_right = 1740.0
+offset_right = 370.0
 offset_bottom = 1070.0
 theme_override_fonts/font = ExtResource("1_hqnrr")
 theme_override_font_sizes/font_size = 60
 text = "[r] Récap"
+
+[node name="BoutonCarte" type="Button" parent="." unique_id=975227634]
+anchors_preset = -1
+offset_left = 20.0
+offset_top = 979.0
+offset_right = 230.0
+offset_bottom = 1070.0
+theme_override_fonts/font = ExtResource("1_hqnrr")
+theme_override_font_sizes/font_size = 60
+text = "[c] Carte"
 
 [node name="BoutonMenu" type="TextureButton" parent="." unique_id=771100201]
 anchors_preset = 1

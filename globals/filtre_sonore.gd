@@ -1,104 +1,106 @@
 # filtre_sonore.gd
 # LE VOILE SONORE — le pendant AUDIO du filtre mental. AUTOLOAD (global).
 #
-# Quand la santé mentale d'Al' baisse, le monde ne s'assombrit pas
-# seulement (vignettage du FiltreMental visuel) : il s'ÉTOUFFE aussi.
-# La musique se voile, comme entendue à travers un mur, ou sous l'eau.
+# Quand la santé mentale d'Al' baisse, le son du monde s'enfonce SOUS
+# L'EAU : il s'ÉTOUFFE (passe-bas, on coupe les aigus) ET se noie dans une
+# RÉVERBÉRATION lointaine. Deux effets complémentaires, sur DEUX bus :
+# Musique ET SFX (la machine à écrire comprise).
 #
-# COMMENT ? La musique passe par un BUS audio nommé "Musique", sur lequel
-# on a posé UN filtre passe-bas (Low Pass Filter). Un passe-bas laisse
-# passer les graves et coupe les aigus : plus on baisse sa fréquence de
-# coupure, plus le son devient sourd et lointain. Ce service ne fait
-# qu'UNE chose : régler cette coupure selon la santé mentale.
-# (Règle A.5/A.8 : une responsabilité, un service.)
-#
-# Il s'abonne au signal `modifiee` de SanteMentale : il se met donc à
-# jour TOUT SEUL à chaque variation (choix de dialogue, future prise de
-# médicament, nouvelle partie...). Personne n'a à l'appeler.
+# Sur chaque bus, on attend DEUX effets, dans cet ordre :
+#   index 0 = Low Pass Filter  (l'étouffement)
+#   index 1 = Reverb           (la noyade, le lointain)
+# Ce service règle leurs paramètres selon la santé, et rien d'autre
+# (règle A.5/A.8). Il se met à jour tout seul via le signal de SanteMentale.
 
 extends Node
 
 
-# --- Le bus et son filtre ---
-const NOM_BUS: String = "Musique"
-# Position du passe-bas dans la liste d'effets du bus (le 1er = 0).
-const INDEX_EFFET: int = 0
+# --- Les bus traités et la place de chaque effet ---
+const NOMS_BUS: Array[String] = ["Musique", "SFX"]
+const INDEX_PASSE_BAS: int = 0
+const INDEX_REVERB: int = 1
 
-# --- La plage de "flou" ---
-# Coupure quand tout va bien : très haute = son intact.
-const COUPURE_CLAIRE: float = 20000.0
-# Coupure au plus bas : son très sourd, étouffé.
-const COUPURE_SOURDE: float = 400.0
-# AU-DESSUS de cette santé, le son reste totalement clair. EN DESSOUS,
-# le voile s'installe progressivement jusqu'à 0. Calé sur la santé de
-# DÉPART d'Al' (70) : son équilibre fragile est le bord de la clarté.
-const SEUIL_CLAIR: float = 70.0
+# --- Étouffement (passe-bas) ---
+const COUPURE_CLAIRE: float = 20000.0   # son intact
+const COUPURE_SOURDE: float = 10000.0     # très mat, lointain
+
+# --- Noyade (reverb) : proportion de son "mouillé" ---
+const REVERB_CLAIR: float = 0.0         # aucune réverbération
+const REVERB_SOURD: float = 0.45        # très noyé
+const REVERB_TAILLE: float = 0.85       # ampleur de la "pièce" (fixe)
+
+# Au-dessus de cette santé, le son reste clair ; en dessous, le voile
+# s'installe. Calé sur la santé de départ d'Al' (70).
+const SEUIL_CLAIR: float = 75.0
 # Durée du glissement quand la santé change (évite un saut sec).
-const DUREE_GLISSE: float = 0.4
+const DUREE_GLISSE: float = 0.7
 
 
-# Le filtre passe-bas du bus Musique (récupéré une fois au démarrage).
-var _passe_bas: AudioEffectLowPassFilter = null
-# Le glissement en cours (pour ne pas en empiler plusieurs).
+# Effets récupérés une fois, regroupés par type.
+var _passe_bas: Array[AudioEffectLowPassFilter] = []
+var _reverbs: Array[AudioEffectReverb] = []
 var _glisse: Tween = null
 
 
 func _ready() -> void:
-    _passe_bas = _trouver_passe_bas()
-    if _passe_bas == null:
-        push_warning("FiltreSonore : bus '%s' ou filtre passe-bas introuvable." % NOM_BUS)
-        return
+    _recuperer_effets()
 
-    # On se cale tout de suite sur la santé de départ, puis on suit
-    # chaque changement.
+    # Taille de la réverbération : réglée une fois, fixe.
+    for rev in _reverbs:
+        rev.room_size = REVERB_TAILLE
+
+    # On se cale sur la santé de départ, puis on suit chaque changement.
     _appliquer(false)
     SanteMentale.modifiee.connect(_sur_sante_modifiee)
     print("FiltreSonore prêt.")
 
 
-# Récupère le passe-bas posé sur le bus Musique. Renvoie null si le bus
-# n'existe pas ou n'a pas d'effet à l'index attendu : le service se tait
-# alors proprement, sans casser le jeu.
-func _trouver_passe_bas() -> AudioEffectLowPassFilter:
-    var idx: int = AudioServer.get_bus_index(NOM_BUS)
-    if idx == -1:
-        return null
-    if AudioServer.get_bus_effect_count(idx) <= INDEX_EFFET:
-        return null
-    return AudioServer.get_bus_effect(idx, INDEX_EFFET) as AudioEffectLowPassFilter
+# Récupère, pour chaque bus, son passe-bas (index 0) et sa reverb (index 1).
+# Un bus mal configuré est ignoré proprement (le service ne casse rien).
+func _recuperer_effets() -> void:
+    for nom in NOMS_BUS:
+        var idx: int = AudioServer.get_bus_index(nom)
+        if idx == -1:
+            push_warning("FiltreSonore : bus '%s' introuvable." % nom)
+            continue
+        var pb := AudioServer.get_bus_effect(idx, INDEX_PASSE_BAS) as AudioEffectLowPassFilter
+        var rev := AudioServer.get_bus_effect(idx, INDEX_REVERB) as AudioEffectReverb
+        if pb == null or rev == null:
+            push_warning("FiltreSonore : effets manquants sur '%s' " % nom
+                    + "(attendu : Low Pass en 0, Reverb en 1).")
+            continue
+        _passe_bas.append(pb)
+        _reverbs.append(rev)
 
 
-# Réagit à toute variation de la santé mentale.
 func _sur_sante_modifiee() -> void:
     _appliquer(true)
 
 
-# Calcule la coupure visée selon la santé et la pose sur le filtre :
+# Calcule les cibles selon la santé et les pose sur tous les effets :
 # d'un coup au démarrage, en douceur ensuite.
 func _appliquer(avec_glisse: bool) -> void:
-    if _passe_bas == null:
+    if _passe_bas.is_empty():
         return
 
-    var cible: float = _coupure_pour(SanteMentale.valeur())
+    var t: float = clampf(SanteMentale.valeur() / SEUIL_CLAIR, 0.0, 1.0)
+    # Coupure en échelle LOG (l'oreille perçoit ainsi) ; reverb en linéaire.
+    var coupure: float = COUPURE_SOURDE * pow(COUPURE_CLAIRE / COUPURE_SOURDE, t)
+    var reverb_wet: float = lerpf(REVERB_SOURD, REVERB_CLAIR, t)
 
     if not avec_glisse:
-        _passe_bas.cutoff_hz = cible
+        for pb in _passe_bas:
+            pb.cutoff_hz = coupure
+        for rev in _reverbs:
+            rev.wet = reverb_wet
         return
 
-    # Glissement doux : on annule un éventuel glissement en cours, puis
-    # on fait glisser la coupure jusqu'à la cible.
+    # Glissement doux et SIMULTANÉ de tous les paramètres.
     if _glisse != null and _glisse.is_valid():
         _glisse.kill()
     _glisse = create_tween()
-    _glisse.tween_property(_passe_bas, "cutoff_hz", cible, DUREE_GLISSE)
-
-
-# Le "calcul pur" : à quelle coupure correspond une santé donnée ?
-# Au-dessus du seuil clair -> coupure claire (son intact). En dessous,
-# on descend vers la coupure sourde. On interpole en échelle
-# LOGARITHMIQUE (l'oreille perçoit les fréquences ainsi) pour que le
-# voile s'épaississe régulièrement, et non d'un coup tout à la fin.
-func _coupure_pour(sante: float) -> float:
-    var t: float = clampf(sante / SEUIL_CLAIR, 0.0, 1.0)
-    # t = 1 -> coupure claire ; t = 0 -> coupure sourde.
-    return COUPURE_SOURDE * pow(COUPURE_CLAIRE / COUPURE_SOURDE, t)
+    _glisse.set_parallel(true)
+    for pb in _passe_bas:
+        _glisse.tween_property(pb, "cutoff_hz", coupure, DUREE_GLISSE)
+    for rev in _reverbs:
+        _glisse.tween_property(rev, "wet", reverb_wet, DUREE_GLISSE)

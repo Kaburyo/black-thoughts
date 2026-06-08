@@ -40,6 +40,13 @@ var objets_ramassables: Dictionary = {}
 var utilisables: Dictionary = {}
 var pnj_presents: Dictionary = {}
 
+# La PORTE de sortie de la pièce (patron général). Vide = pas de porte.
+# Clés : "zone" (nœud Area2D), "fait_sortie" (fait Progression "déjà
+# quittée"), "objet_requis" (objet dur exigé à la 1re sortie, "" = aucun),
+# "pensee_manque" (pensée si l'objet manque), "debloque" (zone à ouvrir à
+# la 1re sortie, "" = aucune).
+var porte: Dictionary = {}
+
 # Champ hérité, désormais inerte : la carte gère la destination.
 var scene_suivante: String = ""
 
@@ -90,6 +97,13 @@ func _ready() -> void:
         zone.input_event.connect(_sur_clic_pnj.bind(donnees))
         zone.mouse_entered.connect(_survol_zone.bind(nom_zone))
         zone.mouse_exited.connect(_fin_survol_zone)
+
+    # 3-quater. PORTE de sortie (+ survol), si la pièce en déclare une.
+    if not porte.is_empty():
+        var zone_porte := get_node(porte["zone"]) as Area2D
+        zone_porte.input_event.connect(_sur_clic_porte)
+        zone_porte.mouse_entered.connect(_survol_zone.bind(porte["zone"]))
+        zone_porte.mouse_exited.connect(_fin_survol_zone)
 
     # 4. Gel du décor pendant un dialogue.
     Dialogue.conversation_demarree.connect(_sur_dialogue_demarre)
@@ -306,16 +320,69 @@ func _jouer_conversation(chemin: String) -> void:
         Dialogue.jouer(conversation)
 
 
-# --- QUITTER UNE PIÈCE -> OUVRIR LA CARTE ---
-func demander_a_quitter(pensee_sortie: String = "") -> void:
-    _ouvrir_la_carte(pensee_sortie)
+# --- LA PORTE DE SORTIE (patron général) ---
+# Clic gauche sur la porte, mains vides :
+#   - DÉJÀ quittée            -> simple "Quitter la pièce ?" ;
+#   - 1re fois, objet manquant -> pensée (on ne sort pas) ;
+#   - 1re fois, objet présent  -> confirmation de 1re sortie (le bureau la
+#     redéfinit pour y glisser sa question "Verrouiller ?").
+func _sur_clic_porte(_viewport: Node, event: InputEvent, _shape_idx: int) -> void:
+    if _interactions_bloquees:
+        return
+    if not (event is InputEventMouseButton):
+        return
+    if not (event.button_index == MOUSE_BUTTON_LEFT and event.pressed):
+        return
+
+    # Un objet en main : si la porte réagit à CET objet (ex. les clés sur
+    # la porte du bureau -> verrou), on lance son action ; sinon, inutile.
+    if ObjetEnMain.a_un_objet():
+        var actions: Dictionary = porte.get("objet_action", {})
+        var id_main: String = ObjetEnMain.id()
+        if actions.has(id_main):
+            (actions[id_main] as Callable).call()
+            ObjetEnMain.reposer()
+        else:
+            Voix.afficher_pensee(PENSEE_OBJET_INUTILE)
+        return
+
+    # Déjà sortie une fois -> simple validation, sans objet ni pensée.
+    if Progression.a_vu(porte["fait_sortie"]):
+        Confirmation.demander("Quitter la pièce ?", _quitter_vers_carte)
+        return
+
+    # Première sortie : l'objet "dur" est-il là ?
+    var requis: String = porte.get("objet_requis", "")
+    if requis != "" and not Inventaire.possede(requis):
+        Voix.afficher_pensee(porte.get("pensee_manque", ""))
+        return
+
+    # Objet présent (ou aucun requis) : on confirme la première sortie.
+    _confirmer_premiere_sortie()
 
 
-func _ouvrir_la_carte(pensee_sortie: String) -> void:
-    _interactions_bloquees = true
+# Confirmation de la PREMIÈRE sortie. Version par défaut : un simple
+# "Quitter la pièce ?". Une pièce peut la REDÉFINIR (le bureau remplace
+# ceci par sa question de verrouillage). Sur "Oui", on finalise.
+func _confirmer_premiere_sortie() -> void:
+    Confirmation.demander("Quitter la pièce ?", _finaliser_premiere_sortie)
+
+
+# Finalise une première sortie : on note le fait "déjà quittée", on
+# débloque la zone suivante sur la carte, puis on ouvre la carte. C'est
+# ICI (et pas au ramassage / à l'entretien) que la zone suivante s'ouvre :
+# impossible de filer par la carte sans avoir franchi la porte.
+func _finaliser_premiere_sortie() -> void:
+    Progression.marquer(porte["fait_sortie"])
+    var deb: String = porte.get("debloque", "")
+    if deb != "":
+        Carte.debloquer(deb)
+    _quitter_vers_carte()
+
+
+# Ouvre la carte de navigation (le voyage se fait en y choisissant une
+# zone ; "Fermer" laisse Al' sur place).
+func _quitter_vers_carte() -> void:
     if _glow != null:
         _glow.visible = false
-    if pensee_sortie != "":
-        await Voix.afficher_pensee_finie(pensee_sortie)
-    _interactions_bloquees = false
     EcranCarte.ouvrir()

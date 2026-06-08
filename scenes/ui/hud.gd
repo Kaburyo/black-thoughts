@@ -44,6 +44,7 @@ const ACTION_UTILISER: int = 2
 # --- Références aux nœuds ---
 @onready var portrait: TextureButton = $AlPortrait
 @onready var bouton_recap: Button = $BoutonRecap
+@onready var bouton_carte: Button = $BoutonCarte
 @onready var menu_panel: Panel = $MenuPanel
 @onready var inventaire_bouton: Button = $MenuPanel/InventaireBouton
 @onready var inventaire_panel: Panel = $MenuPanel/InventairePanel
@@ -115,6 +116,7 @@ func _ready() -> void:
     portrait.pressed.connect(_sur_clic_portrait)
     inventaire_bouton.pressed.connect(_sur_clic_inventaire)
     bouton_recap.pressed.connect(_sur_clic_recap)
+    bouton_carte.pressed.connect(_sur_clic_carte)
     bouton_menu.pressed.connect(_sur_clic_menu)
 
     # Le PopupMenu nous renvoie le numéro de l'action choisie.
@@ -245,6 +247,16 @@ func _basculer_inventaire() -> void:
 func _sur_clic_recap() -> void:
     Dialogue.basculer_recap()
 
+
+# --- Clic sur le bouton Carte : ouvre la carte de navigation ---
+# Même effet que la touche C. On referme d'abord le carnet (pour repartir
+# d'un état propre), puis on ouvre l'écran de carte — qui refuse déjà,
+# de lui-même, de s'ouvrir en plein dialogue. Contrairement au Récap, ce
+# bouton reste visible en permanence : la carte se consulte à tout moment.
+func _sur_clic_carte() -> void:
+    fermer_menu()
+    EcranCarte.ouvrir()
+    
 
 # --- Clic sur le bouton roue crantée : ouvre le menu pause ---
 # On referme d'abord le carnet (et tout objet en main) pour repartir

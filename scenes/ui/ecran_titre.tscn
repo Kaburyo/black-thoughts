@@ -69,6 +69,17 @@ theme_override_font_sizes/font_size = 50
 text = "Nouvelle Partie"
 flat = true
 
+[node name="BoutonOptions" type="Button" parent="Boutons" unique_id=733081211]
+custom_minimum_size = Vector2(360, 72)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.6439838, 0.6439838, 0.6439838, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("3_amarante")
+theme_override_font_sizes/font_size = 50
+text = "Options"
+flat = true
+
 [node name="BoutonQuitter" type="Button" parent="Boutons" unique_id=685949220]
 custom_minimum_size = Vector2(360, 72)
 layout_mode = 2

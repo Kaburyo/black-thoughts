@@ -26,6 +26,7 @@ buses/default_bus_layout="uid://c0dscviy7inky"
 [autoload]
 
 Inventaire="*res://globals/Inventaire.gd"
+Reglages="*uid://d24n5v2wwdem8"
 ObjetEnMain="*res://globals/objet_en_main.gd"
 Hud="*res://scenes/ui/hud.tscn"
 CatalogueObjets="*res://globals/catalogue_objets.gd"
@@ -42,6 +43,7 @@ MenuPause="*uid://ba7u20khu3hue"
 Progression="*uid://bpgit8temlkc0"
 Carte="*uid://c76nfmidaavps"
 EcranCarte="*uid://cbypstdnk0s15"
+EcranOptions="*uid://uv1smkatch7e"
 
 [display]
 
